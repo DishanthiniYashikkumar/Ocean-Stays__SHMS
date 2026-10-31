@@ -1,0 +1,402 @@
+/* ==========================================================================
+   Ocean Stays — Room details
+   ========================================================================== */
+
+/* ==========================================================================
+   Image gallery
+   ========================================================================== */
+
+.shms-room-gallery {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-10);
+}
+
+.shms-room-gallery-main,
+.shms-room-gallery-thumb {
+  position: relative;
+  display: block;
+  padding: 0;
+  overflow: hidden;
+  border: 0;
+  border-radius: var(--radius-lg);
+  background: var(--canvas);
+  cursor: zoom-in;
+}
+
+.shms-room-gallery-main {
+  aspect-ratio: 3 / 2;
+}
+
+.shms-room-gallery-side {
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+.shms-room-gallery-thumb {
+  min-height: 0;
+}
+
+.shms-room-gallery img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform var(--dur-slow) var(--ease);
+}
+
+.shms-room-gallery-main:hover img,
+.shms-room-gallery-thumb:hover img {
+  transform: scale(1.04);
+}
+
+.shms-room-gallery-main:focus-visible,
+.shms-room-gallery-thumb:focus-visible {
+  outline: 3px solid var(--gold-400);
+  outline-offset: 3px;
+}
+
+/* "+3 photos" overlay on the last visible thumbnail. */
+.shms-room-gallery-more {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  gap: 4px;
+  background: rgba(6, 21, 41, 0.62);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  backdrop-filter: blur(2px);
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.shms-room-gallery-thumb:hover .shms-room-gallery-more {
+  background: rgba(6, 21, 41, 0.74);
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.shms-detail-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 380px;
+  gap: var(--space-10);
+  align-items: start;
+}
+
+/* ---- Header ------------------------------------------------------------ */
+
+.shms-detail-head {
+  padding-bottom: var(--space-6);
+  margin-bottom: var(--space-6);
+  border-bottom: 1px solid var(--line);
+}
+
+.shms-detail-eyebrow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+}
+
+.shms-detail-title {
+  margin: 0 0 var(--space-3);
+  font-family: var(--display);
+  font-size: clamp(1.9rem, 3.4vw, 2.7rem);
+  font-weight: 600;
+  line-height: 1.14;
+  letter-spacing: -0.018em;
+  color: var(--ink);
+}
+
+.shms-detail-lede {
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: 1.7;
+  color: var(--body);
+}
+
+/* ---- Body sections ----------------------------------------------------- */
+
+.shms-detail-block {
+  padding-block: var(--space-8);
+  border-bottom: 1px solid var(--line);
+}
+
+.shms-detail-block:last-child {
+  border-bottom: 0;
+}
+
+.shms-detail-block h2 {
+  margin: 0 0 var(--space-5);
+  font-family: var(--display);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-detail-block p {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-base);
+  line-height: 1.8;
+  color: var(--body);
+}
+
+.shms-detail-block p:last-child {
+  margin-bottom: 0;
+}
+
+/* ---- Spec tiles -------------------------------------------------------- */
+
+.shms-spec-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: var(--space-3);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shms-spec-tile {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--field);
+}
+
+.shms-spec-tile i {
+  font-size: 1.25rem;
+  color: var(--navy-500);
+  flex: none;
+}
+
+.shms-spec-tile strong {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--ink);
+}
+
+.shms-spec-tile span {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+/* ---- Amenity list ------------------------------------------------------ */
+
+.shms-amenity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: var(--space-3) var(--space-5);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shms-amenity-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: var(--text-sm);
+  color: var(--body);
+}
+
+.shms-amenity-item i {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  flex: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.95rem;
+  color: var(--navy-600);
+  background: var(--navy-100);
+}
+
+/* ---- Policies ---------------------------------------------------------- */
+
+.shms-policy-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shms-policy-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  line-height: 1.65;
+  color: var(--body);
+}
+
+.shms-policy-list i {
+  margin-top: 2px;
+  font-size: 1rem;
+  color: var(--gold-500);
+  flex: none;
+}
+
+.shms-policy-list strong {
+  color: var(--ink);
+}
+
+/* ==========================================================================
+   Booking card
+   ========================================================================== */
+
+.shms-booking-card {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-5));
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.shms-booking-price {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+  padding-bottom: var(--space-5);
+  margin-bottom: var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.shms-booking-price strong {
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+.shms-booking-price span {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.shms-booking-dates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-3);
+  margin-bottom: var(--space-4);
+}
+
+.shms-booking-card .shms-input {
+  height: 46px;
+  font-size: var(--text-sm);
+}
+
+.shms-booking-field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: var(--space-4);
+}
+
+.shms-booking-label {
+  margin-bottom: 6px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+/* ---- Quote breakdown --------------------------------------------------- */
+
+.shms-quote {
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+  padding-block: var(--space-5);
+  margin-bottom: var(--space-5);
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.shms-quote-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-3);
+  font-size: var(--text-sm);
+  color: var(--body);
+}
+
+.shms-quote-row span:last-child {
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+.shms-quote-total {
+  padding-top: 11px;
+  border-top: 1px dashed var(--line);
+  font-size: var(--text-md);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-quote-total span:last-child {
+  font-size: 1.15rem;
+  color: var(--navy-700);
+}
+
+.shms-booking-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  margin: var(--space-4) 0 0;
+  font-size: var(--text-xs);
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.shms-booking-note i {
+  margin-top: 2px;
+  color: var(--success);
+  flex: none;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .shms-detail-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .shms-booking-card {
+    position: static;
+    max-width: 460px;
+  }
+}
+
+@media (max-width: 768px) {
+  .shms-room-gallery {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shms-room-gallery-side {
+    grid-template-rows: none;
+    grid-template-columns: repeat(2, 1fr);
+    aspect-ratio: 3 / 1;
+  }
+
+  .shms-booking-card {
+    max-width: none;
+    padding: var(--space-5);
+  }
+}

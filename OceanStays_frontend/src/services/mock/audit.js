@@ -1,0 +1,171 @@
+/**
+ * Mock audit log fixtures. Mirrors the AuditLog entity.
+ *
+ * An audit trail is only worth having if it cannot be edited, so there are no
+ * mutation helpers here beyond appending — see auditService.js.
+ */
+
+export const AUDIT_ACTION = {
+  CREATE: "CREATE",
+  UPDATE: "UPDATE",
+  DELETE: "DELETE",
+  LOGIN: "LOGIN",
+  LOGOUT: "LOGOUT",
+  PERMISSION: "PERMISSION",
+  PAYMENT: "PAYMENT",
+  STATUS: "STATUS",
+};
+
+export const AUDIT_RESULT = {
+  SUCCESS: "SUCCESS",
+  FAILURE: "FAILURE",
+};
+
+/** Modules an action can belong to. Matches the admin navigation. */
+export const AUDIT_MODULES = [
+  "Authentication",
+  "Reservations",
+  "Rooms",
+  "Users",
+  "Payments",
+  "Requests",
+  "Settings",
+  "Permissions",
+];
+
+function minutesAgo(minutes) {
+  return new Date(Date.now() - minutes * 60_000).toISOString();
+}
+
+export const auditLogs = [
+  {
+    id: "al-7001",
+    timestamp: minutesAgo(8),
+    actorId: "usr-recep-01",
+    actorName: "Dilani Rathnayake",
+    actorRole: "RECEPTIONIST",
+    action: AUDIT_ACTION.STATUS,
+    module: "Reservations",
+    entity: "OS-10301",
+    summary: "Checked in Daniel Fernando to room 302",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.18",
+  },
+  {
+    id: "al-7002",
+    timestamp: minutesAgo(23),
+    actorId: "usr-hk-01",
+    actorName: "Kumari Silva",
+    actorRole: "HOUSEKEEPING",
+    action: AUDIT_ACTION.STATUS,
+    module: "Rooms",
+    entity: "Room 203",
+    summary: "Marked room cleaned, sent for inspection",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.62",
+  },
+  {
+    id: "al-7003",
+    timestamp: minutesAgo(41),
+    actorId: "usr-service-01",
+    actorName: "Nuwan Jayasuriya",
+    actorRole: "SERVICE_STAFF",
+    action: AUDIT_ACTION.UPDATE,
+    module: "Requests",
+    entity: "REQ-4411",
+    summary: "Moved request to In Progress",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.77",
+  },
+  {
+    id: "al-7004",
+    timestamp: minutesAgo(64),
+    actorId: "usr-recep-01",
+    actorName: "Dilani Rathnayake",
+    actorRole: "RECEPTIONIST",
+    action: AUDIT_ACTION.PAYMENT,
+    module: "Payments",
+    entity: "INV-10241",
+    summary: "Took payment of LKR 113,222 by card",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.18",
+  },
+  {
+    id: "al-7005",
+    timestamp: minutesAgo(96),
+    actorId: null,
+    actorName: "unknown@example.com",
+    actorRole: null,
+    action: AUDIT_ACTION.LOGIN,
+    module: "Authentication",
+    entity: "—",
+    summary: "Failed sign-in attempt — incorrect password",
+    result: AUDIT_RESULT.FAILURE,
+    ip: "203.94.77.201",
+  },
+  {
+    id: "al-7006",
+    timestamp: minutesAgo(180),
+    actorId: "usr-admin-01",
+    actorName: "Rohan De Silva",
+    actorRole: "ADMIN",
+    action: AUDIT_ACTION.PERMISSION,
+    module: "Permissions",
+    entity: "Receptionist",
+    summary: "Granted 'Take payment' to the Receptionist role",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.2",
+  },
+  {
+    id: "al-7007",
+    timestamp: minutesAgo(260),
+    actorId: "usr-admin-01",
+    actorName: "Rohan De Silva",
+    actorRole: "ADMIN",
+    action: AUDIT_ACTION.CREATE,
+    module: "Users",
+    entity: "usr-hk-02",
+    summary: "Created housekeeping account for Sanduni Herath",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.2",
+  },
+  {
+    id: "al-7008",
+    timestamp: minutesAgo(420),
+    actorId: "usr-guest-01",
+    actorName: "Amara Perera",
+    actorRole: "GUEST",
+    action: AUDIT_ACTION.CREATE,
+    module: "Reservations",
+    entity: "OS-10255",
+    summary: "Booked Coastal Suite for 5 nights",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "175.157.40.9",
+  },
+  {
+    id: "al-7009",
+    timestamp: minutesAgo(700),
+    actorId: "usr-admin-01",
+    actorName: "Rohan De Silva",
+    actorRole: "ADMIN",
+    action: AUDIT_ACTION.UPDATE,
+    module: "Settings",
+    entity: "Cancellation policy",
+    summary: "Changed free cancellation window from 24 to 48 hours",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.2",
+  },
+  {
+    id: "al-7010",
+    timestamp: minutesAgo(1100),
+    actorId: "usr-service-03",
+    actorName: "Tharindu Alwis",
+    actorRole: "SERVICE_STAFF",
+    action: AUDIT_ACTION.UPDATE,
+    module: "Requests",
+    entity: "REQ-4415",
+    summary: "Completed dining reservation for Daniel Fernando",
+    result: AUDIT_RESULT.SUCCESS,
+    ip: "10.0.4.81",
+  },
+];

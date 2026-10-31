@@ -1,0 +1,238 @@
+/* ==========================================================================
+   Ocean Stays — Lightbox
+   --------------------------------------------------------------------------
+   Accessible image viewer used by the gallery page and the room detail
+   gallery. Built as a controlled React dialog — no Bootstrap modal JS.
+   ========================================================================== */
+
+.shms-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  background: rgba(6, 21, 41, 0.94);
+  backdrop-filter: blur(6px);
+  animation: shms-lightbox-in var(--dur-base) var(--ease);
+}
+
+@keyframes shms-lightbox-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---- Bar --------------------------------------------------------------- */
+
+.shms-lightbox-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-5) var(--space-6);
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.shms-lightbox-count {
+  font-size: var(--text-sm);
+  letter-spacing: 0.08em;
+  font-variant-numeric: tabular-nums;
+}
+
+.shms-lightbox-close {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 15px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: var(--radius-sm);
+  background: rgba(255, 255, 255, 0.07);
+  color: rgba(255, 255, 255, 0.86);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.shms-lightbox-close:hover {
+  background: rgba(255, 255, 255, 0.14);
+  border-color: var(--gold-400);
+  color: #fff;
+}
+
+.shms-lightbox-close:focus-visible {
+  outline: 2px solid var(--gold-400);
+  outline-offset: 3px;
+}
+
+/* ---- Stage ------------------------------------------------------------- */
+
+.shms-lightbox-stage {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 0;
+  padding-inline: var(--space-6);
+}
+
+.shms-lightbox-figure {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-4);
+  margin: 0;
+  max-height: 100%;
+}
+
+.shms-lightbox-image {
+  max-width: min(1100px, 88vw);
+  max-height: 68svh;
+  object-fit: contain;
+  border-radius: var(--radius-md);
+  box-shadow: 0 30px 70px -30px rgba(0, 0, 0, 0.8);
+}
+
+.shms-lightbox-caption {
+  margin: 0;
+  text-align: center;
+  font-size: var(--text-sm);
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.shms-lightbox-caption span {
+  display: block;
+  margin-top: 3px;
+  font-size: var(--text-xs);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--gold-300);
+}
+
+/* ---- Prev / next ------------------------------------------------------- */
+
+.shms-lightbox-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  display: grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(8px);
+  color: #fff;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    transform var(--dur-fast) var(--ease);
+}
+
+.shms-lightbox-nav:hover {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: var(--gold-400);
+}
+
+.shms-lightbox-nav:focus-visible {
+  outline: 2px solid var(--gold-400);
+  outline-offset: 3px;
+}
+
+.shms-lightbox-prev {
+  left: var(--space-5);
+}
+
+.shms-lightbox-next {
+  right: var(--space-5);
+}
+
+/* ---- Thumbnail strip --------------------------------------------------- */
+
+.shms-lightbox-thumbs {
+  display: flex;
+  gap: var(--space-2);
+  justify-content: center;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  padding: var(--space-5) var(--space-6) var(--space-6);
+  scrollbar-width: thin;
+}
+
+.shms-lightbox-thumb {
+  flex: none;
+  width: 84px;
+  height: 56px;
+  padding: 0;
+  overflow: hidden;
+  border: 2px solid transparent;
+  border-radius: var(--radius-sm);
+  background: none;
+  cursor: pointer;
+  opacity: 0.5;
+  transition: opacity var(--dur-fast) var(--ease), border-color var(--dur-fast) var(--ease);
+}
+
+.shms-lightbox-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.shms-lightbox-thumb:hover {
+  opacity: 0.85;
+}
+
+.shms-lightbox-thumb.is-active {
+  opacity: 1;
+  border-color: var(--gold-400);
+}
+
+.shms-lightbox-thumb:focus-visible {
+  outline: 2px solid var(--gold-400);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 700px) {
+  .shms-lightbox-stage {
+    padding-inline: var(--space-3);
+  }
+
+  .shms-lightbox-image {
+    max-width: 94vw;
+    max-height: 58svh;
+  }
+
+  .shms-lightbox-nav {
+    width: 42px;
+    height: 42px;
+    font-size: 1rem;
+  }
+
+  .shms-lightbox-prev {
+    left: var(--space-2);
+  }
+
+  .shms-lightbox-next {
+    right: var(--space-2);
+  }
+
+  .shms-lightbox-thumbs {
+    justify-content: flex-start;
+    padding: var(--space-4) var(--space-4) var(--space-5);
+  }
+}

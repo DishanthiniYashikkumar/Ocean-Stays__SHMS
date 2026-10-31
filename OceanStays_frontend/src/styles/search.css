@@ -1,0 +1,122 @@
+/* ==========================================================================
+   Ocean Stays — Availability search
+   --------------------------------------------------------------------------
+   Sits astride the hero's lower edge on the home page, and inline on the
+   rooms listing.
+   ========================================================================== */
+
+.shms-search-wrap {
+  position: relative;
+  z-index: 2;
+  /* Lifts the panel over the hero it follows. */
+  margin-top: calc(var(--space-16) * -1);
+}
+
+/* On the rooms page there is no hero to overlap. */
+.shms-search-inline {
+  margin-top: 0;
+}
+
+.shms-search {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) auto;
+  gap: var(--space-4);
+  align-items: end;
+  padding: var(--space-6);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.shms-search-field {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.shms-search-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 7px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.shms-search-label i {
+  font-size: 0.85rem;
+  color: var(--gold-500);
+}
+
+/* Date and number inputs are shorter than the auth fields — this row is dense. */
+.shms-search .shms-input {
+  height: 48px;
+  padding-left: 16px;
+}
+
+/* Safari and Chrome render the native date picker icon differently; nudge it
+   into the field's own colour language. */
+.shms-search input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  opacity: 0.55;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.shms-search input[type="date"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+.shms-search-submit {
+  height: 48px;
+  white-space: nowrap;
+}
+
+.shms-search-note {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding-top: var(--space-2);
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.shms-search-note i {
+  color: var(--gold-ink);
+}
+
+.shms-search-error {
+  grid-column: 1 / -1;
+  margin: 0;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .shms-search {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shms-search-submit {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 560px) {
+  .shms-search-wrap {
+    margin-top: calc(var(--space-10) * -1);
+  }
+
+  .shms-search {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-3);
+    padding: var(--space-5);
+  }
+}

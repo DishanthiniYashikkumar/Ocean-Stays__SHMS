@@ -1,0 +1,308 @@
+/* ==========================================================================
+   Ocean Stays — Housekeeping
+   --------------------------------------------------------------------------
+   Tablet-first, unlike the rest of the staff UI. Housekeepers work standing up,
+   on a phone or a tablet, often with one hand and sometimes with gloves on —
+   so targets are large, actions are single taps, and nothing important hides
+   behind a hover state.
+   ========================================================================== */
+
+/* Comfortable minimum for a gloved thumb. */
+.shms-hk-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  gap: var(--space-4);
+}
+
+/* ==========================================================================
+   Task card
+   ========================================================================== */
+
+.shms-hk-task {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-left-width: 4px;
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--dur-base) var(--ease);
+}
+
+.shms-hk-task:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+/* The card carries whichever status it was given — a task status on the task
+   board, a room status on the rooms board, a request status on the request
+   queue. The rail colours cover all three vocabularies. */
+
+/* Task and request statuses */
+.shms-hk-task.is-PENDING,
+.shms-hk-task.is-DIRTY {
+  border-left-color: var(--warning);
+}
+
+.shms-hk-task.is-IN_PROGRESS,
+.shms-hk-task.is-CLEANING,
+.shms-hk-task.is-OCCUPIED {
+  border-left-color: var(--gold-500);
+}
+
+.shms-hk-task.is-COMPLETED,
+.shms-hk-task.is-INSPECTED,
+.shms-hk-task.is-READY,
+.shms-hk-task.is-AVAILABLE {
+  border-left-color: var(--success);
+}
+
+.shms-hk-task.is-ASSIGNED,
+.shms-hk-task.is-CLEAN,
+.shms-hk-task.is-RESERVED {
+  border-left-color: var(--navy-500);
+}
+
+.shms-hk-task.is-MAINTENANCE {
+  border-left-color: var(--danger);
+}
+
+.shms-hk-task.is-CANCELLED {
+  border-left-color: var(--muted);
+  opacity: 0.7;
+}
+
+/* ---- Header ------------------------------------------------------------ */
+
+.shms-hk-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-3);
+}
+
+.shms-hk-room {
+  display: flex;
+  align-items: baseline;
+  gap: var(--space-3);
+}
+
+.shms-hk-number {
+  font-family: var(--display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.shms-hk-type {
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.shms-hk-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+  flex: none;
+}
+
+/* ---- Meta -------------------------------------------------------------- */
+
+.shms-hk-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
+  margin: 0;
+  padding: var(--space-4) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  list-style: none;
+}
+
+.shms-hk-meta li {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: var(--text-sm);
+  color: var(--body);
+}
+
+.shms-hk-meta i {
+  font-size: 0.95rem;
+  color: var(--navy-500);
+}
+
+.shms-hk-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin: 0;
+  padding: var(--space-3) var(--space-4);
+  border-radius: var(--radius-sm);
+  background: var(--warning-tint);
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--warning-ink);
+}
+
+.shms-hk-note i {
+  margin-top: 2px;
+  flex: none;
+}
+
+/* ==========================================================================
+   Actions — the part that has to work with gloves on
+   ========================================================================== */
+
+.shms-hk-actions {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: auto;
+}
+
+.shms-hk-actions-split {
+  grid-template-columns: 1fr 1fr;
+}
+
+/* Deliberately taller than the standard button: this is the primary target. */
+.shms-hk-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: 52px;
+  padding-inline: var(--space-4);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease);
+}
+
+.shms-hk-btn:active:not(:disabled) {
+  transform: scale(0.98);
+}
+
+.shms-hk-btn:focus-visible {
+  outline: 3px solid var(--gold-400);
+  outline-offset: 3px;
+}
+
+.shms-hk-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.shms-hk-btn-start {
+  background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+  color: #fff;
+}
+
+.shms-hk-btn-done {
+  background: var(--success);
+  color: #fff;
+}
+
+.shms-hk-btn-inspect {
+  background: linear-gradient(135deg, var(--gold-400), var(--gold-500));
+  color: var(--navy-900);
+}
+
+.shms-hk-btn-outline {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.shms-hk-btn-outline:hover:not(:disabled) {
+  border-color: var(--navy-500);
+  background: var(--field);
+}
+
+/* ==========================================================================
+   Status filter — scrollable chip row on small screens
+   ========================================================================== */
+
+.shms-hk-filters {
+  display: flex;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding: 0 0 var(--space-2);
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.shms-hk-filters li {
+  flex: none;
+}
+
+.shms-hk-filters .shms-tab {
+  min-height: 44px;
+}
+
+/* ==========================================================================
+   Room turnaround strip — shows where a room is in the chain
+   ========================================================================== */
+
+.shms-chain {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-xs);
+}
+
+.shms-chain li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+}
+
+.shms-chain li::after {
+  content: "›";
+  color: var(--line);
+}
+
+.shms-chain li:last-child::after {
+  content: "";
+}
+
+.shms-chain .is-current {
+  font-weight: 700;
+  color: var(--navy-700);
+}
+
+.shms-chain .is-done {
+  color: var(--success);
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 700px) {
+  .shms-hk-board {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shms-hk-number {
+    font-size: 1.7rem;
+  }
+
+  .shms-hk-actions-split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

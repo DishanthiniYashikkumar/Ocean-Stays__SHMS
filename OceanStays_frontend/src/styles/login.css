@@ -1,0 +1,465 @@
+/* ==========================================================================
+   Ocean Stays — Auth pages (Login / Register / Forgot password)
+   --------------------------------------------------------------------------
+   Only the split-screen auth layout lives here. Design tokens moved to
+   tokens.css and the field system to forms.css, so this file no longer has to
+   be the whole design system.
+
+   Card classes are namespaced `shms-auth-*` to avoid colliding with the
+   generic `.shms-card` primitive in base.css.
+   ========================================================================== */
+
+.shms-login {
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  background: var(--canvas);
+  color: var(--body);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ==========================================================================
+   LEFT — visual / branding
+   ========================================================================== */
+
+.shms-visual {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  /* Fallback beneath the photo, so the panel still looks intentional
+     if the image is slow or blocked. */
+  background:
+    radial-gradient(120% 90% at 15% 0%, var(--navy-700) 0%, transparent 60%),
+    linear-gradient(160deg, var(--navy-800) 0%, var(--navy-900) 100%);
+}
+
+.shms-visual-media {
+  position: absolute;
+  inset: 0;
+  background-image: url("https://images.unsplash.com/photo-1582719508461-905c673771fd?auto=format&fit=crop&w=1600&q=80");
+  background-size: cover;
+  background-position: center;
+  transform: scale(1.03);
+}
+
+.shms-visual-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(70% 55% at 78% 12%, rgba(201, 162, 39, 0.22) 0%, transparent 62%),
+    linear-gradient(155deg, rgba(6, 21, 41, 0.9) 0%, rgba(10, 33, 64, 0.82) 45%, rgba(6, 21, 41, 0.95) 100%);
+}
+
+.shms-visual-inner {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 48px;
+  padding: 56px 64px;
+  color: #fff;
+}
+
+/* ---- Brand lockup ------------------------------------------------------ */
+
+.shms-brand {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+
+.shms-brand-mark {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 13px;
+  font-size: 20px;
+  color: var(--gold-300);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(234, 208, 138, 0.32);
+  backdrop-filter: blur(8px);
+}
+
+.shms-brand-name {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  color: rgba(255, 255, 255, 0.94);
+}
+
+/* ---- Headline ---------------------------------------------------------- */
+
+.shms-visual-copy {
+  max-width: 30ch;
+}
+
+.shms-visual-title {
+  margin: 0;
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(2.1rem, 3.1vw, 3.05rem);
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+
+.shms-rule {
+  display: block;
+  width: 68px;
+  height: 3px;
+  margin: 26px 0 22px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold-400), rgba(201, 162, 39, 0));
+}
+
+.shms-tagline {
+  margin: 0;
+  font-size: 1.06rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: var(--gold-300);
+}
+
+.shms-visual-note {
+  margin: 14px 0 0;
+  font-size: 0.94rem;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.68);
+}
+
+/* ---- Capability chips -------------------------------------------------- */
+
+.shms-capabilities {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shms-capability {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  color: rgba(255, 255, 255, 0.86);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  backdrop-filter: blur(6px);
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.shms-capability:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(234, 208, 138, 0.4);
+}
+
+.shms-capability i {
+  font-size: 0.95rem;
+  color: var(--gold-300);
+}
+
+/* ==========================================================================
+   RIGHT — form panel
+   ========================================================================== */
+
+.shms-auth-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 48px 40px;
+  background:
+    radial-gradient(90% 60% at 50% 0%, rgba(23, 69, 122, 0.05) 0%, transparent 70%),
+    var(--canvas);
+}
+
+.shms-auth-card {
+  width: 100%;
+  max-width: 440px;
+  padding: 44px 40px 38px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+/* Register needs a wider card for its two-column name row. */
+.shms-auth-card-wide {
+  max-width: 540px;
+}
+
+.shms-auth-badge {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 22px;
+  border-radius: 16px;
+  font-size: 23px;
+  color: var(--gold-300);
+  background: linear-gradient(145deg, var(--navy-700), var(--navy-900));
+  box-shadow: 0 8px 18px -8px rgba(10, 33, 64, 0.65);
+}
+
+.shms-auth-title {
+  margin: 0 0 6px;
+  font-size: 1.72rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.shms-auth-subtitle {
+  margin: 0 0 30px;
+  font-size: 0.94rem;
+  color: var(--muted);
+}
+
+/* ---- Footer bits ------------------------------------------------------- */
+
+.shms-register {
+  margin: 4px 0 0;
+  text-align: center;
+  font-size: 0.88rem;
+  color: var(--body);
+}
+
+.shms-secure {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  margin: 26px 0 0;
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+  font-size: 0.77rem;
+  color: var(--muted);
+}
+
+.shms-secure i {
+  color: var(--gold-ink);
+}
+
+/* ==========================================================================
+   Demo account note
+   --------------------------------------------------------------------------
+   DEVELOPMENT AID. Delete this block and the <aside> in pages/auth/Login.jsx
+   before any real deployment — the mock accounts it advertises disappear with
+   VITE_USE_MOCK_AUTH="false" anyway.
+   ========================================================================== */
+
+.shms-demo-note {
+  width: 100%;
+  max-width: 440px;
+  padding: 14px 16px;
+  border: 1px dashed #ccd6e6;
+  border-radius: 12px;
+  font-size: 0.76rem;
+  line-height: 1.6;
+  color: var(--muted);
+}
+
+.shms-demo-note strong {
+  display: block;
+  margin-bottom: 7px;
+  font-size: 0.78rem;
+  color: var(--body);
+}
+
+.shms-demo-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shms-demo-list li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.shms-demo-list code {
+  padding: 1px 5px;
+  border-radius: 4px;
+  background: rgba(23, 69, 122, 0.07);
+  color: var(--navy-600);
+  font-size: 0.95em;
+  overflow-wrap: anywhere;
+}
+
+.shms-demo-list span {
+  flex: none;
+  color: var(--muted);
+}
+
+/* A discreet way back to the public site from the auth screens. */
+.shms-auth-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--muted);
+  text-decoration: none;
+  transition: color 0.18s var(--ease);
+}
+
+.shms-auth-back:hover {
+  color: var(--navy-600);
+}
+
+.shms-auth-back:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* Laptop — tighten the visual side's breathing room */
+@media (max-width: 1200px) {
+  .shms-visual-inner {
+    padding: 44px 44px;
+    gap: 36px;
+  }
+
+  .shms-auth-card {
+    padding: 38px 32px 32px;
+  }
+
+  .shms-auth-panel {
+    padding: 40px 28px;
+  }
+}
+
+/* Tablet landscape — narrow the visual column */
+@media (max-width: 1024px) {
+  .shms-login {
+    grid-template-columns: 0.85fr 1fr;
+  }
+
+  .shms-visual-note {
+    display: none;
+  }
+
+  .shms-capabilities {
+    gap: 8px;
+  }
+
+  .shms-capability {
+    padding: 7px 13px;
+    font-size: 0.76rem;
+  }
+}
+
+/* Tablet portrait & mobile — stack, banner on top, card overlapping it */
+@media (max-width: 900px) {
+  .shms-login {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+
+  .shms-visual {
+    min-height: 250px;
+  }
+
+  .shms-visual-inner {
+    justify-content: center;
+    gap: 22px;
+    padding: 40px 28px 62px;
+    text-align: center;
+    align-items: center;
+  }
+
+  .shms-visual-copy {
+    max-width: 26ch;
+  }
+
+  .shms-visual-title {
+    font-size: clamp(1.65rem, 5.6vw, 2.2rem);
+  }
+
+  .shms-rule {
+    margin: 16px auto 14px;
+  }
+
+  .shms-capabilities {
+    display: none;
+  }
+
+  .shms-auth-panel {
+    padding: 0 20px 44px;
+    justify-content: flex-start;
+  }
+
+  .shms-auth-card {
+    margin-top: -34px; /* lift the card over the banner */
+    border-radius: 22px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 480px) {
+  .shms-visual {
+    min-height: 210px;
+  }
+
+  .shms-visual-inner {
+    padding: 32px 22px 56px;
+  }
+
+  .shms-brand-mark {
+    width: 38px;
+    height: 38px;
+    font-size: 17px;
+  }
+
+  .shms-brand-name {
+    font-size: 16px;
+  }
+
+  .shms-tagline {
+    font-size: 0.95rem;
+  }
+
+  .shms-auth-card {
+    padding: 30px 22px 26px;
+  }
+
+  .shms-auth-title {
+    font-size: 1.5rem;
+  }
+
+  .shms-form-options {
+    gap: 10px;
+  }
+}
+
+/* Very short viewports — don't force a tall banner */
+@media (max-height: 620px) and (min-width: 901px) {
+  .shms-visual-inner {
+    padding: 36px 44px;
+  }
+
+  .shms-auth-panel {
+    padding: 32px 28px;
+  }
+}

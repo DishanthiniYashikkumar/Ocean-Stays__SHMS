@@ -1,0 +1,404 @@
+/* ==========================================================================
+   Ocean Stays — DataTable
+   --------------------------------------------------------------------------
+   Shared by reception, housekeeping, service and admin. Below 900px each row
+   collapses into a stacked card rather than scrolling sideways — the brief
+   forbids horizontal overflow, and a hidden column is worse than a tall one.
+   ========================================================================== */
+
+.shms-table-wrap {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-xs);
+  overflow: hidden;
+}
+
+/* ==========================================================================
+   Toolbar
+   ========================================================================== */
+
+.shms-table-toolbar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.shms-table-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 240px;
+  max-width: 340px;
+}
+
+.shms-table-search .shms-input {
+  height: 40px;
+  font-size: var(--text-sm);
+}
+
+.shms-table-search-clear {
+  position: absolute;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.shms-table-search-clear:hover {
+  background: var(--field);
+  color: var(--ink);
+}
+
+.shms-table-search-clear:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+.shms-table-filter {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.shms-table-filter label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.shms-table-filter .shms-input {
+  height: 40px;
+  width: auto;
+  min-width: 150px;
+  font-size: var(--text-sm);
+}
+
+.shms-table-toolbar-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* ==========================================================================
+   Table
+   ========================================================================== */
+
+.shms-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-sm);
+}
+
+.shms-table thead th {
+  padding: var(--space-3) var(--space-5);
+  border-bottom: 1px solid var(--line);
+  background: var(--field);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  text-align: left;
+  white-space: nowrap;
+}
+
+.shms-table tbody td {
+  padding: var(--space-4) var(--space-5);
+  border-bottom: 1px solid var(--line);
+  color: var(--body);
+  vertical-align: middle;
+  /* Emails and references have no spaces to break at; without this they push
+     the table wider than the screen once it stacks into cards. */
+  overflow-wrap: anywhere;
+}
+
+.shms-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.shms-table tbody tr {
+  transition: background-color var(--dur-fast) var(--ease);
+}
+
+.shms-table tbody tr:hover {
+  background: var(--field);
+}
+
+.shms-table .is-right {
+  text-align: right;
+}
+
+.shms-table .is-center {
+  text-align: center;
+}
+
+/* Primary identifier in a row. */
+.shms-cell-strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-cell-muted {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.shms-cell-numeric {
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* ---- Sortable headers -------------------------------------------------- */
+
+.shms-th-sort {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.shms-th-sort:hover {
+  color: var(--navy-700);
+}
+
+.shms-th-sort:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 3px;
+  border-radius: 3px;
+}
+
+.shms-th-sort i {
+  font-size: 0.75rem;
+  opacity: 0.4;
+  transition: opacity var(--dur-fast) var(--ease);
+}
+
+.shms-table th[aria-sort]:not([aria-sort="none"]) .shms-th-sort {
+  color: var(--navy-700);
+}
+
+.shms-table th[aria-sort]:not([aria-sort="none"]) .shms-th-sort i {
+  opacity: 1;
+}
+
+/* ---- Row actions ------------------------------------------------------- */
+
+.shms-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* ==========================================================================
+   Pagination
+   ========================================================================== */
+
+.shms-pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  flex-wrap: wrap;
+  padding: var(--space-4) var(--space-5);
+  border-top: 1px solid var(--line);
+}
+
+.shms-pagination-count {
+  margin: 0;
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+.shms-pagination-count strong {
+  color: var(--ink);
+}
+
+.shms-pagination-controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.shms-page-btn {
+  display: grid;
+  place-items: center;
+  min-width: 36px;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  font-family: inherit;
+  font-size: var(--text-sm);
+  font-weight: 500;
+  color: var(--body);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.shms-page-btn:hover:not(:disabled) {
+  border-color: var(--navy-500);
+  color: var(--navy-700);
+}
+
+.shms-page-btn:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+.shms-page-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.shms-page-btn[aria-current="page"] {
+  border-color: transparent;
+  background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
+  color: #fff;
+}
+
+.shms-page-gap {
+  padding: 0 4px;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Responsive — stacked cards
+   ========================================================================== */
+
+@media (max-width: 900px) {
+  .shms-table thead {
+    /* Visually hidden rather than removed, so the header text stays available
+       to assistive technology reading the table structure. */
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+  }
+
+  .shms-table,
+  .shms-table tbody,
+  .shms-table tr,
+  .shms-table td {
+    display: block;
+    width: 100%;
+  }
+
+  .shms-table tbody tr {
+    padding: var(--space-4) var(--space-5);
+    border-bottom: 1px solid var(--line);
+  }
+
+  .shms-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .shms-table tbody td {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: 5px 0;
+    border-bottom: 0;
+    text-align: right;
+  }
+
+  /* The column header becomes the row label. */
+  .shms-table tbody td::before {
+    content: attr(data-label);
+    flex: none;
+    font-size: var(--text-xs);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: left;
+  }
+
+  .shms-table .is-right,
+  .shms-table .is-center {
+    text-align: right;
+  }
+
+  .shms-row-actions {
+    justify-content: flex-end;
+    padding-top: var(--space-2);
+  }
+
+  .shms-table-toolbar {
+    padding: var(--space-4);
+  }
+
+  .shms-table-search {
+    max-width: none;
+    flex-basis: 100%;
+  }
+
+  .shms-table-filter {
+    flex: 1 1 auto;
+  }
+
+  .shms-table-filter .shms-input {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .shms-table-toolbar-end {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .shms-pagination {
+    justify-content: center;
+  }
+}
+
+/* ==========================================================================
+   Skeleton rows
+   ========================================================================== */
+
+.shms-table-skeleton {
+  padding: var(--space-5);
+}
+
+.shms-table-skeleton > div {
+  height: 44px;
+  margin-bottom: var(--space-3);
+  border-radius: var(--radius-sm);
+}
+
+.shms-table-skeleton > div:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,564 @@
+/* ==========================================================================
+   Ocean Stays — Base primitives
+   --------------------------------------------------------------------------
+   Buttons, cards, badges, sections and the loading/empty/error states that
+   every page reuses. Built entirely from tokens.css.
+
+   Naming: `shms-` prefix throughout, matching the existing codebase.
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/*
+ * A last line of defence against horizontal overflow. Long unbroken strings —
+ * email addresses, booking references, URLs — are the usual culprit, and the
+ * brief forbids the page ever scrolling sideways. This breaks them rather than
+ * hiding the symptom with overflow-x:hidden on the body, which would mask a
+ * real layout bug instead of fixing it.
+ */
+body {
+  overflow-wrap: break-word;
+}
+
+/* Media never widens its container. */
+img,
+svg,
+video,
+iframe {
+  max-width: 100%;
+}
+
+/* ==========================================================================
+   Layout
+   ========================================================================== */
+
+.shms-container {
+  width: 100%;
+  max-width: var(--container);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.shms-container-narrow {
+  max-width: var(--container-narrow);
+}
+
+.shms-section {
+  padding-block: var(--space-24);
+}
+
+.shms-section-tight {
+  padding-block: var(--space-16);
+}
+
+.shms-section-alt {
+  background: var(--canvas);
+}
+
+.shms-section-dark {
+  background: linear-gradient(160deg, var(--navy-800) 0%, var(--navy-900) 100%);
+  color: rgba(255, 255, 255, 0.78);
+}
+
+@media (max-width: 768px) {
+  .shms-section {
+    padding-block: var(--space-16);
+  }
+
+  .shms-section-tight {
+    padding-block: var(--space-12);
+  }
+
+  .shms-container {
+    padding-inline: var(--space-5);
+  }
+}
+
+/* ---- Section headings -------------------------------------------------- */
+
+.shms-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-3);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--gold-ink);
+}
+
+.shms-section-dark .shms-eyebrow {
+  color: var(--gold-300);
+}
+
+.shms-heading {
+  margin: 0 0 var(--space-4);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1.8rem, 3vw, var(--text-3xl));
+  line-height: 1.18;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+
+.shms-section-dark .shms-heading {
+  color: #fff;
+}
+
+.shms-subheading {
+  max-width: 62ch;
+  margin: 0;
+  font-size: var(--text-md);
+  line-height: 1.7;
+  color: var(--body);
+}
+
+.shms-section-dark .shms-subheading {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.shms-section-head {
+  margin-bottom: var(--space-12);
+}
+
+.shms-section-head-center {
+  text-align: center;
+}
+
+.shms-section-head-center .shms-subheading {
+  margin-inline: auto;
+}
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+.shms-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  height: 48px;
+  padding-inline: var(--space-6);
+  border: 1px solid transparent;
+  border-radius: var(--radius-md);
+  background: none;
+  font-family: inherit;
+  font-size: var(--text-base);
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    transform var(--dur-fast) var(--ease),
+    box-shadow var(--dur-base) var(--ease),
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.shms-btn:focus-visible {
+  outline: 3px solid var(--gold-400);
+  outline-offset: 3px;
+}
+
+.shms-btn:disabled,
+.shms-btn[aria-disabled="true"] {
+  cursor: not-allowed;
+  opacity: 0.55;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---- Variants ---------------------------------------------------------- */
+
+.shms-btn-primary {
+  background: linear-gradient(135deg, var(--navy-700) 0%, var(--navy-900) 100%);
+  color: #fff;
+  box-shadow: 0 10px 24px -14px rgba(10, 33, 64, 0.95);
+}
+
+.shms-btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(10, 33, 64, 0.8);
+  color: #fff;
+}
+
+.shms-btn-gold {
+  background: linear-gradient(135deg, var(--gold-400) 0%, var(--gold-500) 100%);
+  color: var(--navy-900);
+  box-shadow: 0 10px 24px -14px rgba(201, 162, 39, 0.9);
+}
+
+.shms-btn-gold:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(201, 162, 39, 0.75);
+  color: var(--navy-900);
+}
+
+.shms-btn-danger {
+  background: var(--danger);
+  color: #fff;
+  box-shadow: 0 10px 24px -14px rgba(192, 57, 43, 0.9);
+}
+
+.shms-btn-danger:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(192, 57, 43, 0.75);
+  color: #fff;
+  filter: brightness(1.05);
+}
+
+.shms-btn-outline {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
+.shms-btn-outline:hover:not(:disabled) {
+  border-color: var(--navy-500);
+  background: var(--field);
+  color: var(--navy-700);
+}
+
+/* For use over photography / dark sections. */
+.shms-btn-ghost-light {
+  border-color: rgba(255, 255, 255, 0.32);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  backdrop-filter: blur(8px);
+}
+
+.shms-btn-ghost-light:hover:not(:disabled) {
+  border-color: var(--gold-300);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+.shms-btn-quiet {
+  color: var(--navy-600);
+}
+
+.shms-btn-quiet:hover:not(:disabled) {
+  background: var(--navy-100);
+  color: var(--navy-700);
+}
+
+/* ---- Sizes ------------------------------------------------------------- */
+
+.shms-btn-sm {
+  height: 38px;
+  padding-inline: var(--space-4);
+  font-size: var(--text-sm);
+  border-radius: var(--radius-sm);
+}
+
+.shms-btn-lg {
+  height: 56px;
+  padding-inline: var(--space-8);
+  font-size: var(--text-md);
+}
+
+.shms-btn-block {
+  width: 100%;
+}
+
+.shms-btn-icon {
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  border-radius: var(--radius-sm);
+}
+
+/* ==========================================================================
+   Surfaces
+   ========================================================================== */
+
+.shms-card {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.shms-card-pad {
+  padding: var(--space-6);
+}
+
+.shms-card-hover {
+  transition:
+    transform var(--dur-base) var(--ease),
+    box-shadow var(--dur-base) var(--ease),
+    border-color var(--dur-base) var(--ease);
+}
+
+.shms-card-hover:hover {
+  transform: translateY(-4px);
+  border-color: rgba(201, 162, 39, 0.34);
+  box-shadow: var(--shadow-lifted);
+}
+
+.shms-divider {
+  height: 1px;
+  border: 0;
+  margin: 0;
+  background: var(--line);
+}
+
+/* Gold accent rule used under headings on premium sections. */
+.shms-rule-gold {
+  display: block;
+  width: 68px;
+  height: 3px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, var(--gold-400), rgba(201, 162, 39, 0));
+}
+
+/* ==========================================================================
+   Status badges
+   --------------------------------------------------------------------------
+   One badge component; the modifier carries the semantic colour. Status names
+   map to the domain in utils/status.js so a status string never hardcodes a
+   colour at the call site.
+   ========================================================================== */
+
+.shms-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: 5px 11px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  line-height: 1.4;
+}
+
+/* A small dot makes status scannable without relying on colour alone. */
+.shms-badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  flex: none;
+}
+
+.shms-badge-success {
+  color: var(--success-ink);
+  background: var(--success-tint);
+  border-color: var(--success-edge);
+}
+
+.shms-badge-warning {
+  color: var(--warning-ink);
+  background: var(--warning-tint);
+  border-color: var(--warning-edge);
+}
+
+.shms-badge-info {
+  color: var(--info-ink);
+  background: var(--info-tint);
+  border-color: var(--info-edge);
+}
+
+.shms-badge-danger {
+  color: var(--danger-ink);
+  background: var(--danger-tint);
+  border-color: var(--danger-edge);
+}
+
+.shms-badge-neutral {
+  color: var(--neutral-ink);
+  background: var(--neutral-tint);
+  border-color: var(--neutral-edge);
+}
+
+.shms-badge-gold {
+  color: var(--gold-ink);
+  background: rgba(201, 162, 39, 0.11);
+  border-color: rgba(201, 162, 39, 0.3);
+}
+
+/* ==========================================================================
+   Loading / empty / error states
+   ========================================================================== */
+
+.shms-skeleton {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius-sm);
+  background: #e8edf5;
+}
+
+.shms-skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: shms-shimmer 1.4s infinite;
+}
+
+@keyframes shms-shimmer {
+  to {
+    transform: translateX(100%);
+  }
+}
+
+.shms-skeleton-text {
+  height: 12px;
+  margin-bottom: var(--space-2);
+}
+
+.shms-skeleton-title {
+  height: 20px;
+  width: 60%;
+  margin-bottom: var(--space-3);
+}
+
+.shms-skeleton-media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md);
+}
+
+/* ---- State panel (empty / error) --------------------------------------- */
+
+.shms-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-3);
+  padding: var(--space-16) var(--space-6);
+  text-align: center;
+}
+
+.shms-state-icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin-bottom: var(--space-1);
+  border-radius: var(--radius-lg);
+  font-size: 26px;
+  color: var(--navy-600);
+  background: var(--navy-100);
+}
+
+.shms-state-icon-danger {
+  color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.shms-state-title {
+  margin: 0;
+  font-size: var(--text-lg);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-state-message {
+  max-width: 46ch;
+  margin: 0;
+  font-size: var(--text-base);
+  line-height: 1.65;
+  color: var(--body);
+}
+
+.shms-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  justify-content: center;
+  margin-top: var(--space-3);
+}
+
+/* ---- Spinner ----------------------------------------------------------- */
+
+.shms-spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid rgba(255, 255, 255, 0.32);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: shms-spin 0.7s linear infinite;
+  flex: none;
+}
+
+.shms-spinner-dark {
+  border-color: rgba(23, 69, 122, 0.22);
+  border-top-color: var(--navy-600);
+}
+
+.shms-spinner-lg {
+  width: 34px;
+  height: 34px;
+  border-width: 3px;
+}
+
+@keyframes shms-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ==========================================================================
+   Media
+   ========================================================================== */
+
+.shms-media {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.shms-media-frame {
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  background: var(--canvas);
+}
+
+/* ==========================================================================
+   Entrance animation
+   ========================================================================== */
+
+.shms-fade-up {
+  animation: shms-fade-up var(--dur-slow) var(--ease-out) both;
+}
+
+@keyframes shms-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .shms-btn:hover:not(:disabled),
+  .shms-card-hover:hover {
+    transform: none;
+  }
+}

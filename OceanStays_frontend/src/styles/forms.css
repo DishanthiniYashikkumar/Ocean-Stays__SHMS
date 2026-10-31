@@ -1,0 +1,389 @@
+/* ==========================================================================
+   Ocean Stays — Form system
+   --------------------------------------------------------------------------
+   Extracted verbatim from login.css so Register, Contact, the availability
+   search and the booking forms all inherit the same field treatment.
+
+   Class names are unchanged from the original login markup — LoginForm.jsx
+   renders identically against this file.
+   ========================================================================== */
+
+.shms-form {
+  display: flex;
+  flex-direction: column;
+  gap: 19px;
+}
+
+.shms-field {
+  display: flex;
+  flex-direction: column;
+}
+
+.shms-label {
+  margin-bottom: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.shms-label-optional {
+  margin-left: 5px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Inputs
+   ========================================================================== */
+
+.shms-input-shell {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.shms-input-icon {
+  position: absolute;
+  left: 16px;
+  font-size: 1rem;
+  color: var(--muted);
+  pointer-events: none;
+  transition: color 0.2s var(--ease);
+}
+
+.shms-input {
+  width: 100%;
+  height: 52px;
+  padding: 0 16px 0 46px;
+  /* A control's edge identifies it, so it uses the 3:1 token, not --line. */
+  border: 1px solid var(--field-border);
+  border-radius: 12px;
+  background: var(--field);
+  color: var(--ink);
+  font-family: inherit;
+  font-size: 0.95rem;
+  transition:
+    border-color 0.2s var(--ease),
+    box-shadow 0.2s var(--ease),
+    background-color 0.2s var(--ease);
+}
+
+/* Fields without a leading icon (selects, date pickers in compact rows). */
+.shms-input-bare {
+  padding-left: 16px;
+}
+
+.shms-input.has-trailing-action {
+  padding-right: 50px;
+}
+
+.shms-input::placeholder {
+  color: var(--placeholder);
+}
+
+.shms-input:hover:not(:disabled):not(:focus) {
+  border-color: var(--field-border-hover);
+}
+
+.shms-input:focus {
+  outline: none;
+  background: var(--surface);
+  border-color: var(--navy-500);
+  box-shadow: 0 0 0 4px rgba(23, 69, 122, 0.11);
+}
+
+.shms-input-shell:focus-within .shms-input-icon {
+  color: var(--navy-600);
+}
+
+.shms-input:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.shms-input-shell.is-invalid .shms-input {
+  border-color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.shms-input-shell.is-invalid .shms-input:focus {
+  box-shadow: 0 0 0 4px rgba(192, 57, 43, 0.12);
+}
+
+.shms-input-shell.is-invalid .shms-input-icon {
+  color: var(--danger);
+}
+
+/* Native select needs its own arrow once the UA appearance is removed. */
+select.shms-input {
+  appearance: none;
+  cursor: pointer;
+  /* Stroke matches --muted; a data URI can't read a custom property. */
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='none' stroke='%23677084' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 16px center;
+  padding-right: 42px;
+}
+
+textarea.shms-input {
+  height: auto;
+  min-height: 118px;
+  padding: 14px 16px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+/* ==========================================================================
+   Password visibility toggle
+   ========================================================================== */
+
+.shms-password-toggle {
+  position: absolute;
+  right: 7px;
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  border: 0;
+  border-radius: 9px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: color 0.18s var(--ease), background-color 0.18s var(--ease);
+}
+
+.shms-password-toggle:hover:not(:disabled) {
+  color: var(--navy-700);
+  background: rgba(23, 69, 122, 0.08);
+}
+
+.shms-password-toggle:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+.shms-password-toggle:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+/* ==========================================================================
+   Messages
+   ========================================================================== */
+
+.shms-field-error {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 8px 0 0;
+  font-size: 0.79rem;
+  font-weight: 500;
+  color: var(--danger-ink);
+  animation: shms-slide-in 0.18s var(--ease);
+}
+
+.shms-field-hint {
+  margin: 8px 0 0;
+  font-size: 0.79rem;
+  color: var(--muted);
+}
+
+.shms-alert {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 12px 14px;
+  border: 1px solid rgba(192, 57, 43, 0.22);
+  border-radius: 12px;
+  background: var(--danger-tint);
+  color: var(--danger-ink);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  animation: shms-slide-in 0.2s var(--ease);
+}
+
+.shms-alert i {
+  margin-top: 1px;
+  color: var(--danger);
+}
+
+.shms-alert-success {
+  border-color: var(--success-edge);
+  background: var(--success-tint);
+  color: var(--success-ink);
+}
+
+.shms-alert-success i {
+  color: var(--success);
+}
+
+@keyframes shms-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ==========================================================================
+   Checkbox / options row
+   ========================================================================== */
+
+.shms-form-options {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-top: -3px;
+}
+
+.shms-checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+}
+
+.shms-checkbox input {
+  width: 17px;
+  height: 17px;
+  margin: 0;
+  accent-color: var(--navy-700);
+  cursor: pointer;
+  flex: none;
+}
+
+.shms-checkbox input:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+.shms-checkbox label {
+  font-size: 0.86rem;
+  color: var(--body);
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Aligns a 17px box with the first line of multi-line consent copy. */
+.shms-checkbox-inline input {
+  margin-top: 2px;
+}
+
+/* ==========================================================================
+   Links
+   ========================================================================== */
+
+.shms-link {
+  color: var(--navy-600);
+  font-size: 0.86rem;
+  font-weight: 600;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: color 0.18s var(--ease);
+}
+
+.shms-link:hover {
+  color: var(--gold-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.shms-link:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 3px;
+}
+
+.shms-link-strong {
+  font-size: inherit;
+}
+
+/* ==========================================================================
+   Submit button
+   --------------------------------------------------------------------------
+   Kept as its own class (rather than folding into .shms-btn) because the
+   login page's gold sheen is the established primary-action treatment.
+   ========================================================================== */
+
+.shms-submit {
+  position: relative;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 54px;
+  margin-top: 5px;
+  border: 0;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--navy-700) 0%, var(--navy-900) 100%);
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.97rem;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  cursor: pointer;
+  box-shadow: 0 10px 24px -14px rgba(10, 33, 64, 0.95);
+  transition:
+    transform 0.18s var(--ease),
+    box-shadow 0.22s var(--ease),
+    filter 0.2s var(--ease);
+}
+
+/* Subtle gold sheen that sweeps across on hover — the one flourish. */
+.shms-submit::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(105deg, transparent 35%, rgba(234, 208, 138, 0.28) 50%, transparent 65%);
+  transform: translateX(-110%);
+  transition: transform 0.55s var(--ease);
+}
+
+.shms-submit:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 32px -14px rgba(10, 33, 64, 0.8);
+  color: #fff;
+}
+
+.shms-submit:hover:not(:disabled)::after {
+  transform: translateX(110%);
+}
+
+.shms-submit:hover:not(:disabled) .bi-arrow-right {
+  transform: translateX(3px);
+}
+
+.shms-submit .bi-arrow-right {
+  transition: transform 0.2s var(--ease);
+}
+
+.shms-submit:active:not(:disabled) {
+  transform: translateY(0);
+  filter: brightness(0.94);
+}
+
+.shms-submit:focus-visible {
+  outline: 3px solid var(--gold-400);
+  outline-offset: 3px;
+}
+
+.shms-submit:disabled {
+  cursor: not-allowed;
+  opacity: 0.8;
+  box-shadow: none;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shms-submit:hover:not(:disabled) {
+    transform: none;
+  }
+}

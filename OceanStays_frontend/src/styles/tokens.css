@@ -1,0 +1,155 @@
+/* ==========================================================================
+   Ocean Stays — Design Tokens
+   --------------------------------------------------------------------------
+   The single source of truth for the visual language. Every other stylesheet
+   consumes these; none of them redefine a colour, radius or shadow inline.
+
+   These were originally scoped to `.shms-login`. Promoting them to :root is a
+   pure extraction — the login page resolves the identical values.
+   ========================================================================== */
+
+:root {
+  /* ---- Brand palette ---------------------------------------------------- */
+  --navy-900: #061529; /* deepest — hero overlays, footer */
+  --navy-800: #0a2140; /* primary brand navy */
+  --navy-700: #0f2e56;
+  --navy-600: #17457a; /* ocean blue — links, active states */
+  --navy-500: #24608f; /* blue — focus rings, accents */
+  --navy-100: rgba(23, 69, 122, 0.08); /* tint for hover beds */
+
+  --gold-500: #c9a227; /* brand gold */
+  --gold-400: #d9b84a; /* light gold */
+  --gold-300: #ead08a; /* gold on dark backgrounds */
+  --gold-ink: #8a6d1b; /* gold dark enough for text on white (4.9:1) */
+
+  /* ---- Neutrals --------------------------------------------------------- */
+  --ink: #0d1b2a; /* headings, primary text */
+  --body: #55617a; /* body copy */
+
+  /*
+   * Secondary text. Measured at 4.55:1 against --canvas, the lightest surface
+   * it sits on, so it meets WCAG AA (4.5:1) everywhere it is used. The obvious
+   * lighter grey (#8b95a8) reads better but lands at 2.76:1 — captions, hints
+   * and table meta are content, not decoration, so they have to clear the bar.
+   */
+  --muted: #677084;
+
+  --line: #e3e8f0; /* dividers and card edges — decorative, not a UI boundary */
+
+  /*
+   * Form-control borders are a different case: an input's edge is what marks it
+   * as a control, so WCAG 1.4.11 wants 3:1. --line is 1.23:1 and fails, hence a
+   * separate token used only by inputs, selects and textareas.
+   */
+  --field-border: #8b909c;
+  --field-border-hover: #8c95a6;
+  --placeholder: #6a7385; /* 4.52:1 on --field */
+
+  --field: #f7f9fc; /* input backgrounds */
+  --surface: #ffffff; /* cards, sheets */
+  --canvas: #f2f5fa; /* page background */
+
+  /* ---- Semantic status -------------------------------------------------- */
+  /* Each status carries an ink (text), tint (fill) and edge (border) so
+     badges stay legible without inventing new colours per component. */
+  --success: #1e7a5a;
+  --success-ink: #14573f;
+  --success-tint: rgba(30, 122, 90, 0.09);
+  --success-edge: rgba(30, 122, 90, 0.22);
+
+  --warning: #b47709;
+  --warning-ink: #855806;
+  --warning-tint: rgba(180, 119, 9, 0.1);
+  --warning-edge: rgba(180, 119, 9, 0.24);
+
+  --info: #17457a;
+  --info-ink: #123a66;
+  --info-tint: rgba(23, 69, 122, 0.08);
+  --info-edge: rgba(23, 69, 122, 0.2);
+
+  --danger: #c0392b;
+  --danger-ink: #8f2a1f;
+  --danger-tint: rgba(192, 57, 43, 0.07);
+  --danger-edge: rgba(192, 57, 43, 0.22);
+
+  --neutral-ink: #55617a;
+  --neutral-tint: rgba(85, 97, 122, 0.08);
+  --neutral-edge: rgba(85, 97, 122, 0.2);
+
+  /* ---- Typography ------------------------------------------------------- */
+  --sans:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --display: "Playfair Display", "Iowan Old Style", Georgia, "Times New Roman", serif;
+
+  --text-xs: 0.76rem;
+  --text-sm: 0.86rem;
+  --text-base: 0.95rem;
+  --text-md: 1.05rem;
+  --text-lg: 1.25rem;
+  --text-xl: 1.6rem;
+  --text-2xl: 2rem;
+  --text-3xl: 2.6rem;
+
+  /* ---- Spacing scale (4px base) ----------------------------------------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* ---- Radii ------------------------------------------------------------ */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 20px;
+  --radius-pill: 999px;
+
+  /* ---- Elevation -------------------------------------------------------- */
+  --shadow-xs: 0 1px 2px rgba(13, 27, 42, 0.05);
+  --shadow-sm: 0 1px 2px rgba(13, 27, 42, 0.04), 0 4px 12px -6px rgba(13, 27, 42, 0.1);
+  --shadow-card:
+    0 1px 2px rgba(13, 27, 42, 0.04), 0 18px 40px -20px rgba(13, 27, 42, 0.28),
+    0 4px 12px -6px rgba(13, 27, 42, 0.08);
+  --shadow-lifted:
+    0 2px 4px rgba(13, 27, 42, 0.05), 0 28px 52px -24px rgba(13, 27, 42, 0.34),
+    0 8px 20px -10px rgba(13, 27, 42, 0.12);
+  --shadow-nav: 0 1px 0 var(--line), 0 6px 24px -14px rgba(13, 27, 42, 0.24);
+
+  /* ---- Motion ----------------------------------------------------------- */
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --dur-fast: 0.18s;
+  --dur-base: 0.24s;
+  --dur-slow: 0.4s;
+
+  /* ---- Layout ----------------------------------------------------------- */
+  --container: 1240px;
+  --container-narrow: 880px;
+  --nav-height: 78px;
+  --nav-height-scrolled: 66px;
+
+  /* ---- Z-index scale ---------------------------------------------------- */
+  --z-sticky: 100;
+  --z-nav: 200;
+  --z-drawer: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+}
+
+/* High-contrast users get firmer borders and darker secondary text. */
+@media (prefers-contrast: more) {
+  :root {
+    --line: #9aa6b8;
+    --muted: #5c6678;
+    --field-border: #6b7280;
+    --field-border-hover: #55617a;
+    --placeholder: #55617a;
+  }
+}

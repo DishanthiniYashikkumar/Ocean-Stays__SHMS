@@ -1,0 +1,48 @@
+/* Global base for SHMS. Page-specific styling lives in src/styles/. */
+
+:root {
+  /* The app is designed light-only; without this the browser paints dark
+     UA colours for form controls when the OS is in dark mode. */
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+html {
+  /* In-page anchors glide rather than jump. base.css disables this under
+     prefers-reduced-motion. */
+  scroll-behavior: smooth;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f2f5fa;
+  font-family:
+    "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Bootstrap sets a global focus ring we override per-component; keep a sane
+   fallback for anything not styled yet. */
+:focus-visible {
+  outline: 2px solid #17457a;
+  outline-offset: 2px;
+}
+
+/* Screen-reader-only utility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

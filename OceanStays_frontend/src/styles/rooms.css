@@ -1,0 +1,346 @@
+/* ==========================================================================
+   Ocean Stays — Rooms listing
+   ========================================================================== */
+
+.shms-rooms-layout {
+  display: grid;
+  grid-template-columns: 288px minmax(0, 1fr);
+  gap: var(--space-8);
+  align-items: start;
+}
+
+/* ==========================================================================
+   Filter panel
+   ========================================================================== */
+
+.shms-filters {
+  position: sticky;
+  top: calc(var(--nav-height) + var(--space-5));
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.shms-filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  padding-bottom: var(--space-4);
+  margin-bottom: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.shms-filters-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--ink);
+}
+
+.shms-filters-title i {
+  color: var(--gold-500);
+}
+
+.shms-filter-clear {
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: inherit;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  color: var(--navy-600);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.shms-filter-clear:hover {
+  color: var(--gold-ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.shms-filter-clear:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 3px;
+}
+
+.shms-filter-group {
+  padding-block: var(--space-4);
+  border-bottom: 1px solid var(--line);
+}
+
+.shms-filter-group:last-of-type {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.shms-filter-legend {
+  display: block;
+  margin-bottom: var(--space-3);
+  padding: 0;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.shms-filter-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.shms-filter-option {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: var(--text-sm);
+  color: var(--body);
+  cursor: pointer;
+}
+
+.shms-filter-option input {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--navy-700);
+  cursor: pointer;
+  flex: none;
+}
+
+.shms-filter-option input:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+.shms-filter-option:hover {
+  color: var(--ink);
+}
+
+.shms-filter-count {
+  margin-left: auto;
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+/* ---- Price inputs ------------------------------------------------------ */
+
+.shms-filter-price {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.shms-filter-price .shms-input {
+  height: 42px;
+  padding-inline: 12px;
+  font-size: var(--text-sm);
+}
+
+.shms-filter-price span {
+  font-size: var(--text-xs);
+  color: var(--muted);
+}
+
+/* ==========================================================================
+   Results
+   ========================================================================== */
+
+.shms-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.shms-results-count {
+  margin: 0;
+  font-size: var(--text-sm);
+  color: var(--body);
+}
+
+.shms-results-count strong {
+  color: var(--ink);
+}
+
+.shms-results-tools {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.shms-results-sort {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+.shms-results-sort label {
+  font-size: var(--text-xs);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.shms-results-sort .shms-input {
+  height: 42px;
+  width: auto;
+  min-width: 170px;
+  font-size: var(--text-sm);
+}
+
+/* ---- Search box -------------------------------------------------------- */
+
+.shms-room-search {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1;
+  max-width: 320px;
+}
+
+.shms-room-search .shms-input {
+  height: 42px;
+  font-size: var(--text-sm);
+}
+
+.shms-room-search-clear {
+  position: absolute;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease), background-color var(--dur-fast) var(--ease);
+}
+
+.shms-room-search-clear:hover {
+  color: var(--ink);
+  background: var(--field);
+}
+
+.shms-room-search-clear:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+/* ---- Active filter chips ---------------------------------------------- */
+
+.shms-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin-bottom: var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.shms-active-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 5px 7px 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--field);
+  font-size: var(--text-xs);
+  color: var(--body);
+}
+
+.shms-active-chip button {
+  display: grid;
+  place-items: center;
+  width: 19px;
+  height: 19px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(85, 97, 122, 0.12);
+  color: var(--body);
+  font-size: 10px;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.shms-active-chip button:hover {
+  background: var(--danger);
+  color: #fff;
+}
+
+.shms-active-chip button:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+/* ==========================================================================
+   Mobile filter toggle
+   ========================================================================== */
+
+.shms-filters-toggle {
+  display: none;
+}
+
+@media (max-width: 940px) {
+  .shms-rooms-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .shms-filters {
+    position: static;
+    display: none;
+  }
+
+  .shms-filters.is-open {
+    display: block;
+    margin-bottom: var(--space-6);
+    animation: shms-fade-up var(--dur-base) var(--ease-out);
+  }
+
+  .shms-filters-toggle {
+    display: inline-flex;
+  }
+}
+
+@media (max-width: 620px) {
+  .shms-results-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .shms-results-tools {
+    flex-wrap: wrap;
+  }
+
+  .shms-room-search {
+    max-width: none;
+  }
+
+  .shms-results-sort {
+    flex: 1;
+  }
+
+  .shms-results-sort .shms-input {
+    flex: 1;
+    min-width: 0;
+  }
+}

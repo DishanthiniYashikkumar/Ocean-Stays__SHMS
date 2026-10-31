@@ -1,0 +1,171 @@
+/* ==========================================================================
+   Ocean Stays — Auth page extras
+   --------------------------------------------------------------------------
+   Shared by Register, Forgot password and Reset password. The split-screen
+   shell itself lives in login.css.
+   ========================================================================== */
+
+/* Two-column name row inside the auth card. */
+.shms-auth-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+@media (max-width: 560px) {
+  .shms-auth-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 19px;
+  }
+}
+
+/* ==========================================================================
+   Password strength meter
+   ========================================================================== */
+
+.shms-strength {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  margin-top: 10px;
+}
+
+.shms-strength-track {
+  display: flex;
+  gap: 4px;
+  flex: 1;
+}
+
+.shms-strength-seg {
+  height: 4px;
+  flex: 1;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background-color var(--dur-base) var(--ease);
+}
+
+.shms-strength-seg.is-on-danger {
+  background: var(--danger);
+}
+
+.shms-strength-seg.is-on-warning {
+  background: var(--warning);
+}
+
+.shms-strength-seg.is-on-info {
+  background: var(--navy-500);
+}
+
+.shms-strength-seg.is-on-success {
+  background: var(--success);
+}
+
+.shms-strength-label {
+  min-width: 62px;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  text-align: right;
+}
+
+.shms-strength-label.is-danger {
+  color: var(--danger-ink);
+}
+
+.shms-strength-label.is-warning {
+  color: var(--warning-ink);
+}
+
+.shms-strength-label.is-info {
+  color: var(--info-ink);
+}
+
+.shms-strength-label.is-success {
+  color: var(--success-ink);
+}
+
+/* ==========================================================================
+   Consent row
+   ========================================================================== */
+
+.shms-consent {
+  margin-top: 2px;
+}
+
+.shms-consent label {
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   Sent / success panel
+   ========================================================================== */
+
+.shms-auth-sent {
+  text-align: center;
+}
+
+.shms-auth-sent-icon {
+  display: grid;
+  place-items: center;
+  width: 62px;
+  height: 62px;
+  margin: 0 auto var(--space-5);
+  border-radius: var(--radius-lg);
+  font-size: 26px;
+  color: var(--success);
+  background: var(--success-tint);
+}
+
+.shms-auth-sent h2 {
+  margin: 0 0 var(--space-3);
+  font-size: 1.5rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.shms-auth-sent p {
+  margin: 0 0 var(--space-6);
+  font-size: var(--text-base);
+  line-height: 1.7;
+  color: var(--body);
+}
+
+.shms-auth-sent strong {
+  color: var(--ink);
+}
+
+.shms-auth-sent-actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+/* ==========================================================================
+   Password requirement list
+   ========================================================================== */
+
+.shms-requirements {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px var(--space-4);
+  margin: 10px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.shms-requirements li {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--text-xs);
+  color: var(--muted);
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.shms-requirements li i {
+  font-size: 0.85rem;
+}
+
+.shms-requirements li.is-met {
+  color: var(--success-ink);
+}

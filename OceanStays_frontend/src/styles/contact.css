@@ -1,0 +1,148 @@
+/* ==========================================================================
+   Ocean Stays — Contact page
+   ========================================================================== */
+
+.shms-contact-layout {
+  display: grid;
+  grid-template-columns: 1fr 1.1fr;
+  gap: var(--space-12);
+  align-items: start;
+}
+
+/* ---- Detail cards ------------------------------------------------------ */
+
+.shms-contact-cards {
+  display: grid;
+  gap: var(--space-4);
+}
+
+.shms-contact-card {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-4);
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--surface);
+  transition: border-color var(--dur-base) var(--ease), box-shadow var(--dur-base) var(--ease);
+}
+
+.shms-contact-card:hover {
+  border-color: rgba(201, 162, 39, 0.32);
+  box-shadow: var(--shadow-sm);
+}
+
+.shms-contact-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  flex: none;
+  border-radius: var(--radius-md);
+  font-size: 19px;
+  color: var(--gold-300);
+  background: linear-gradient(145deg, var(--navy-700), var(--navy-900));
+}
+
+.shms-contact-card h2 {
+  margin: 0 0 4px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-contact-card p,
+.shms-contact-card a {
+  margin: 0;
+  font-size: var(--text-sm);
+  line-height: 1.6;
+  color: var(--body);
+  text-decoration: none;
+}
+
+.shms-contact-card a:hover {
+  color: var(--navy-600);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.shms-contact-card a:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ---- Form panel -------------------------------------------------------- */
+
+.shms-contact-form {
+  padding: var(--space-8);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-card);
+}
+
+.shms-contact-form h2 {
+  margin: 0 0 var(--space-2);
+  font-family: var(--display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-contact-form > p {
+  margin: 0 0 var(--space-6);
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.shms-field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-4);
+}
+
+/* ---- Map --------------------------------------------------------------- */
+
+.shms-contact-map {
+  margin-top: var(--space-12);
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-card);
+  aspect-ratio: 21 / 8;
+  background: var(--canvas);
+}
+
+.shms-contact-map iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+@media (max-width: 940px) {
+  .shms-contact-layout {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-8);
+  }
+
+  .shms-contact-map {
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 560px) {
+  .shms-contact-form {
+    padding: var(--space-5);
+  }
+
+  .shms-field-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 19px;
+  }
+}

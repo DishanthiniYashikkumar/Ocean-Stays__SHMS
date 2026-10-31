@@ -1,0 +1,138 @@
+/* ==========================================================================
+   Ocean Stays — Page shell
+   ========================================================================== */
+
+.shms-page {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  background: var(--surface);
+  color: var(--body);
+  font-family: var(--sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+.shms-page main {
+  flex: 1 0 auto;
+}
+
+/* Pages without a hero need clearance beneath the fixed navbar. Hero pages
+   deliberately start underneath it so the image runs to the top of the screen. */
+.shms-page-offset main {
+  padding-top: var(--nav-height);
+}
+
+/* ==========================================================================
+   Skip link
+   ========================================================================== */
+
+.shms-skip-link {
+  position: absolute;
+  top: -60px;
+  left: var(--space-4);
+  z-index: calc(var(--z-nav) + 1);
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  background: var(--navy-800);
+  color: #fff;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  text-decoration: none;
+  transition: top var(--dur-fast) var(--ease);
+}
+
+.shms-skip-link:focus {
+  top: var(--space-4);
+  color: #fff;
+}
+
+/* ==========================================================================
+   Simple page header, for public pages that have no cinematic hero
+   ========================================================================== */
+
+.shms-page-head {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  padding-block: var(--space-16);
+  background:
+    radial-gradient(90% 120% at 12% 0%, var(--navy-700) 0%, transparent 62%),
+    linear-gradient(160deg, var(--navy-800) 0%, var(--navy-900) 100%);
+  color: #fff;
+  text-align: center;
+}
+
+.shms-page-head::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 60% at 80% 10%, rgba(201, 162, 39, 0.18) 0%, transparent 65%);
+}
+
+.shms-page-head h1 {
+  margin: 0 0 var(--space-3);
+  font-family: var(--display);
+  font-weight: 600;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: #fff;
+}
+
+.shms-page-head p {
+  max-width: 58ch;
+  margin: 0 auto;
+  font-size: var(--text-md);
+  line-height: 1.7;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.shms-page-head .shms-rule-gold {
+  margin: var(--space-5) auto var(--space-5);
+}
+
+/* ---- Breadcrumb -------------------------------------------------------- */
+
+.shms-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 0 0 var(--space-5);
+  padding: 0;
+  list-style: none;
+  font-size: var(--text-xs);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.shms-breadcrumb a {
+  color: rgba(255, 255, 255, 0.72);
+  text-decoration: none;
+  transition: color var(--dur-fast) var(--ease);
+}
+
+.shms-breadcrumb a:hover {
+  color: var(--gold-300);
+}
+
+.shms-breadcrumb a:focus-visible {
+  outline: 2px solid var(--gold-400);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+.shms-breadcrumb li[aria-current="page"] {
+  color: var(--gold-300);
+}
+
+@media (max-width: 768px) {
+  .shms-page-head {
+    padding-block: var(--space-12);
+  }
+}

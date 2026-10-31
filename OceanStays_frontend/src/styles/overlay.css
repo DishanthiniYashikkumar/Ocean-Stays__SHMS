@@ -1,0 +1,280 @@
+/* ==========================================================================
+   Ocean Stays — Overlays: toasts and modals
+   ========================================================================== */
+
+/* ==========================================================================
+   Toasts
+   ========================================================================== */
+
+.shms-toasts {
+  position: fixed;
+  right: var(--space-5);
+  bottom: var(--space-5);
+  z-index: var(--z-toast);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  width: min(380px, calc(100vw - var(--space-8)));
+  /* The stack must not block the page behind it — only the cards catch clicks. */
+  pointer-events: none;
+}
+
+.shms-toast {
+  pointer-events: auto;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  padding: var(--space-4);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--muted);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  box-shadow: var(--shadow-lifted);
+  animation: shms-toast-in var(--dur-base) var(--ease-out);
+}
+
+@keyframes shms-toast-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.shms-toast-icon {
+  font-size: 1.1rem;
+  line-height: 1.3;
+  flex: none;
+}
+
+.shms-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+
+.shms-toast-title {
+  display: block;
+  margin-bottom: 2px;
+  font-size: var(--text-sm);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-toast-message {
+  display: block;
+  font-size: var(--text-sm);
+  line-height: 1.55;
+  color: var(--body);
+  overflow-wrap: anywhere;
+}
+
+.shms-toast-close {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.shms-toast-close:hover {
+  background: var(--field);
+  color: var(--ink);
+}
+
+.shms-toast-close:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+.shms-toast-success {
+  border-left-color: var(--success);
+}
+
+.shms-toast-success .shms-toast-icon {
+  color: var(--success);
+}
+
+.shms-toast-danger {
+  border-left-color: var(--danger);
+}
+
+.shms-toast-danger .shms-toast-icon {
+  color: var(--danger);
+}
+
+.shms-toast-info {
+  border-left-color: var(--navy-600);
+}
+
+.shms-toast-info .shms-toast-icon {
+  color: var(--navy-600);
+}
+
+@media (max-width: 560px) {
+  .shms-toasts {
+    right: var(--space-3);
+    left: var(--space-3);
+    bottom: var(--space-3);
+    width: auto;
+  }
+}
+
+/* ==========================================================================
+   Modal
+   ========================================================================== */
+
+.shms-modal-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  display: grid;
+  place-items: center;
+  padding: var(--space-5);
+  background: rgba(6, 21, 41, 0.55);
+  backdrop-filter: blur(3px);
+  animation: shms-fade-in var(--dur-fast) var(--ease);
+  overflow-y: auto;
+}
+
+.shms-modal {
+  width: 100%;
+  max-width: 520px;
+  max-height: calc(100svh - var(--space-10));
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--radius-xl);
+  background: var(--surface);
+  box-shadow: var(--shadow-lifted);
+  animation: shms-modal-in var(--dur-base) var(--ease-out);
+}
+
+.shms-modal-lg {
+  max-width: 640px;
+}
+
+@keyframes shms-modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.shms-modal-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-4);
+  padding: var(--space-6) var(--space-6) var(--space-4);
+}
+
+.shms-modal-title {
+  margin: 0;
+  font-family: var(--display);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.shms-modal-subtitle {
+  margin: 6px 0 0;
+  font-size: var(--text-sm);
+  color: var(--muted);
+}
+
+.shms-modal-close {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--body);
+  cursor: pointer;
+  transition: background-color var(--dur-fast) var(--ease), color var(--dur-fast) var(--ease);
+}
+
+.shms-modal-close:hover {
+  background: var(--field);
+  color: var(--ink);
+}
+
+.shms-modal-close:focus-visible {
+  outline: 2px solid var(--navy-500);
+  outline-offset: 2px;
+}
+
+.shms-modal-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 var(--space-6) var(--space-2);
+}
+
+.shms-modal-body > p {
+  margin: 0 0 var(--space-4);
+  font-size: var(--text-base);
+  line-height: 1.7;
+  color: var(--body);
+}
+
+.shms-modal-foot {
+  display: flex;
+  gap: var(--space-3);
+  padding: var(--space-5) var(--space-6) var(--space-6);
+}
+
+.shms-modal-foot .shms-btn {
+  flex: 1;
+}
+
+/* Icon banner for confirmation dialogs. */
+.shms-modal-icon {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  margin-bottom: var(--space-4);
+  border-radius: var(--radius-md);
+  font-size: 22px;
+  color: var(--navy-600);
+  background: var(--navy-100);
+}
+
+.shms-modal-icon-danger {
+  color: var(--danger);
+  background: var(--danger-tint);
+}
+
+.shms-modal-icon-warning {
+  color: var(--warning);
+  background: var(--warning-tint);
+}
+
+@media (max-width: 560px) {
+  .shms-modal-scrim {
+    padding: var(--space-3);
+    align-items: flex-end;
+  }
+
+  .shms-modal-foot {
+    flex-direction: column-reverse;
+  }
+}
