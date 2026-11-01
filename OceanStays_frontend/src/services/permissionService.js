@@ -8,16 +8,8 @@
  * request, and must reject a role change from anyone lacking `user.roles`.
  */
 
-import { USE_MOCK_API, clone, delay, request } from "./apiClient";
-import { ROLES, ROLE_LABELS } from "./roles";
-import {
-  ALL_PERMISSIONS,
-  PERMISSION_GROUPS,
-  ROLE_DESCRIPTIONS,
-  ROLE_PERMISSIONS,
-  SYSTEM_ROLES,
-} from "./mock/permissions";
-import { users } from "./mock/users";
+import { request } from "./apiClient";
+import { ALL_PERMISSIONS, PERMISSION_GROUPS, SYSTEM_ROLES } from "./permissionCatalogue";
 
 export { PERMISSION_GROUPS, ALL_PERMISSIONS, SYSTEM_ROLES };
 
@@ -26,26 +18,12 @@ export { PERMISSION_GROUPS, ALL_PERMISSIONS, SYSTEM_ROLES };
  * @returns {Promise<Array<{id, label, description, permissions, userCount, isSystem}>>}
  */
 export async function getRoles() {
-  if (!USE_MOCK_API) return request("/roles");
-
-  await delay(400);
-
-  return Object.values(ROLES).map((role) => ({
-    id: role,
-    label: ROLE_LABELS[role] ?? role,
-    description: ROLE_DESCRIPTIONS[role] ?? "",
-    permissions: clone(ROLE_PERMISSIONS[role] ?? []),
-    userCount: users.filter((user) => user.role === role).length,
-    isSystem: SYSTEM_ROLES.includes(role),
-  }));
+  return request("/roles");
 }
 
 /** One role's permission ids. */
 export async function getRolePermissions(roleId) {
-  if (!USE_MOCK_API) return request(`/roles/${roleId}/permissions`);
-
-  await delay(300);
-  return clone(ROLE_PERMISSIONS[roleId] ?? []);
+  return request(`/roles/${roleId}/permissions`);
 }
 
 /**
@@ -59,31 +37,5 @@ export async function getRolePermissions(roleId) {
  * @param {string[]} permissions
  */
 export async function updateRolePermissions(roleId, permissions) {
-  if (!USE_MOCK_API) {
-    return request(`/roles/${roleId}/permissions`, { method: "PUT", body: { permissions } });
-  }
-
-  await delay(700);
-
-  if (roleId === ROLES.ADMIN) {
-    throw new Error(
-      "The Administrator role always holds every permission and can't be narrowed.",
-    );
-  }
-  if (!ROLE_PERMISSIONS[roleId]) {
-    throw new Error("We couldn't find that role.");
-  }
-
-  const unknown = permissions.filter((id) => !ALL_PERMISSIONS.includes(id));
-  if (unknown.length > 0) {
-    throw new Error(`Unknown permission: ${unknown[0]}`);
-  }
-
-  ROLE_PERMISSIONS[roleId] = [...permissions];
-  return clone(ROLE_PERMISSIONS[roleId]);
-}
-
-/** Whether a role holds a permission — for conditional UI. */
-export function roleHasPermission(roleId, permissionId) {
-  return (ROLE_PERMISSIONS[roleId] ?? []).includes(permissionId);
+  return request(`/roles/${roleId}/permissions`, { method: "PUT", body: { permissions } });
 }

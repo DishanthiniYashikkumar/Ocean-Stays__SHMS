@@ -8,51 +8,26 @@
  * touching the components that consume it.
  */
 
-import { USE_MOCK_API, clone, delay, request } from "./apiClient";
-import { NOTIFICATION_META, NOTIFICATION_TYPE, notifications } from "./mock/users";
+import { request } from "./apiClient";
+import { NOTIFICATION_META, NOTIFICATION_TYPE } from "./constants";
 
 export { NOTIFICATION_META, NOTIFICATION_TYPE };
 
-/** Newest first, optionally only unread. */
-export async function getNotifications({ userId, unreadOnly = false } = {}) {
-  if (!USE_MOCK_API) return [];
-
-  await delay(400);
-  return clone(
-    notifications
-      .filter((item) => {
-        if (userId && item.userId !== userId) return false;
-        if (unreadOnly && item.read) return false;
-        return true;
-      })
-      .sort((a, b) => b.createdAt.localeCompare(a.createdAt)),
-  );
+/** Always empty until the API has a notifications route, so the bell stays quiet. */
+export async function getNotifications() {
+  return [];
 }
 
 export async function getUnreadCount(userId) {
-  if (!USE_MOCK_API) return request("/notifications/unread-count", { params: { userId } });
-
-  await delay(250);
-  return notifications.filter((item) => item.userId === userId && !item.read).length;
+  return request("/notifications/unread-count", { params: { userId } });
 }
 
 export async function markAsRead(notificationId) {
-  if (!USE_MOCK_API) return request(`/notifications/${notificationId}/read`, { method: "POST" });
-
-  await delay(200);
-  const found = notifications.find((item) => item.id === notificationId);
-  if (found) found.read = true;
-  return clone(found ?? null);
+  return request(`/notifications/${notificationId}/read`, { method: "POST" });
 }
 
 export async function markAllAsRead(userId) {
-  if (!USE_MOCK_API) return request("/notifications/read-all", { method: "POST", body: { userId } });
-
-  await delay(400);
-  notifications.forEach((item) => {
-    if (item.userId === userId) item.read = true;
-  });
-  return { updated: true };
+  return request("/notifications/read-all", { method: "POST", body: { userId } });
 }
 
 /**

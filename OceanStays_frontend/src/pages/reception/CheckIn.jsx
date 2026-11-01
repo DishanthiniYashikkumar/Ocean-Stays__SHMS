@@ -19,7 +19,7 @@ import "../../styles/dashboard.css";
  */
 
 // A room is only offered once housekeeping has released it — see
-// SELLABLE_STATUSES in mock/rooms.js for the turnaround chain.
+// SELLABLE_STATUSES in services/constants.js for the turnaround chain.
 const ALLOCATABLE = SELLABLE_STATUSES;
 
 function CheckIn() {

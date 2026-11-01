@@ -14,7 +14,7 @@ import "../../styles/dashboard.css";
  * Room inventory.
  *
  * Uses the nine-state ROOM_STATUS chain the rest of the app already runs on —
- * see mock/rooms.js. Introducing an admin-only status vocabulary would put this
+ * see services/constants.js. Introducing an admin-only status vocabulary would put this
  * screen out of step with reception's board and housekeeping's turnaround.
  */
 

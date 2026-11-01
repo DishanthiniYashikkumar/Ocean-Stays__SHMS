@@ -16,7 +16,7 @@ import "../../styles/rooms.css";
  * }} props
  */
 
-const ROOM_TYPES = ["Standard", "Deluxe", "Suite", "Villa", "Penthouse"];
+const ROOM_TYPES = ["Single", "Double", "Deluxe", "Suite"];
 const GUEST_OPTIONS = [1, 2, 3, 4];
 const FILTERABLE_AMENITIES = ["oceanView", "balcony", "pool", "bathtub", "butler", "desk"];
 

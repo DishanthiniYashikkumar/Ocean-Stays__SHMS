@@ -27,9 +27,6 @@ const SORT_OPTIONS = [
   { value: "name", label: "Name (A–Z)" },
 ];
 
-/** Counts per room type from the full catalogue, shown beside each filter. */
-const TYPE_COUNTS = getRoomTypeCounts();
-
 /** Typing pause before a search term is committed to the URL and refetched. */
 const SEARCH_DEBOUNCE_MS = 350;
 
@@ -59,6 +56,10 @@ function Rooms() {
     }),
     [searchParams],
   );
+
+  // Counts per room type from the full catalogue, shown beside each filter.
+  const loadTypeCounts = useCallback(() => getRoomTypeCounts(), []);
+  const { data: typeCounts } = useAsync(loadTypeCounts);
 
   const load = useCallback(() => getRoomTypes(query), [query]);
   const { data: rooms, isLoading, error, isEmpty, reload } = useAsync(load);
@@ -183,7 +184,7 @@ function Rooms() {
           <div className="shms-rooms-layout">
             <RoomFilters
               values={query}
-              counts={TYPE_COUNTS}
+              counts={typeCounts ?? {}}
               isOpen={isFilterOpen}
               onChange={updateParam}
               onClear={clearFilters}

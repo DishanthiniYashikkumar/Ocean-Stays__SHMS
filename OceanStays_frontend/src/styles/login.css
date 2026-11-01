@@ -253,61 +253,6 @@
   color: var(--gold-ink);
 }
 
-/* ==========================================================================
-   Demo account note
-   --------------------------------------------------------------------------
-   DEVELOPMENT AID. Delete this block and the <aside> in pages/auth/Login.jsx
-   before any real deployment — the mock accounts it advertises disappear with
-   VITE_USE_MOCK_AUTH="false" anyway.
-   ========================================================================== */
-
-.shms-demo-note {
-  width: 100%;
-  max-width: 440px;
-  padding: 14px 16px;
-  border: 1px dashed #ccd6e6;
-  border-radius: 12px;
-  font-size: 0.76rem;
-  line-height: 1.6;
-  color: var(--muted);
-}
-
-.shms-demo-note strong {
-  display: block;
-  margin-bottom: 7px;
-  font-size: 0.78rem;
-  color: var(--body);
-}
-
-.shms-demo-list {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.shms-demo-list li {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.shms-demo-list code {
-  padding: 1px 5px;
-  border-radius: 4px;
-  background: rgba(23, 69, 122, 0.07);
-  color: var(--navy-600);
-  font-size: 0.95em;
-  overflow-wrap: anywhere;
-}
-
-.shms-demo-list span {
-  flex: none;
-  color: var(--muted);
-}
-
 /* A discreet way back to the public site from the auth screens. */
 .shms-auth-back {
   display: inline-flex;

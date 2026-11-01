@@ -6,21 +6,14 @@
  *
  * FRONTEND ONLY. This never validates a token or enforces a permission — it
  * just attaches the bearer header the backend will read. All real
- * authentication and authorization is the NestJS team's responsibility.
+ * authentication and authorization is the backend's responsibility.
  *
- * Backend integration checklist:
- *   1. Set VITE_API_BASE_URL in .env
- *   2. Set VITE_USE_MOCK_API="false"
- *   3. Confirm each service's endpoint paths match the NestJS controllers.
- * No component changes are required.
+ * Set VITE_API_BASE_URL in .env when the API isn't on the local Flask default.
  */
 
 import { getToken } from "./authService";
 
-export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://localhost:8080/api";
-
-/** Mock mode keeps the UI runnable before any endpoint exists. Defaults to on. */
-export const USE_MOCK_API = import.meta.env.VITE_USE_MOCK_API !== "false";
+export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:5000";
 
 /** Error type the UI renders directly. `status` supports retry/branching logic. */
 export class ApiError extends Error {
@@ -103,28 +96,9 @@ export async function request(path, { method = "GET", body, params, signal } = {
   return payload;
 }
 
-/* -------------------------------------------------------------------------- */
-/* Mock helpers                                                               */
-/* -------------------------------------------------------------------------- */
-
 /**
- * Simulates network latency so loading and skeleton states are actually
- * visible during development rather than flashing past.
- */
-export function delay(ms = 550) {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
-/** Returns a deep copy so callers can't mutate the shared mock fixtures. */
-export function clone(value) {
-  return typeof structuredClone === "function"
-    ? structuredClone(value)
-    : JSON.parse(JSON.stringify(value));
-}
-
-/**
- * Applies pagination to an in-memory array, returning the same envelope shape
- * the backend is expected to send for list endpoints.
+ * Applies pagination to an in-memory array. The API's list routes return every
+ * row, so the services page them to the envelope the screens expect.
  */
 export function paginate(items, { page = 1, pageSize = 10 } = {}) {
   const total = items.length;
@@ -133,7 +107,7 @@ export function paginate(items, { page = 1, pageSize = 10 } = {}) {
   const start = (safePage - 1) * pageSize;
 
   return {
-    items: clone(items.slice(start, start + pageSize)),
+    items: items.slice(start, start + pageSize),
     page: safePage,
     pageSize,
     total,

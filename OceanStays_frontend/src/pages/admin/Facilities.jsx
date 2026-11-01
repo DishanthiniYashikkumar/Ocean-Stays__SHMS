@@ -115,7 +115,6 @@ function Facilities() {
     {
       key: "description",
       header: "Description",
-      // The live API returns `description`; the mock data stores it as `summary`.
       render: (row) =>
         row.description || row.summary ? (
           <span style={{ display: "block", maxWidth: 320, whiteSpace: "normal", overflowWrap: "anywhere" }}>

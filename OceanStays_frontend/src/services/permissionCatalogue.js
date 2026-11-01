@@ -1,14 +1,13 @@
 /**
- * Permission catalogue and the role -> permission map.
- *
- * Mirrors the Role / Permission entities. Grouped by module so the admin screen
- * can render a matrix rather than a flat list of eighty checkboxes.
+ * permissionCatalogue.js
+ * -----------------------------------------------------------------------------
+ * The permissions the admin screen can display, grouped by module.
  *
  * FRONTEND ONLY: this describes what the UI should offer a role. It is not an
  * enforcement mechanism — the API must check permissions on every request.
  */
 
-import { ROLES } from "../roles";
+import { ROLES } from "./roles";
 
 /** Every permission the system understands, grouped by the module it governs. */
 export const PERMISSION_GROUPS = [
@@ -80,45 +79,5 @@ export const ALL_PERMISSIONS = PERMISSION_GROUPS.flatMap((group) =>
   group.permissions.map((permission) => permission.id),
 );
 
-/**
- * What each role can do today.
- *
- * ADMIN holds everything. The rest are deliberately narrow: a receptionist
- * cannot change system settings, and housekeeping cannot see payments.
- */
-export const ROLE_PERMISSIONS = {
-  [ROLES.GUEST]: ["booking.view", "request.create", "request.view", "payment.view"],
-
-  [ROLES.RECEPTIONIST]: [
-    "booking.view", "booking.create", "booking.edit", "booking.cancel", "booking.checkin",
-    "room.view", "room.status",
-    "user.view",
-    "payment.view", "payment.take",
-    "request.view", "request.assign",
-  ],
-
-  [ROLES.HOUSEKEEPING]: [
-    "room.view", "room.status", "room.inspect",
-    "request.view", "request.create", "request.resolve",
-  ],
-
-  [ROLES.SERVICE_STAFF]: [
-    "room.view",
-    "request.view", "request.assign", "request.resolve",
-    "booking.view",
-  ],
-
-  [ROLES.ADMIN]: [...ALL_PERMISSIONS],
-};
-
 /** Roles that ship with the product and cannot be deleted. */
 export const SYSTEM_ROLES = Object.values(ROLES);
-
-/** Descriptions shown beside each role in the admin screen. */
-export const ROLE_DESCRIPTIONS = {
-  [ROLES.GUEST]: "Books stays, raises requests and settles their own bills.",
-  [ROLES.RECEPTIONIST]: "Runs the front desk: reservations, check-in, check-out and payments.",
-  [ROLES.HOUSEKEEPING]: "Cleans and inspects rooms, and reports faults found on the floor.",
-  [ROLES.SERVICE_STAFF]: "Works the guest request queue across all service types.",
-  [ROLES.ADMIN]: "Full access, including settings, permissions and audit logs.",
-};
