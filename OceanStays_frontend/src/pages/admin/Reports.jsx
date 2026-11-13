@@ -83,13 +83,15 @@ function Reports() {
   );
 
   const requestRows = useMemo(
-    () =>
-      (requests.data?.items ?? []).filter((r) => {
-        const day = r.createdAt.slice(0, 10);
-        return day >= from && day <= to;
-      }),
-    [requests.data, from, to],
-  );
+  () =>
+    (requests.data?.items ?? []).filter((r) => {
+      if (!r.createdAt) return false;
+
+      const day = String(r.createdAt).slice(0, 10);
+      return day >= from && day <= to;
+    }),
+  [requests.data, from, to],
+);
 
   /* ---- Summary ----------------------------------------------------------- */
 

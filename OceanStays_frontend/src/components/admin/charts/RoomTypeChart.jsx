@@ -1,6 +1,6 @@
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import ChartTooltip from "./ChartTooltip";
-import { AXIS_PROPS, CHART_COLORS, GRID_PROPS, compactNumber } from "./chartTheme";
+import { compactNumber, useChartTheme } from "./chartTheme";
 import { formatCurrency } from "../../../utils/format";
 
 /**
@@ -13,6 +13,8 @@ import { formatCurrency } from "../../../utils/format";
  * @param {{ data: Array<{name: string, bookings: number, revenue: number}> }} props
  */
 function RoomTypeChart({ data = [] }) {
+  const { colors, axisProps, gridProps } = useChartTheme();
+
   return (
     <BarChart
       data={data}
@@ -20,9 +22,9 @@ function RoomTypeChart({ data = [] }) {
       margin={{ top: 8, right: 16, left: 24, bottom: 0 }}
       barCategoryGap="28%"
     >
-      <CartesianGrid {...GRID_PROPS} horizontal={false} vertical />
-      <XAxis type="number" {...AXIS_PROPS} tickFormatter={compactNumber} />
-      <YAxis type="category" dataKey="name" {...AXIS_PROPS} width={104} />
+      <CartesianGrid {...gridProps} horizontal={false} vertical />
+      <XAxis type="number" {...axisProps} tickFormatter={compactNumber} />
+      <YAxis type="category" dataKey="name" {...axisProps} width={104} />
       <Tooltip
         content={
           <ChartTooltip
@@ -31,10 +33,10 @@ function RoomTypeChart({ data = [] }) {
             }
           />
         }
-        cursor={{ fill: "rgba(23, 69, 122, 0.06)" }}
+        cursor={{ fill: colors.cursor }}
       />
 
-      <Bar dataKey="revenue" name="Revenue" fill={CHART_COLORS.navy} radius={[0, 6, 6, 0]} />
+      <Bar dataKey="revenue" name="Revenue" fill={colors.primary} radius={[0, 6, 6, 0]} />
     </BarChart>
   );
 }

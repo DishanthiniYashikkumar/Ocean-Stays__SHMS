@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import DataTable from "../../components/common/DataTable";
+import EmptyState from "../../components/common/EmptyState";
 import FormField from "../../components/common/FormField";
 import Modal from "../../components/common/Modal";
 import StatusBadge from "../../components/common/StatusBadge";
@@ -45,6 +46,7 @@ function Rooms() {
   const [editing, setEditing] = useState(null);
   const [nextStatus, setNextStatus] = useState("");
   const [isSaving, setIsSaving] = useState(false);
+  const [inspecting, setInspecting] = useState(null);
 
   const load = useCallback(() => getRooms(), []);
   const { data, isLoading, error, reload } = useAsync(load);
@@ -120,6 +122,15 @@ function Rooms() {
       align: "right",
       render: (row) => (
         <div className="shms-row-actions">
+          {row.status === ROOM_STATUS.INSPECTED && (
+            <button
+              type="button"
+              className="shms-btn shms-btn-outline shms-btn-sm"
+              onClick={() => setInspecting(row)}
+            >
+              Inspection
+            </button>
+          )}
           <button
             type="button"
             className="shms-btn shms-btn-outline shms-btn-sm"
@@ -142,7 +153,7 @@ function Rooms() {
         <div className="shms-stats">
           {[
             { key: "AVAILABLE", icon: "bi-door-open", tone: "shms-stat-icon-success" },
-            { key: "OCCUPIED", icon: "bi-person-check", tone: "shms-stat-icon-gold" },
+            { key: "INSPECTED", icon: "bi-clipboard-check", tone: "shms-stat-icon-gold" },
             { key: "DIRTY", icon: "bi-basket", tone: "shms-stat-icon-warning" },
             { key: "MAINTENANCE", icon: "bi-tools", tone: "" },
           ].map(({ key, icon, tone }) => (
@@ -228,6 +239,53 @@ function Rooms() {
             required
             disabled={isSaving}
             hint="Changing this here overrides the housekeeping chain — use it to correct a mistake, not as part of the normal turnaround."
+          />
+        </Modal>
+      )}
+
+      {/*
+        Inspection details. The API has no inspection record yet: the room
+        table holds only status + notes, and nothing stores when a room was
+        inspected or by whom. Only real fields are shown; the rest is an
+        empty state until an inspection endpoint exists.
+      */}
+      {inspecting && (
+        <Modal
+          title={`Room ${inspecting.number}`}
+          subtitle="Inspection details"
+          icon="bi-clipboard-check"
+          onClose={() => setInspecting(null)}
+          footer={
+            <button
+              type="button"
+              className="shms-btn shms-btn-outline"
+              onClick={() => setInspecting(null)}
+            >
+              Close
+            </button>
+          }
+        >
+          <dl className="shms-defs" style={{ marginBottom: "var(--space-5)" }}>
+            <div>
+              <dt>Room number</dt>
+              <dd>{inspecting.number}</dd>
+            </div>
+            <div>
+              <dt>Status</dt>
+              <dd>
+                <StatusBadge status={inspecting.status} domain="room" />
+              </dd>
+            </div>
+            <div>
+              <dt>Notes / remarks</dt>
+              <dd>{inspecting.housekeepingNote || "No notes on this room."}</dd>
+            </div>
+          </dl>
+
+          <EmptyState
+            icon="bi-calendar-x"
+            title="Inspection date and inspector not recorded"
+            message="The system doesn't store when a room was inspected or who inspected it yet, so there's nothing to show here."
           />
         </Modal>
       )}

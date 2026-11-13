@@ -1,9 +1,10 @@
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import { SESSION_EXPIRED_EVENT } from "../services/apiClient";
 import { AuthContext } from "./authContext";
 import {
   getCurrentUser,
   login as loginRequest,
-  logout as clearSession,
+  logout as endSession,
   register as registerRequest,
 } from "../services/authService";
 
@@ -33,8 +34,16 @@ function AuthProvider({ children }) {
     return session;
   }, []);
 
+  // The API rejected the stored token (expired or revoked): drop the user so
+  // ProtectedRoute sends them to /login, remembering where they were.
+  useEffect(() => {
+    const onExpired = () => setUser(null);
+    window.addEventListener(SESSION_EXPIRED_EVENT, onExpired);
+    return () => window.removeEventListener(SESSION_EXPIRED_EVENT, onExpired);
+  }, []);
+
   const signOut = useCallback(() => {
-    clearSession();
+    endSession();
     setUser(null);
   }, []);
 

@@ -9,29 +9,36 @@
  */
 
 import { request } from "./apiClient";
-import { HOTEL } from "./hotelInfo";
+import { HOTEL, POLICY, refreshHotelInfo } from "./hotelInfo";
 
-export { HOTEL };
+export { HOTEL, POLICY, refreshHotelInfo };
 
 /** Gallery filter categories, with "All" first. */
 const GALLERY_CATEGORIES = ["All", "Property", "Rooms", "Facilities", "Dining"];
 
+
 export async function getFacilities() {
   const data = await request("/facilities");
 
-  return data.facilities.map(([id, name, description, status]) => ({
-    id,
-    name,
-    description,
-    summary: description,
-    icon: "bi-building",
-    image: "",
-    hours: "",
-    department: "",
-    capacity: 0,
-    status: status === "Available" ? FACILITY_STATUS.OPEN : FACILITY_STATUS.CLOSED,
+  return data.facilities.map((facility) => ({
+    id: facility.facility_id,
+    name: facility.facility_name,
+    description: facility.description,
+    summary: facility.description,
+    icon: facility.icon || "bi-building",
+    image: facility.image ?? "",
+    hours: facility.hours,
+    department: facility.department,
+    capacity: facility.capacity ?? "",
+    status:
+      facility.availability_status === "Open"
+        ? FACILITY_STATUS.OPEN
+        : facility.availability_status === "Maintenance"
+          ? FACILITY_STATUS.MAINTENANCE
+          : FACILITY_STATUS.CLOSED,
   }));
 }
+
 
 /** Facility states the admin module manages. */
 export const FACILITY_STATUS = {

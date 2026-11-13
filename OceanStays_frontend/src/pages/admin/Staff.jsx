@@ -74,6 +74,16 @@ function StaffWorkload({ staffId }) {
   );
 }
 
+/**
+ * Lets an address wrap before "@" and after each dot instead of mid-word,
+ * e.g. "anjali.fernando" / "@housekeeping." / "com".
+ */
+function breakableEmail(email) {
+  return email
+    .split(/(?=@)|(?<=\.)/)
+    .flatMap((part, index) => (index ? [<wbr key={index} />, part] : [part]));
+}
+
 function Staff() {
   const toast = useToast();
 
@@ -115,40 +125,51 @@ function Staff() {
       key: "name",
       header: "Name",
       sortable: true,
+      width: "14%",
+      className: "shms-col-nowrap",
       render: (row) => <span className="shms-cell-strong">{row.name}</span>,
     },
-    { key: "department", header: "Department", sortable: true },
+    { key: "department", header: "Department", sortable: true, width: "12%" },
     {
       key: "role",
       header: "Role",
       sortable: true,
+      width: "13%",
       render: (row) => ROLE_LABELS[row.role] ?? row.role,
     },
-    { key: "phone", header: "Contact" },
+    { key: "phone", header: "Contact", width: "12%", className: "shms-col-nowrap" },
     {
       key: "email",
       header: "Email",
       sortable: true,
-      render: (row) => row.email || <span className="shms-cell-muted">—</span>,
+      width: "19%",
+      className: "shms-col-email",
+      render: (row) =>
+        row.email ? breakableEmail(row.email) : <span className="shms-cell-muted">—</span>,
     },
     {
       key: "status",
       header: "Status",
       sortable: true,
+      width: "10%",
+      align: "center",
       render: (row) => <StatusBadge status={row.status} domain="user" />,
     },
     {
       key: "createdAt",
       header: "Joined",
       sortable: true,
+      width: "9%",
+      className: "shms-col-nowrap",
       render: (row) => formatDate(row.createdAt),
     },
     {
       key: "actions",
       header: "Actions",
       align: "right",
+      width: "11%",
       render: (row) => (
-        <div className="shms-row-actions">
+        <div className="shms-row-actions shms-staff-actions">
           <button
             type="button"
             className="shms-btn shms-btn-outline shms-btn-sm"
@@ -171,6 +192,7 @@ function Staff() {
   return (
     <>
       <DataTable
+        className="shms-staff-table"
         columns={columns}
         rows={rows}
         rowKey={(row) => row.id}

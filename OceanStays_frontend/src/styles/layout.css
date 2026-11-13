@@ -56,20 +56,37 @@
   position: relative;
   isolation: isolate;
   overflow: hidden;
-  padding-block: var(--space-16);
+  padding-block: var(--space-16) calc(var(--space-16) + 28px);
   background:
-    radial-gradient(90% 120% at 12% 0%, var(--navy-700) 0%, transparent 62%),
-    linear-gradient(160deg, var(--navy-800) 0%, var(--navy-900) 100%);
+    linear-gradient(160deg, rgba(10, 33, 64, 0.9) 0%, rgba(6, 21, 41, 0.94) 100%),
+    url("https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=1800&q=60")
+      center 60% / cover no-repeat,
+    var(--navy-900);
   color: #fff;
   text-align: center;
+}
+
+/* Teal glow plus a soft wave where the band meets the page. */
+.shms-page-head::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: radial-gradient(60% 70% at 85% 0%, rgba(95, 201, 191, 0.22) 0%, transparent 65%);
 }
 
 .shms-page-head::after {
   content: "";
   position: absolute;
-  inset: 0;
-  z-index: -1;
-  background: radial-gradient(60% 60% at 80% 10%, rgba(201, 162, 39, 0.18) 0%, transparent 65%);
+  inset: auto 0 -1px;
+  height: 36px;
+  background: var(--surface);
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 36' preserveAspectRatio='none'%3E%3Cpath d='M0 36V18c120-12 240-18 360-14s240 16 360 16 240-12 360-16 240 2 360 14v18z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 36' preserveAspectRatio='none'%3E%3Cpath d='M0 36V18c120-12 240-18 360-14s240 16 360 16 240-12 360-16 240 2 360 14v18z'/%3E%3C/svg%3E") center / 100% 100% no-repeat;
+}
+
+.shms-page-head-compact {
+  padding-block: var(--space-10) calc(var(--space-10) + 24px);
 }
 
 .shms-page-head h1 {
@@ -111,6 +128,12 @@
   color: rgba(255, 255, 255, 0.5);
 }
 
+.shms-breadcrumb-item {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
 .shms-breadcrumb a {
   color: rgba(255, 255, 255, 0.72);
   text-decoration: none;
@@ -118,17 +141,17 @@
 }
 
 .shms-breadcrumb a:hover {
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 .shms-breadcrumb a:focus-visible {
-  outline: 2px solid var(--gold-400);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
 .shms-breadcrumb li[aria-current="page"] {
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 @media (max-width: 768px) {

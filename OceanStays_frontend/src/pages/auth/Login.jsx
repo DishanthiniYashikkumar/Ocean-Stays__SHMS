@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import AuthLayout from "../../components/layout/AuthLayout";
 import LoginForm from "../../components/LoginForm";
-import { getDashboardRoute } from "../../services/authService";
+import { canRoleOpen, getDashboardRoute } from "../../services/authService";
 
 /**
  * One login page for every role. After authentication the role returned by the
@@ -16,7 +16,8 @@ function Login() {
     (user) => {
       // If a guard bounced the user here, send them back where they came from.
       const intended = location.state?.from;
-      navigate(intended ?? getDashboardRoute(user.role), { replace: true });
+      const destination = canRoleOpen(user.role, intended) ? intended : getDashboardRoute(user.role);
+      navigate(destination, { replace: true });
     },
     [navigate, location.state],
   );

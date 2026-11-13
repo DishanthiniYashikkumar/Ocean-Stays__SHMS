@@ -2,8 +2,9 @@ import { useId, useState } from "react";
 import { Link } from "react-router-dom";
 import { HOTEL, submitContactMessage } from "../../services/contentService";
 import { email, maxLength, minLength, required, validate } from "../../utils/validation";
+import Alert from "../../components/common/Alert";
+import PageHeader from "../../components/common/PageHeader";
 import "../../styles/contact.css";
-
 /**
  * Contact page: hotel details, a validated message form, and a map.
  *
@@ -78,24 +79,10 @@ function Contact() {
 
   return (
     <>
-      <header className="shms-page-head">
-        <div className="shms-container">
-          <ul className="shms-breadcrumb">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Contact</li>
-          </ul>
-
-          <h1>Contact Us</h1>
-          <span className="shms-rule-gold" />
-          <p>
-            Our reservations team answers every message within a few hours, and the front desk
-            is staffed around the clock.
-          </p>
-        </div>
-      </header>
+      <PageHeader title="Contact Us" current="Contact">
+        Our reservations team answers every message within a few hours, and the front desk
+        is staffed around the clock.
+      </PageHeader>
 
       <section className="shms-section">
         <div className="shms-container">
@@ -192,10 +179,7 @@ function Contact() {
 
                   <form className="shms-form" onSubmit={handleSubmit} noValidate>
                     {submitError && (
-                      <div className="shms-alert" role="alert">
-                        <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-                        <span>{submitError}</span>
-                      </div>
+                      <Alert>{submitError}</Alert>
                     )}
 
                     <div className="shms-field-row">

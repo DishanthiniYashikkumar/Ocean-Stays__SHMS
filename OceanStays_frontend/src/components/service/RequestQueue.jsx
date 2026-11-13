@@ -17,6 +17,7 @@ import {
 } from "../../services/serviceRequestService";
 import { getStatusMeta } from "../../utils/status";
 import { formatDateTime, formatRelative } from "../../utils/format";
+import Tabs from "../../components/common/Tabs";
 import "../../styles/dashboard.css";
 
 /**
@@ -285,22 +286,12 @@ function RequestQueue({ type, title, emptyIcon = "bi-bell" }) {
   return (
     <>
       {/* --------------------------------------------------------- Scope */}
-      <ul className="shms-tabs">
-        {SCOPES.map(({ id, label, icon }) => (
-          <li key={id}>
-            <button
-              type="button"
-              className="shms-tab"
-              aria-pressed={scope === id}
-              onClick={() => setScope(id)}
-            >
-              <i className={`bi ${icon}`} aria-hidden="true" />
-              {label}
-              <span className="shms-tab-count">{counts[id]}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      <Tabs
+        label="Request scope"
+        tabs={SCOPES.map(({ id, label, icon }) => ({ id, label, icon, count: counts[id] }))}
+        value={scope}
+        onChange={setScope}
+      />
 
       <DataTable
         columns={columns}

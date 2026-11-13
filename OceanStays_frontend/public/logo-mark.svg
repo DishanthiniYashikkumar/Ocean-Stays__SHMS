@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64">
+  <title>Ocean Stays</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#1b5089"/>
+      <stop offset="1" stop-color="#061529"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8e2ad"/>
+      <stop offset="1" stop-color="#e0a94f"/>
+    </linearGradient>
+    <clipPath id="clip"><rect width="64" height="64" rx="15"/></clipPath>
+  </defs>
+  <rect width="64" height="64" rx="15" fill="url(#bg)"/>
+  <g clip-path="url(#clip)">
+    <circle cx="32" cy="38" r="13" fill="url(#sun)"/>
+    <path d="M-32 40 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 V64 H-32 Z" fill="#2fb3a8"/>
+    <path d="M-32 49 q8 4 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 V64 H-32 Z" fill="#7dd8cf"/>
+  </g>
+  <rect x="0.75" y="0.75" width="62.5" height="62.5" rx="14.25" fill="none" stroke="#ffffff" stroke-opacity="0.16" stroke-width="1.5"/>
+</svg>

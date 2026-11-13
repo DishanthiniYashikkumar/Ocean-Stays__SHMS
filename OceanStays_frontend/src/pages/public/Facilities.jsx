@@ -4,6 +4,7 @@ import EmptyState from "../../components/common/EmptyState";
 import ErrorState from "../../components/common/ErrorState";
 import { useAsync } from "../../hooks/useAsync";
 import { getFacilities } from "../../services/contentService";
+import PageHeader from "../../components/common/PageHeader";
 import "../../styles/cards.css";
 
 /** Full facilities listing. */
@@ -13,24 +14,10 @@ function Facilities() {
 
   return (
     <>
-      <header className="shms-page-head">
-        <div className="shms-container">
-          <ul className="shms-breadcrumb">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Facilities</li>
-          </ul>
-
-          <h1>Facilities</h1>
-          <span className="shms-rule-gold" />
-          <p>
-            Two pools, a spa in the gardens, dining above the water and a concierge desk that
-            never closes.
-          </p>
-        </div>
-      </header>
+      <PageHeader title="Facilities">
+        Two pools, a spa in the gardens, dining above the water and a concierge desk that
+        never closes.
+      </PageHeader>
 
       <section className="shms-section">
         <div className="shms-container">

@@ -11,7 +11,10 @@
  * Set VITE_API_BASE_URL in .env when the API isn't on the local Flask default.
  */
 
-import { getToken } from "./authService";
+import { clearSession, getToken } from "./authService";
+
+/** Fired on window when the API rejects the stored token; AuthProvider signs out. */
+export const SESSION_EXPIRED_EVENT = "shms:session-expired";
 
 export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL ?? "http://127.0.0.1:5000";
 
@@ -63,27 +66,41 @@ export async function request(path, { method = "GET", body, params, signal } = {
 
   const token = getToken();
   let response;
+  // Reads are safe to repeat, so ride out a backend that is restarting or a
+  // brief network drop before showing an error. Writes are never retried.
+  const retryDelays = method === "GET" ? [800, 2000] : [];
 
-  try {
-    response = await fetch(url.toString(), {
-      method,
-      signal,
-      headers: {
-        Accept: "application/json",
-        ...(body ? { "Content-Type": "application/json" } : {}),
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-      },
-      ...(body ? { body: JSON.stringify(body) } : {}),
-    });
-  } catch (error) {
-    // An aborted request is a caller decision, not a failure to report.
-    if (error?.name === "AbortError") throw error;
-    throw new ApiError("Unable to reach the server. Check your connection and try again.", 0);
+  for (let attempt = 0; ; attempt += 1) {
+    try {
+      response = await fetch(url.toString(), {
+        method,
+        signal,
+        headers: {
+          Accept: "application/json",
+          ...(body ? { "Content-Type": "application/json" } : {}),
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        ...(body ? { body: JSON.stringify(body) } : {}),
+      });
+      break;
+    } catch (error) {
+      // An aborted request is a caller decision, not a failure to report.
+      if (error?.name === "AbortError") throw error;
+      if (attempt >= retryDelays.length || signal?.aborted) {
+        throw new ApiError("Unable to reach the server. Check your connection and try again.", 0);
+      }
+      await new Promise((resolve) => setTimeout(resolve, retryDelays[attempt]));
+    }
   }
 
   if (response.status === 204) return null;
 
   const payload = await response.json().catch(() => ({}));
+
+  if (response.status === 401 && token) {
+    clearSession();
+    window.dispatchEvent(new CustomEvent(SESSION_EXPIRED_EVENT));
+  }
 
   if (!response.ok) {
     throw new ApiError(

@@ -7,8 +7,8 @@ import { useToast } from "../../hooks/useToast";
 import { PAYMENT_STATUS, checkOutBooking, getFrontDeskSummary } from "../../services/bookingService";
 import { confirmPayment, createPaymentIntent } from "../../services/paymentService";
 import { formatCurrency, formatDateRange } from "../../utils/format";
+import Alert from "../../components/common/Alert";
 import "../../styles/dashboard.css";
-
 /**
  * Today's departures.
  *
@@ -186,13 +186,8 @@ function CheckOut() {
           }
         >
           {owes && (
-            <div className="shms-alert" role="alert" style={{ marginBottom: "var(--space-5)" }}>
-              <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-              <span>
-                {formatCurrency(settling.total, settling.currency)} is outstanding. Confirming
-                takes payment and then checks the guest out.
-              </span>
-            </div>
+            <Alert style={{ marginBottom: "var(--space-5)" }}>{formatCurrency(settling.total, settling.currency)} is outstanding. Confirming
+                takes payment and then checks the guest out.</Alert>
           )}
 
           <dl className="shms-defs">
@@ -215,7 +210,7 @@ function CheckOut() {
           </dl>
 
           <p className="shms-booking-note" style={{ marginTop: "var(--space-5)" }}>
-            <i className="bi bi-stars" aria-hidden="true" style={{ color: "var(--navy-600)" }} />
+            <i className="bi bi-stars" aria-hidden="true" style={{ color: "var(--link)" }} />
             Room {settling.roomNumber ?? "—"} will be handed to housekeeping for cleaning.
           </p>
         </Modal>

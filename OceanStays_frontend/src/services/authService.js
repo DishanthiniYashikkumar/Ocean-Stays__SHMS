@@ -21,7 +21,7 @@ const USER_KEY = "shms.auth.user";
  * from this module keeps working.
  */
 
-export { ROLES, ROLE_ROUTES, ROLE_LABELS, getDashboardRoute } from "./roles";
+export { ROLES, ROLE_ROUTES, ROLE_LABELS, canRoleOpen, getDashboardRoute } from "./roles";
 
 import { normaliseRole } from "./roles";
 
@@ -79,7 +79,8 @@ export function isAuthenticated() {
   return Boolean(getToken());
 }
 
-export function logout() {
+/** Forgets the stored session without telling the server. */
+export function clearSession() {
   try {
     [window.sessionStorage, window.localStorage].forEach((s) => {
       s.removeItem(TOKEN_KEY);
@@ -88,6 +89,32 @@ export function logout() {
   } catch {
     /* ignore */
   }
+}
+
+/** Signs out: records the logout on the server (best effort) and clears storage. */
+export function logout() {
+  const token = getToken();
+  if (token) {
+    fetch(`${API_BASE_URL}/auth/logout`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      keepalive: true,
+    }).catch(() => {});
+  }
+  clearSession();
+}
+
+/** Shapes the user the API returns into the session user the app stores. */
+function sessionUser(user) {
+  return {
+    id: user.id,
+    name: user.name,
+    firstName: user.firstName ?? "",
+    lastName: user.lastName ?? "",
+    email: user.email,
+    phone: user.phone ?? "",
+    role: normaliseRole(user.role),
+  };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -151,15 +178,11 @@ async function requestLogin({ email, password }) {
     );
   }
 
-  return {
-    token: `backend-${payload.user_id}`,
-    user: {
-      id: payload.user_id,
-      name: payload.username,
-      email: payload.username,
-      role: normaliseRole(payload.role),
-    },
-  };
+  if (!payload.token || !payload.user) {
+    throw new AuthError("The server returned an unexpected response.", response.status);
+  }
+
+  return { token: payload.token, user: sessionUser(payload.user) };
 }
 
 /* -------------------------------------------------------------------------- */
@@ -217,15 +240,7 @@ async function requestRegister({ firstName, lastName, email, phone, password }) 
     throw new AuthError("The server returned an unexpected response.", response.status);
   }
 
-  return {
-    token: payload.token,
-    user: {
-      id: payload.user.id,
-      name: payload.user.name,
-      email: payload.user.email,
-      role: String(payload.user.role).toUpperCase(),
-    },
-  };
+  return { token: payload.token, user: sessionUser(payload.user) };
 }
 
 /* -------------------------------------------------------------------------- */

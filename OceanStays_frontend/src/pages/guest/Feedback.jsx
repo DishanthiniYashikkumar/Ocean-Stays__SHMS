@@ -9,8 +9,9 @@ import {
   FEEDBACK_CATEGORY_LABELS,
   submitFeedback,
 } from "../../services/feedbackService";
+import Alert from "../../components/common/Alert";
+import { StarRatingInput } from "../../components/common/StarRating";
 import "../../styles/dashboard.css";
-
 /** Rate a stay and tell us about it. */
 
 const MAX_STARS = 5;
@@ -49,7 +50,7 @@ function Feedback() {
     setFormError("");
 
     try {
-      const stay = attachable.find((item) => item.id === bookingId);
+      const stay = attachable.find((item) => String(item.id) === String(bookingId));
 
       await submitFeedback({
         guestId: user.id,
@@ -119,10 +120,7 @@ function Feedback() {
       <div className="shms-panel-body">
         <form className="shms-form" onSubmit={handleSubmit} noValidate>
           {formError && (
-            <div className="shms-alert" role="alert">
-              <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-              <span>{formError}</span>
-            </div>
+            <Alert>{formError}</Alert>
           )}
 
           {/* --------------------------------------------------- Rating */}
@@ -135,35 +133,13 @@ function Feedback() {
               style={{ display: "flex", alignItems: "center", gap: "var(--space-3)" }}
               onMouseLeave={() => setHovered(0)}
             >
-              <div style={{ display: "flex", gap: 4 }}>
-                {Array.from({ length: MAX_STARS }, (_, index) => {
-                  const value = index + 1;
-                  return (
-                    <button
-                      key={value}
-                      type="button"
-                      onClick={() => setRating(value)}
-                      onMouseEnter={() => setHovered(value)}
-                      onFocus={() => setHovered(value)}
-                      onBlur={() => setHovered(0)}
-                      aria-label={`${value} of ${MAX_STARS} stars`}
-                      aria-pressed={rating === value}
-                      style={{
-                        border: 0,
-                        background: "none",
-                        padding: 2,
-                        fontSize: "1.7rem",
-                        lineHeight: 1,
-                        cursor: "pointer",
-                        color: value <= shown ? "var(--gold-500)" : "var(--line)",
-                        transition: "color var(--dur-fast) var(--ease)",
-                      }}
-                    >
-                      <i className={value <= shown ? "bi bi-star-fill" : "bi bi-star"} aria-hidden="true" />
-                    </button>
-                  );
-                })}
-              </div>
+              <StarRatingInput
+                value={rating}
+                shown={shown}
+                max={MAX_STARS}
+                onChange={setRating}
+                onHover={setHovered}
+              />
 
               <span style={{ fontSize: "var(--text-sm)", fontWeight: 600, color: "var(--ink)" }}>
                 {RATING_WORDS[shown]}

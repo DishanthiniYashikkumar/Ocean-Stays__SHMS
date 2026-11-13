@@ -53,7 +53,7 @@
 
 .shms-room-gallery-main:focus-visible,
 .shms-room-gallery-thumb:focus-visible {
-  outline: 3px solid var(--gold-400);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -173,7 +173,7 @@
 
 .shms-spec-tile i {
   font-size: 1.25rem;
-  color: var(--navy-500);
+  color: var(--icon-ink);
   flex: none;
 }
 
@@ -215,7 +215,7 @@
   flex: none;
   border-radius: var(--radius-sm);
   font-size: 0.95rem;
-  color: var(--navy-600);
+  color: var(--link);
   background: var(--navy-100);
 }
 
@@ -242,7 +242,7 @@
 .shms-policy-list i {
   margin-top: 2px;
   font-size: 1rem;
-  color: var(--gold-500);
+  color: var(--accent);
   flex: none;
 }
 
@@ -349,7 +349,7 @@
 
 .shms-quote-total span:last-child {
   font-size: 1.15rem;
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-booking-note {

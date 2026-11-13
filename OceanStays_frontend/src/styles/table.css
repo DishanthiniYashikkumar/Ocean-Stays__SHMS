@@ -11,7 +11,9 @@
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-xs);
-  overflow: hidden;
+  /* clip (not hidden) keeps the rounded corners without creating a scroll
+     container, so the header row can stick to the viewport. */
+  overflow: clip;
 }
 
 /* ==========================================================================
@@ -63,7 +65,7 @@
 }
 
 .shms-table-search-clear:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -107,9 +109,13 @@
 }
 
 .shms-table thead th {
+  position: sticky;
+  /* Sits just under the dashboard topbar (height measured by DashboardLayout). */
+  top: var(--topbar-height, 0px);
+  z-index: 1;
   padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid var(--line);
-  background: var(--field);
+  background: var(--surface-sunken);
   font-size: var(--text-xs);
   font-weight: 600;
   letter-spacing: 0.06em;
@@ -138,7 +144,12 @@
 }
 
 .shms-table tbody tr:hover {
-  background: var(--field);
+  background: var(--navy-100);
+}
+
+/* Optional tighter rows for long operational lists. */
+.shms-table-compact .shms-table tbody td {
+  padding-block: var(--space-3);
 }
 
 .shms-table .is-right {
@@ -183,11 +194,11 @@
 }
 
 .shms-th-sort:hover {
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-th-sort:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: 3px;
 }
@@ -199,7 +210,7 @@
 }
 
 .shms-table th[aria-sort]:not([aria-sort="none"]) .shms-th-sort {
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-table th[aria-sort]:not([aria-sort="none"]) .shms-th-sort i {
@@ -214,6 +225,72 @@
   justify-content: flex-end;
   gap: var(--space-2);
   flex-wrap: wrap;
+}
+
+/* ---- Column helpers (opt-in via a column's `className`) ---------------- */
+
+/* Table layout only; stacked mobile cards keep wrapping so nothing overflows. */
+@media (min-width: 1025px) {
+  .shms-table .shms-col-nowrap {
+    white-space: nowrap;
+  }
+}
+
+/* ==========================================================================
+   Staff directory — fixed column proportions (widths set on <col>s)
+   ========================================================================== */
+
+@media (min-width: 1025px) {
+  /* Slightly tighter side padding so eight columns fit without crowding. */
+  .shms-staff-table .shms-table thead th,
+  .shms-staff-table .shms-table tbody td {
+    padding-inline: var(--space-3);
+  }
+
+  .shms-staff-table .shms-table thead th:first-child,
+  .shms-staff-table .shms-table tbody td:first-child {
+    padding-left: var(--space-5);
+  }
+
+  .shms-staff-table .shms-table thead th:last-child,
+  .shms-staff-table .shms-table tbody td:last-child {
+    padding-right: var(--space-5);
+  }
+
+  /* Wrap only between words: "Receptionist" never splits mid-word. */
+  .shms-staff-table .shms-table tbody td {
+    overflow-wrap: normal;
+  }
+
+  /* Emails wrap at the <wbr> points (before "@", after dots); break-word is
+     only a last resort for one very long segment. */
+  .shms-staff-table .shms-table tbody td.shms-col-email {
+    overflow-wrap: break-word;
+  }
+
+  /* Below this the columns can't hold their content, so scroll instead. */
+  .shms-staff-table .shms-table {
+    min-width: 920px;
+  }
+
+  /* Buttons share one width whether they sit side by side or stack. */
+  .shms-staff-actions {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(92px, max-content));
+    justify-content: end;
+  }
+
+  .shms-staff-actions .shms-btn {
+    width: 100%;
+  }
+}
+
+/* Only where the table can actually overflow (sidebar + 920px table). The
+   scroll container would stop the header sticking, so it is not always on. */
+@media (min-width: 1025px) and (max-width: 1279px) {
+  .shms-staff-table .shms-table-scroll {
+    overflow-x: auto;
+  }
 }
 
 /* ==========================================================================
@@ -267,12 +344,12 @@
 }
 
 .shms-page-btn:hover:not(:disabled) {
-  border-color: var(--navy-500);
-  color: var(--navy-700);
+  border-color: var(--border-focus);
+  color: var(--brand-ink);
 }
 
 .shms-page-btn:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -283,8 +360,8 @@
 
 .shms-page-btn[aria-current="page"] {
   border-color: transparent;
-  background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
-  color: #fff;
+  background: var(--primary-fill);
+  color: var(--on-primary);
 }
 
 .shms-page-gap {
@@ -296,7 +373,7 @@
    Responsive — stacked cards
    ========================================================================== */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .shms-table thead {
     /* Visually hidden rather than removed, so the header text stays available
        to assistive technology reading the table structure. */

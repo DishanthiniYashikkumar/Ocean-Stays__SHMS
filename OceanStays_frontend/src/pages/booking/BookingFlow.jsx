@@ -193,7 +193,9 @@ function BookingFlow() {
 
           <div className="shms-confirm">
             <span className="shms-confirm-icon" aria-hidden="true">
-              <i className="bi bi-check2" />
+              <svg className="shms-check-svg" viewBox="0 0 24 24">
+                <path d="M5 12.5 10 17.5 19.5 7" />
+              </svg>
             </span>
 
             <h1>Your stay is confirmed</h1>
@@ -298,7 +300,7 @@ function BookingFlow() {
 
   return (
     <>
-      <header className="shms-page-head" style={{ paddingBlock: "var(--space-10)" }}>
+      <header className="shms-page-head shms-page-head-compact">
         <div className="shms-container">
           <ul className="shms-breadcrumb" style={{ marginBottom: 0 }}>
             <li>
@@ -319,7 +321,7 @@ function BookingFlow() {
           <BookingStepper steps={STEPS} current={stepIndex} />
 
           <div className="shms-booking-layout">
-            <div>
+            <div className="shms-step-panel" key={stepIndex}>
               {stepIndex === 0 && (
                 <GuestDetailsForm
                   initialValues={details}

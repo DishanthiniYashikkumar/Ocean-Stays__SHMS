@@ -10,8 +10,8 @@ import { getRoomStatusSummary } from "../../services/roomService";
 import { HOUSEKEEPING_TASK_LABELS } from "../../services/housekeepingService";
 import { formatRelative, getGreeting } from "../../utils/format";
 import "../../styles/dashboard.css";
+import StatCard from "../../components/common/StatCard";
 import "../../styles/housekeeping.css";
-
 /**
  * Housekeeping overview: what this housekeeper has to do today, and where the
  * property's rooms sit in the turnaround chain.
@@ -57,45 +57,32 @@ function HousekeepingDashboard() {
 
       {/* --------------------------------------------------------- Tiles */}
       <div className="shms-stats">
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-warning" aria-hidden="true">
-            <i className="bi bi-list-check" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{summary.data?.PENDING ?? 0}</span>
-            <span className="shms-stat-label">Waiting to start</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-list-check"
+          tone="warning"
+          value={summary.data?.PENDING ?? 0}
+          label="Waiting to start"
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-gold" aria-hidden="true">
-            <i className="bi bi-brush" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{summary.data?.IN_PROGRESS ?? 0}</span>
-            <span className="shms-stat-label">In progress</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-brush"
+          tone="gold"
+          value={summary.data?.IN_PROGRESS ?? 0}
+          label="In progress"
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-success" aria-hidden="true">
-            <i className="bi bi-check2-circle" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{summary.data?.COMPLETED ?? 0}</span>
-            <span className="shms-stat-label">Completed today</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-check2-circle"
+          tone="success"
+          value={summary.data?.COMPLETED ?? 0}
+          label="Completed today"
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon" aria-hidden="true">
-            <i className="bi bi-clipboard-check" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{rooms.data?.CLEAN ?? 0}</span>
-            <span className="shms-stat-label">Awaiting inspection</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-clipboard-check"
+          value={rooms.data?.CLEAN ?? 0}
+          label="Awaiting inspection"
+        />
       </div>
 
       <div className="shms-dash-split">

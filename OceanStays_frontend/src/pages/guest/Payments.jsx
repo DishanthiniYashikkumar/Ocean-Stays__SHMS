@@ -8,8 +8,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { useToast } from "../../hooks/useToast";
 import { confirmPayment, createPaymentIntent, getPayments } from "../../services/paymentService";
 import { formatCurrency, formatDate } from "../../utils/format";
+import StatCard from "../../components/common/StatCard";
 import "../../styles/dashboard.css";
-
 /** Invoices, line items and anything still owed. */
 function Payments() {
   const { user } = useAuth();
@@ -78,15 +78,11 @@ function Payments() {
             </span>
           </article>
 
-          <article className="shms-stat">
-            <span className="shms-stat-icon" aria-hidden="true">
-              <i className="bi bi-receipt" />
-            </span>
-            <span className="shms-stat-copy">
-              <span className="shms-stat-value">{invoices.length}</span>
-              <span className="shms-stat-label">Invoices issued</span>
-            </span>
-          </article>
+          <StatCard
+            icon="bi-receipt"
+            value={invoices.length}
+            label="Invoices issued"
+          />
         </div>
       )}
 

@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import "../../styles/login.css";
 import "../../styles/auth.css";
+import { LogoMark } from "../common/Logo";
+import { MotionContext } from "../../context/motionContext";
 
 /**
  * Split-screen shell shared by Login, Register, Forgot password and Reset
@@ -29,14 +31,15 @@ const CAPABILITIES = [
 function AuthLayout({
   title,
   subtitle,
-  icon = "bi-water",
+  icon,
   wide = false,
   children,
   footer,
   aside,
 }) {
   return (
-    <div className="shms-login">
+    <MotionContext.Provider value={true}>
+    <div className="shms-login" data-motion="on">
       {/* ===================================================== LEFT: VISUAL */}
       <section className="shms-visual" aria-labelledby="shms-visual-title">
         <div className="shms-visual-media" aria-hidden="true" />
@@ -44,9 +47,7 @@ function AuthLayout({
 
         <div className="shms-visual-inner">
           <Link className="shms-brand" to="/">
-            <span className="shms-brand-mark">
-              <i className="bi bi-water" aria-hidden="true" />
-            </span>
+            <LogoMark className="shms-brand-mark" size={48} animated />
             <span className="shms-brand-name">OCEAN STAYS</span>
           </Link>
 
@@ -78,9 +79,13 @@ function AuthLayout({
       {/* ======================================================= RIGHT: CARD */}
       <main className="shms-auth-panel">
         <div className={`shms-auth-card${wide ? " shms-auth-card-wide" : ""}`}>
-          <span className="shms-auth-badge">
-            <i className={`bi ${icon}`} aria-hidden="true" />
-          </span>
+          {icon ? (
+            <span className="shms-auth-badge">
+              <i className={`bi ${icon}`} aria-hidden="true" />
+            </span>
+          ) : (
+            <LogoMark className="shms-auth-logo" size={52} animated />
+          )}
 
           <h2 className="shms-auth-title">{title}</h2>
           {subtitle && <p className="shms-auth-subtitle">{subtitle}</p>}
@@ -98,6 +103,7 @@ function AuthLayout({
         </Link>
       </main>
     </div>
+    </MotionContext.Provider>
   );
 }
 

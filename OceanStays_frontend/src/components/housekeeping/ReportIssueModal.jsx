@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Modal from "../common/Modal";
 import { REQUEST_PRIORITY } from "../../services/serviceRequestService";
+import Alert from "../../components/common/Alert";
 import "../../styles/housekeeping.css";
 
 /**
@@ -85,7 +86,7 @@ function ReportIssueModal({ room, isSaving, onSubmit, onClose }) {
         </>
       }
     >
-      <p className="shms-hk-note" style={{ marginBottom: "var(--space-5)" }}>
+      <p className="shms-hk-note" style={{ marginBottom: "var(--space-4)" }}>
         <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
         Reporting an issue takes room {room.roomNumber} out of service until maintenance clears
         it, so it can&apos;t be sold or allocated in the meantime.
@@ -93,10 +94,7 @@ function ReportIssueModal({ room, isSaving, onSubmit, onClose }) {
 
       <form className="shms-form" id="report-issue-form" onSubmit={handleSubmit} noValidate>
         {error && (
-          <div className="shms-alert" role="alert">
-            <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-            <span>{error}</span>
-          </div>
+          <Alert>{error}</Alert>
         )}
 
         <div className="shms-field">

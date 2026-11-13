@@ -5,6 +5,7 @@ import ErrorState from "../../components/common/ErrorState";
 import { useAsync } from "../../hooks/useAsync";
 import { getExperiences } from "../../services/contentService";
 import { formatCurrency } from "../../utils/format";
+import PageHeader from "../../components/common/PageHeader";
 import "../../styles/cards.css";
 
 /** Full experiences listing. Booking an excursion happens at the concierge desk. */
@@ -14,25 +15,11 @@ function Activities() {
 
   return (
     <>
-      <header className="shms-page-head">
-        <div className="shms-container">
-          <ul className="shms-breadcrumb">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Experiences</li>
-          </ul>
-
-          <h1>Experiences</h1>
-          <span className="shms-rule-gold" />
-          <p>
-            Whales off the shelf at dawn, tea country by mid-morning, the ramparts at dusk.
-            Everything here is arranged by our concierge and guided by people who live on this
-            coast.
-          </p>
-        </div>
-      </header>
+      <PageHeader title="Experiences">
+        Whales off the shelf at dawn, tea country by mid-morning, the ramparts at dusk.
+        Everything here is arranged by our concierge and guided by people who live on this
+        coast.
+      </PageHeader>
 
       <section className="shms-section">
         <div className="shms-container">

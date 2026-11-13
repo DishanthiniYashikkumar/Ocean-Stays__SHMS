@@ -13,6 +13,7 @@ import {
   validate,
 } from "../utils/validation";
 
+import Alert from "../components/common/Alert";
 /**
  * Guest registration form. Mirrors LoginForm's lifecycle — a field shows its
  * error only once the user has left it or tried to submit — and hands the new
@@ -190,10 +191,7 @@ function RegisterForm({ onRegistered }) {
   return (
     <form className="shms-form" onSubmit={handleSubmit} noValidate>
       {authError && (
-        <div className="shms-alert" role="alert">
-          <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-          <span>{authError}</span>
-        </div>
+        <Alert>{authError}</Alert>
       )}
 
       <div className="shms-auth-row">

@@ -59,7 +59,7 @@ function Requests() {
   }
 
   async function handleAssign() {
-    const member = staff.data?.find((person) => person.id === staffId);
+    const member = staff.data?.find((person) => String(person.id) === String(staffId));
     if (!member) return;
 
     setIsSaving(true);

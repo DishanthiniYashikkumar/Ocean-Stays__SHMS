@@ -11,8 +11,8 @@ import {
 } from "../../services/auditService";
 import { formatDateTime, formatRelative } from "../../utils/format";
 import "../../styles/dashboard.css";
+import StatCard from "../../components/common/StatCard";
 import "../../styles/admin.css";
-
 /**
  * The audit trail.
  *
@@ -144,15 +144,11 @@ function AuditLogs() {
   return (
     <>
       <div className="shms-stats">
-        <article className="shms-stat">
-          <span className="shms-stat-icon" aria-hidden="true">
-            <i className="bi bi-clock-history" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{data?.total ?? 0}</span>
-            <span className="shms-stat-label">Entries recorded</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-clock-history"
+          value={data?.total ?? 0}
+          label="Entries recorded"
+        />
 
         <article className="shms-stat">
           <span

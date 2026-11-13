@@ -1,6 +1,6 @@
 import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import ChartTooltip from "./ChartTooltip";
-import { AXIS_PROPS, CHART_COLORS, GRID_PROPS, compactNumber } from "./chartTheme";
+import { compactNumber, useChartTheme } from "./chartTheme";
 import { formatCurrency } from "../../../utils/format";
 
 /**
@@ -13,17 +13,19 @@ import { formatCurrency } from "../../../utils/format";
  * @param {{ data: Array<{month: string, amount: number}> }} props
  */
 function RevenueChart({ data = [] }) {
+  const { colors, axisProps, gridProps } = useChartTheme();
+
   return (
     <BarChart data={data} margin={{ top: 8, right: 8, left: -8, bottom: 0 }}>
-      <CartesianGrid {...GRID_PROPS} />
-      <XAxis dataKey="month" {...AXIS_PROPS} />
-      <YAxis {...AXIS_PROPS} tickFormatter={compactNumber} />
+      <CartesianGrid {...gridProps} />
+      <XAxis dataKey="month" {...axisProps} />
+      <YAxis {...axisProps} tickFormatter={compactNumber} />
       <Tooltip
         content={<ChartTooltip formatter={(value) => formatCurrency(value)} />}
-        cursor={{ fill: "rgba(23, 69, 122, 0.06)" }}
+        cursor={{ fill: colors.cursor }}
       />
 
-      <Bar dataKey="amount" name="Revenue" fill={CHART_COLORS.gold} radius={[6, 6, 0, 0]} />
+      <Bar dataKey="amount" name="Revenue" fill={colors.accent} radius={[6, 6, 0, 0]} />
     </BarChart>
   );
 }

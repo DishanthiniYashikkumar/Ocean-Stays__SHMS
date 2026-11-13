@@ -1,80 +1,50 @@
 /* ==========================================================================
-   Ocean Stays — Design Tokens
+   Ocean Stays — Design Tokens ("Coastal resort")
    --------------------------------------------------------------------------
-   The single source of truth for the visual language. Every other stylesheet
-   consumes these; none of them redefine a colour, radius or shadow inline.
+   The single source of truth for the visual language. Two layers:
 
-   These were originally scoped to `.shms-login`. Promoting them to :root is a
-   pure extraction — the login page resolves the identical values.
+   1. Palette   — raw brand values (navy, ocean teal, sand). Identical in both
+                  themes; use them only where a colour must NOT change with the
+                  theme (e.g. the navy sidebar, text sitting on teal).
+   2. Semantic  — what a colour is FOR (--surface, --ink, --link, --primary-…).
+                  Components use these, and the dark theme redefines only them.
+
+   Theme switching: `data-theme="light|dark"` on <html> (set before first paint
+   by the inline script in index.html). With no attribute the OS preference
+   decides.
+
+   Breakpoints (CSS can't read custom properties in media queries, so these
+   are the agreed literals): 560px · 768px · 1024px · 1280px.
    ========================================================================== */
 
 :root {
-  /* ---- Brand palette ---------------------------------------------------- */
+  /* ---- Palette: navy ---------------------------------------------------- */
+  --navy-950: #040e1c;
   --navy-900: #061529; /* deepest — hero overlays, footer */
   --navy-800: #0a2140; /* primary brand navy */
   --navy-700: #0f2e56;
-  --navy-600: #17457a; /* ocean blue — links, active states */
-  --navy-500: #24608f; /* blue — focus rings, accents */
-  --navy-100: rgba(23, 69, 122, 0.08); /* tint for hover beds */
+  --navy-600: #17457a; /* ocean blue */
+  --navy-500: #24608f;
 
-  --gold-500: #c9a227; /* brand gold */
-  --gold-400: #d9b84a; /* light gold */
-  --gold-300: #ead08a; /* gold on dark backgrounds */
-  --gold-ink: #8a6d1b; /* gold dark enough for text on white (4.9:1) */
+  /* ---- Palette: ocean teal (the accent) ---------------------------------- */
+  --teal-50: #e9f8f6;
+  --teal-100: #c9eeea;
+  --teal-200: #98ddd6;
+  --teal-300: #5fc9bf; /* accent on navy / dark surfaces (8.6:1 on navy-900) */
+  --teal-400: #2fb3a8;
+  --teal-500: #12968b;
+  --teal-600: #0c7c73; /* white text on it = 5.1:1 */
+  --teal-700: #0a645d; /* teal text on white = 6.9:1 */
 
-  /* ---- Neutrals --------------------------------------------------------- */
-  --ink: #0d1b2a; /* headings, primary text */
-  --body: #55617a; /* body copy */
+  /* ---- Palette: sand (warm neutrals for the public site) ---------------- */
+  --sand-50: #fbf8f2;
+  --sand-100: #f5efe3;
+  --sand-200: #ebe1ce;
+  --sand-300: #dccbab;
+  --sand-500: #a88c5c;
 
-  /*
-   * Secondary text. Measured at 4.55:1 against --canvas, the lightest surface
-   * it sits on, so it meets WCAG AA (4.5:1) everywhere it is used. The obvious
-   * lighter grey (#8b95a8) reads better but lands at 2.76:1 — captions, hints
-   * and table meta are content, not decoration, so they have to clear the bar.
-   */
-  --muted: #677084;
-
-  --line: #e3e8f0; /* dividers and card edges — decorative, not a UI boundary */
-
-  /*
-   * Form-control borders are a different case: an input's edge is what marks it
-   * as a control, so WCAG 1.4.11 wants 3:1. --line is 1.23:1 and fails, hence a
-   * separate token used only by inputs, selects and textareas.
-   */
-  --field-border: #8b909c;
-  --field-border-hover: #8c95a6;
-  --placeholder: #6a7385; /* 4.52:1 on --field */
-
-  --field: #f7f9fc; /* input backgrounds */
-  --surface: #ffffff; /* cards, sheets */
-  --canvas: #f2f5fa; /* page background */
-
-  /* ---- Semantic status -------------------------------------------------- */
-  /* Each status carries an ink (text), tint (fill) and edge (border) so
-     badges stay legible without inventing new colours per component. */
-  --success: #1e7a5a;
-  --success-ink: #14573f;
-  --success-tint: rgba(30, 122, 90, 0.09);
-  --success-edge: rgba(30, 122, 90, 0.22);
-
-  --warning: #b47709;
-  --warning-ink: #855806;
-  --warning-tint: rgba(180, 119, 9, 0.1);
-  --warning-edge: rgba(180, 119, 9, 0.24);
-
-  --info: #17457a;
-  --info-ink: #123a66;
-  --info-tint: rgba(23, 69, 122, 0.08);
-  --info-edge: rgba(23, 69, 122, 0.2);
-
-  --danger: #c0392b;
-  --danger-ink: #8f2a1f;
-  --danger-tint: rgba(192, 57, 43, 0.07);
-  --danger-edge: rgba(192, 57, 43, 0.22);
-
-  --neutral-ink: #55617a;
-  --neutral-tint: rgba(85, 97, 122, 0.08);
-  --neutral-edge: rgba(85, 97, 122, 0.2);
+  /* Text that sits on a teal fill, whatever the theme. */
+  --on-accent: #061529;
 
   /* ---- Typography ------------------------------------------------------- */
   --sans:
@@ -105,22 +75,11 @@
   --space-24: 96px;
 
   /* ---- Radii ------------------------------------------------------------ */
-  --radius-sm: 8px;
-  --radius-md: 12px;
-  --radius-lg: 16px;
-  --radius-xl: 20px;
+  --radius-sm: 10px;
+  --radius-md: 14px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
   --radius-pill: 999px;
-
-  /* ---- Elevation -------------------------------------------------------- */
-  --shadow-xs: 0 1px 2px rgba(13, 27, 42, 0.05);
-  --shadow-sm: 0 1px 2px rgba(13, 27, 42, 0.04), 0 4px 12px -6px rgba(13, 27, 42, 0.1);
-  --shadow-card:
-    0 1px 2px rgba(13, 27, 42, 0.04), 0 18px 40px -20px rgba(13, 27, 42, 0.28),
-    0 4px 12px -6px rgba(13, 27, 42, 0.08);
-  --shadow-lifted:
-    0 2px 4px rgba(13, 27, 42, 0.05), 0 28px 52px -24px rgba(13, 27, 42, 0.34),
-    0 8px 20px -10px rgba(13, 27, 42, 0.12);
-  --shadow-nav: 0 1px 0 var(--line), 0 6px 24px -14px rgba(13, 27, 42, 0.24);
 
   /* ---- Motion ----------------------------------------------------------- */
   --ease: cubic-bezier(0.4, 0, 0.2, 1);
@@ -143,13 +102,342 @@
   --z-toast: 500;
 }
 
+/* ==========================================================================
+   Semantic tokens — LIGHT (default)
+   ========================================================================== */
+
+:root {
+  color-scheme: light;
+
+  /* Surfaces */
+  --canvas: #f3f6f9; /* dashboard page background */
+  --bg: var(--canvas);
+  --canvas-warm: var(--sand-50); /* public-site alternating sections */
+  --surface: #ffffff; /* cards, sheets */
+  --surface-raised: #ffffff; /* popovers, menus, modals */
+  --surface-sunken: #eef2f6; /* wells, skeletons, table headers */
+  --surface-glass: rgba(255, 255, 255, 0.86); /* sticky bars over content */
+  --surface-on-media: rgba(255, 255, 255, 0.94); /* chips over photography */
+  --field: #f7f9fc; /* input backgrounds */
+  --skeleton: #e6ecf3;
+  --skeleton-shine: rgba(255, 255, 255, 0.65);
+
+  /* Text */
+  --ink: #0d1b2a; /* headings, primary text */
+  --text: var(--ink);
+  --body: #4f5b70; /* body copy */
+  --muted: #5f6a7e; /* secondary text — 4.8:1 on --canvas */
+  --text-muted: var(--muted);
+  --brand-ink: #0f2e56; /* navy-flavoured emphasis text */
+  --link: #17457a;
+  --icon-ink: #24608f;
+  --accent-ink: var(--teal-700); /* teal text on light surfaces */
+
+  /* Lines */
+  --line: #e2e7ef; /* dividers and card edges — decorative */
+  --border: var(--line);
+  --border-strong: #c9d2df;
+  --border-focus: var(--teal-500);
+  --field-border: #8b909c; /* inputs need 3:1 (WCAG 1.4.11) */
+  --field-border-hover: #707888;
+  --placeholder: #667084;
+
+  /* Brand roles */
+  --primary: var(--navy-700);
+  --mark-fill: linear-gradient(145deg, var(--navy-700), var(--navy-900));
+  --on-mark: var(--teal-300);
+  --primary-fill: linear-gradient(135deg, var(--navy-700) 0%, var(--navy-900) 100%);
+  --on-primary: #ffffff;
+  --primary-shadow: 0 10px 24px -14px rgba(10, 33, 64, 0.95);
+  --primary-shadow-hover: 0 18px 32px -14px rgba(10, 33, 64, 0.8);
+  --accent: var(--teal-500);
+  --accent-strong: var(--teal-600);
+  --accent-fill: linear-gradient(135deg, var(--teal-300) 0%, var(--teal-400) 100%);
+  --accent-contrast: var(--on-accent);
+  --accent-tint: rgba(18, 150, 139, 0.1);
+  --accent-edge: rgba(18, 150, 139, 0.3);
+  --accent-shadow: 0 10px 24px -14px rgba(18, 150, 139, 0.9);
+  --navy-100: rgba(23, 69, 122, 0.08); /* brand tint for hover beds */
+  --tint-brand: var(--navy-100);
+  --tint-brand-strong: rgba(23, 69, 122, 0.14);
+  --focus-ring: var(--teal-500);
+  --focus-ring-on-dark: var(--teal-300);
+  --focus-halo: 0 0 0 4px rgba(18, 150, 139, 0.18);
+
+  /* Status — ink (text), tint (fill) and edge (border) */
+  --success: #1e7a5a;
+  --success-ink: #14573f;
+  --success-tint: rgba(30, 122, 90, 0.09);
+  --success-edge: rgba(30, 122, 90, 0.24);
+
+  --warning: #b47709;
+  --warning-ink: #7d5306;
+  --warning-tint: rgba(180, 119, 9, 0.1);
+  --warning-edge: rgba(180, 119, 9, 0.26);
+
+  --info: #17457a;
+  --info-ink: #123a66;
+  --info-tint: rgba(23, 69, 122, 0.08);
+  --info-edge: rgba(23, 69, 122, 0.2);
+
+  --danger: #c0392b;
+  --danger-ink: #8f2a1f;
+  --danger-tint: rgba(192, 57, 43, 0.07);
+  --danger-edge: rgba(192, 57, 43, 0.24);
+
+  --neutral-ink: #4f5b70;
+  --neutral-tint: rgba(85, 97, 122, 0.08);
+  --neutral-edge: rgba(85, 97, 122, 0.2);
+
+  --star: #e0a526;
+
+  /* Solid fills (buttons, count badges) and the text that sits on them */
+  --danger-fill: #c0392b;
+  --on-danger: #ffffff;
+  --success-fill: #1e7a5a;
+  --on-success: #ffffff;
+
+  /* Charts (read by components/admin/charts/chartTheme.js) */
+  --chart-1: #17457a;
+  --chart-2: #12968b;
+  --chart-3: #1e7a5a;
+  --chart-4: #b47709;
+  --chart-5: #0a2140;
+  --chart-grid: #e2e7ef;
+  --chart-axis: #5f6a7e;
+  --chart-cursor: rgba(23, 69, 122, 0.06);
+
+  /* Elevation */
+  --shadow-xs: 0 1px 2px rgba(13, 27, 42, 0.05);
+  --shadow-sm: 0 1px 2px rgba(13, 27, 42, 0.04), 0 4px 12px -6px rgba(13, 27, 42, 0.1);
+  --shadow-card:
+    0 1px 2px rgba(13, 27, 42, 0.04), 0 18px 40px -20px rgba(13, 27, 42, 0.26),
+    0 4px 12px -6px rgba(13, 27, 42, 0.08);
+  --shadow-lifted:
+    0 2px 4px rgba(13, 27, 42, 0.05), 0 28px 52px -24px rgba(13, 27, 42, 0.32),
+    0 8px 20px -10px rgba(13, 27, 42, 0.12);
+  --shadow-nav: 0 1px 0 var(--line), 0 6px 24px -14px rgba(13, 27, 42, 0.24);
+
+  /* Legacy names (pre-Coastal) — kept as aliases so nothing loses colour. */
+  --gold-500: var(--teal-500);
+  --gold-400: var(--teal-400);
+  --gold-300: var(--teal-300);
+  --gold-ink: var(--accent-ink);
+}
+
+/* ==========================================================================
+   Semantic tokens — DARK
+   Defined twice: explicitly chosen, or following the OS when no choice saved.
+   ========================================================================== */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --canvas: #08111e;
+  --canvas-warm: #0b1524;
+  --surface: #0f1b2c;
+  --surface-raised: #142337;
+  --surface-sunken: #0b1626;
+  --surface-glass: rgba(11, 21, 36, 0.86);
+  --surface-on-media: rgba(9, 18, 32, 0.88);
+  --field: #0c1727;
+  --skeleton: #182739;
+  --skeleton-shine: rgba(255, 255, 255, 0.06);
+
+  --ink: #e9eff7;
+  --body: #b6c2d3;
+  --muted: #95a3b8; /* 6.2:1 on --surface */
+  --brand-ink: #d6e6f7;
+  --link: #8ccbef;
+  --icon-ink: #8fbde3;
+  --accent-ink: var(--teal-300);
+
+  --line: #1f3049;
+  --border-strong: #2d4262;
+  --border-focus: var(--teal-300);
+  --field-border: #5e7190; /* 3.4:1 on --field */
+  --field-border-hover: #7a8daa;
+  --placeholder: #8796ad;
+
+  --primary: var(--teal-400);
+  --mark-fill: linear-gradient(145deg, var(--navy-500), var(--navy-700));
+  --primary-fill: linear-gradient(135deg, var(--teal-300) 0%, var(--teal-400) 100%);
+  --on-primary: #061529;
+  --primary-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.9);
+  --primary-shadow-hover: 0 18px 32px -14px rgba(47, 179, 168, 0.45);
+  --accent: var(--teal-400);
+  --accent-strong: var(--teal-300);
+  --accent-tint: rgba(95, 201, 191, 0.12);
+  --accent-edge: rgba(95, 201, 191, 0.32);
+  --accent-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.9);
+  --navy-100: rgba(140, 203, 239, 0.1);
+  --tint-brand-strong: rgba(140, 203, 239, 0.16);
+  --focus-ring: var(--teal-300);
+  --focus-halo: 0 0 0 4px rgba(95, 201, 191, 0.22);
+
+  --success: #3dbd8c;
+  --success-ink: #7fdcb6;
+  --success-tint: rgba(61, 189, 140, 0.13);
+  --success-edge: rgba(61, 189, 140, 0.32);
+
+  --warning: #e2a640;
+  --warning-ink: #f3c877;
+  --warning-tint: rgba(226, 166, 64, 0.13);
+  --warning-edge: rgba(226, 166, 64, 0.32);
+
+  --info: #6fb5e6;
+  --info-ink: #9fd0f2;
+  --info-tint: rgba(111, 181, 230, 0.13);
+  --info-edge: rgba(111, 181, 230, 0.3);
+
+  --danger: #f07c6e;
+  --danger-ink: #f6a69c;
+  --danger-tint: rgba(240, 124, 110, 0.12);
+  --danger-edge: rgba(240, 124, 110, 0.32);
+
+  --neutral-ink: #b6c2d3;
+  --neutral-tint: rgba(182, 194, 211, 0.1);
+  --neutral-edge: rgba(182, 194, 211, 0.22);
+
+  --star: #f0b941;
+
+  --danger-fill: #f07c6e;
+  --on-danger: #1d0704;
+  --success-fill: #3dbd8c;
+  --on-success: #04170f;
+
+  --chart-1: #6fb5e6;
+  --chart-2: #5fc9bf;
+  --chart-3: #3dbd8c;
+  --chart-4: #e2a640;
+  --chart-5: #b6c2d3;
+  --chart-grid: #1f3049;
+  --chart-axis: #95a3b8;
+  --chart-cursor: rgba(140, 203, 239, 0.08);
+
+  --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px -6px rgba(0, 0, 0, 0.45);
+  --shadow-card:
+    0 1px 2px rgba(0, 0, 0, 0.3), 0 18px 40px -20px rgba(0, 0, 0, 0.65),
+    0 4px 12px -6px rgba(0, 0, 0, 0.35);
+  --shadow-lifted:
+    0 2px 4px rgba(0, 0, 0, 0.3), 0 28px 52px -24px rgba(0, 0, 0, 0.7),
+    0 8px 20px -10px rgba(0, 0, 0, 0.4);
+  --shadow-nav: 0 1px 0 var(--line), 0 6px 24px -14px rgba(0, 0, 0, 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --canvas: #08111e;
+    --canvas-warm: #0b1524;
+    --surface: #0f1b2c;
+    --surface-raised: #142337;
+    --surface-sunken: #0b1626;
+    --surface-glass: rgba(11, 21, 36, 0.86);
+    --surface-on-media: rgba(9, 18, 32, 0.88);
+    --field: #0c1727;
+    --skeleton: #182739;
+    --skeleton-shine: rgba(255, 255, 255, 0.06);
+
+    --ink: #e9eff7;
+    --body: #b6c2d3;
+    --muted: #95a3b8;
+    --brand-ink: #d6e6f7;
+    --link: #8ccbef;
+    --icon-ink: #8fbde3;
+    --accent-ink: var(--teal-300);
+
+    --line: #1f3049;
+    --border-strong: #2d4262;
+    --border-focus: var(--teal-300);
+    --field-border: #5e7190;
+    --field-border-hover: #7a8daa;
+    --placeholder: #8796ad;
+
+    --primary: var(--teal-400);
+    --mark-fill: linear-gradient(145deg, var(--navy-500), var(--navy-700));
+    --primary-fill: linear-gradient(135deg, var(--teal-300) 0%, var(--teal-400) 100%);
+    --on-primary: #061529;
+    --primary-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.9);
+    --primary-shadow-hover: 0 18px 32px -14px rgba(47, 179, 168, 0.45);
+    --accent: var(--teal-400);
+    --accent-strong: var(--teal-300);
+    --accent-tint: rgba(95, 201, 191, 0.12);
+    --accent-edge: rgba(95, 201, 191, 0.32);
+    --accent-shadow: 0 10px 24px -14px rgba(0, 0, 0, 0.9);
+    --navy-100: rgba(140, 203, 239, 0.1);
+    --tint-brand-strong: rgba(140, 203, 239, 0.16);
+    --focus-ring: var(--teal-300);
+    --focus-halo: 0 0 0 4px rgba(95, 201, 191, 0.22);
+
+    --success: #3dbd8c;
+    --success-ink: #7fdcb6;
+    --success-tint: rgba(61, 189, 140, 0.13);
+    --success-edge: rgba(61, 189, 140, 0.32);
+
+    --warning: #e2a640;
+    --warning-ink: #f3c877;
+    --warning-tint: rgba(226, 166, 64, 0.13);
+    --warning-edge: rgba(226, 166, 64, 0.32);
+
+    --info: #6fb5e6;
+    --info-ink: #9fd0f2;
+    --info-tint: rgba(111, 181, 230, 0.13);
+    --info-edge: rgba(111, 181, 230, 0.3);
+
+    --danger: #f07c6e;
+    --danger-ink: #f6a69c;
+    --danger-tint: rgba(240, 124, 110, 0.12);
+    --danger-edge: rgba(240, 124, 110, 0.32);
+
+    --neutral-ink: #b6c2d3;
+    --neutral-tint: rgba(182, 194, 211, 0.1);
+    --neutral-edge: rgba(182, 194, 211, 0.22);
+
+    --star: #f0b941;
+
+    --danger-fill: #f07c6e;
+    --on-danger: #1d0704;
+    --success-fill: #3dbd8c;
+    --on-success: #04170f;
+
+    --chart-1: #6fb5e6;
+    --chart-2: #5fc9bf;
+    --chart-3: #3dbd8c;
+    --chart-4: #e2a640;
+    --chart-5: #b6c2d3;
+    --chart-grid: #1f3049;
+    --chart-axis: #95a3b8;
+    --chart-cursor: rgba(140, 203, 239, 0.08);
+
+    --shadow-xs: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3), 0 4px 12px -6px rgba(0, 0, 0, 0.45);
+    --shadow-card:
+      0 1px 2px rgba(0, 0, 0, 0.3), 0 18px 40px -20px rgba(0, 0, 0, 0.65),
+      0 4px 12px -6px rgba(0, 0, 0, 0.35);
+    --shadow-lifted:
+      0 2px 4px rgba(0, 0, 0, 0.3), 0 28px 52px -24px rgba(0, 0, 0, 0.7),
+      0 8px 20px -10px rgba(0, 0, 0, 0.4);
+    --shadow-nav: 0 1px 0 var(--line), 0 6px 24px -14px rgba(0, 0, 0, 0.6);
+  }
+}
+
 /* High-contrast users get firmer borders and darker secondary text. */
 @media (prefers-contrast: more) {
   :root {
     --line: #9aa6b8;
-    --muted: #5c6678;
+    --muted: #4f596b;
     --field-border: #6b7280;
     --field-border-hover: #55617a;
     --placeholder: #55617a;
+  }
+
+  :root[data-theme="dark"] {
+    --line: #4a5d7a;
+    --muted: #b6c2d3;
+    --field-border: #8fa1bd;
+    --placeholder: #a9b6c9;
   }
 }

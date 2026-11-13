@@ -48,7 +48,7 @@
 .shms-hk-task.is-IN_PROGRESS,
 .shms-hk-task.is-CLEANING,
 .shms-hk-task.is-OCCUPIED {
-  border-left-color: var(--gold-500);
+  border-left-color: var(--accent);
 }
 
 .shms-hk-task.is-COMPLETED,
@@ -61,7 +61,7 @@
 .shms-hk-task.is-ASSIGNED,
 .shms-hk-task.is-CLEAN,
 .shms-hk-task.is-RESERVED {
-  border-left-color: var(--navy-500);
+  border-left-color: var(--info);
 }
 
 .shms-hk-task.is-MAINTENANCE {
@@ -132,7 +132,7 @@
 
 .shms-hk-meta i {
   font-size: 0.95rem;
-  color: var(--navy-500);
+  color: var(--icon-ink);
 }
 
 .shms-hk-note {
@@ -192,7 +192,7 @@
 }
 
 .shms-hk-btn:focus-visible {
-  outline: 3px solid var(--gold-400);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -202,18 +202,18 @@
 }
 
 .shms-hk-btn-start {
-  background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
-  color: #fff;
+  background: var(--primary-fill);
+  color: var(--on-primary);
 }
 
 .shms-hk-btn-done {
-  background: var(--success);
-  color: #fff;
+  background: var(--success-fill);
+  color: var(--on-success);
 }
 
 .shms-hk-btn-inspect {
-  background: linear-gradient(135deg, var(--gold-400), var(--gold-500));
-  color: var(--navy-900);
+  background: var(--accent-fill);
+  color: var(--on-accent);
 }
 
 .shms-hk-btn-outline {
@@ -223,7 +223,7 @@
 }
 
 .shms-hk-btn-outline:hover:not(:disabled) {
-  border-color: var(--navy-500);
+  border-color: var(--focus-ring);
   background: var(--field);
 }
 
@@ -282,7 +282,7 @@
 
 .shms-chain .is-current {
   font-weight: 700;
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-chain .is-done {
@@ -293,7 +293,7 @@
    Responsive
    ========================================================================== */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .shms-hk-board {
     grid-template-columns: minmax(0, 1fr);
   }

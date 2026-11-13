@@ -1,0 +1,416 @@
+/* ==========================================================================
+   Motion — Ocean Stays
+   --------------------------------------------------------------------------
+   Every rule here is scoped to [data-motion="on"], which the public site,
+   the sign-in pages and the guest / reception / housekeeping / service
+   dashboards set. The admin panel sets data-motion="off" and keeps only the
+   basic hover, modal, toast and skeleton feedback from base.css.
+
+   Only opacity and transform are animated. Reduced-motion users get the
+   global kill-switch in base.css, and the JS hooks skip their work.
+   ========================================================================== */
+
+:root {
+  --motion-fast: 180ms;
+  --motion-base: 320ms;
+  --motion-slow: 620ms;
+  --motion-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --reveal-step: 70ms;
+}
+
+@keyframes shms-m-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes shms-m-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes shms-m-scale-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Scroll reveal (classes added by hooks/useScrollReveal.js) ------------ */
+
+[data-motion="on"] .shms-reveal {
+  opacity: 0;
+  transform: translateY(18px);
+}
+
+[data-motion="on"] .shms-reveal.is-visible {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--motion-slow) var(--motion-ease),
+    transform var(--motion-slow) var(--motion-ease);
+  transition-delay: calc(var(--reveal-i, 0) * var(--reveal-step));
+}
+
+/* ---- Page transitions (keyed wrapper around <Outlet/>) ------------------- */
+
+/* `backwards`, not `both`: a forwards-filled transform animation keeps the
+   route a containing block, which pinned position:fixed overlays (modals) to
+   the page instead of the viewport. */
+[data-motion="on"] .shms-route {
+  animation: shms-m-route-in var(--motion-base) var(--motion-ease) backwards;
+}
+
+@keyframes shms-m-route-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Logo: the sun rises, the waves roll (components/common/Logo.jsx) ----- */
+
+.shms-logo-sun,
+.shms-logo-wave {
+  transform-box: view-box;
+}
+
+[data-motion="on"] .shms-logo-mark.is-animated .shms-logo-sun {
+  animation: shms-m-sun-rise 1.3s var(--motion-ease) 0.15s both;
+}
+
+[data-motion="on"] .shms-logo-mark.is-animated .shms-logo-wave-back {
+  animation: shms-m-wave-roll 7s linear infinite;
+}
+
+[data-motion="on"] .shms-logo-mark.is-animated .shms-logo-wave-front {
+  animation: shms-m-wave-roll-back 5s linear infinite;
+}
+
+/* Navbar: the waves roll while the brand is hovered or focused. */
+[data-motion="on"] .shms-nav-brand:is(:hover, :focus-visible) .shms-logo-wave-back {
+  animation: shms-m-wave-roll 2.4s linear infinite;
+}
+
+[data-motion="on"] .shms-nav-brand:is(:hover, :focus-visible) .shms-logo-wave-front {
+  animation: shms-m-wave-roll-back 1.8s linear infinite;
+}
+
+@keyframes shms-m-sun-rise {
+  from {
+    opacity: 0.25;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The wave paths repeat every 32 units, so a 32-unit shift loops seamlessly. */
+@keyframes shms-m-wave-roll {
+  to {
+    transform: translateX(32px);
+  }
+}
+
+@keyframes shms-m-wave-roll-back {
+  to {
+    transform: translateX(-32px);
+  }
+}
+
+/* ---- Home hero ------------------------------------------------------------ */
+
+[data-motion="on"] .shms-hero-copy > * {
+  animation: shms-m-fade-up 0.8s var(--motion-ease) both;
+}
+
+[data-motion="on"] .shms-hero-copy > :nth-child(1) { animation-delay: 0.1s; }
+[data-motion="on"] .shms-hero-copy > :nth-child(2) { animation-delay: 0.2s; }
+[data-motion="on"] .shms-hero-copy > :nth-child(3) { animation-delay: 0.32s; }
+[data-motion="on"] .shms-hero-copy > :nth-child(4) { animation-delay: 0.44s; }
+[data-motion="on"] .shms-hero-copy > :nth-child(5) { animation-delay: 0.56s; }
+
+[data-motion="on"] .shms-hero-cue {
+  animation: shms-m-fade-in 0.8s ease 1s both;
+}
+
+/* A shoreline that slowly rolls along the bottom of the hero. */
+.shms-hero-waves {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  z-index: 0;
+  height: clamp(90px, 10vw, 140px);
+  overflow: hidden;
+  pointer-events: none;
+  color: var(--surface);
+}
+
+.shms-hero-inner {
+  position: relative;
+  z-index: 1;
+}
+
+.shms-hero-cue {
+  z-index: 1;
+}
+
+.shms-hero-wave {
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 200%;
+  /* base.css caps media at 100% wide; this strip must be twice the hero to loop. */
+  max-width: none;
+  height: 100%;
+  fill: currentColor;
+}
+
+.shms-hero-wave-back {
+  opacity: 0.22;
+}
+
+[data-motion="on"] .shms-hero-wave-back {
+  animation: shms-m-shore 28s linear infinite;
+}
+
+[data-motion="on"] .shms-hero-wave-front {
+  animation: shms-m-shore 19s linear infinite reverse;
+}
+
+@keyframes shms-m-shore {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---- Sign-in pages --------------------------------------------------------- */
+
+[data-motion="on"] .shms-auth-card {
+  animation: shms-m-scale-in 0.55s var(--motion-ease) 0.05s both;
+}
+
+[data-motion="on"] .shms-visual-copy > * {
+  animation: shms-m-fade-up 0.8s var(--motion-ease) both;
+}
+
+[data-motion="on"] .shms-visual-copy > :nth-child(2) { animation-delay: 0.12s; }
+[data-motion="on"] .shms-visual-copy > :nth-child(3) { animation-delay: 0.24s; }
+[data-motion="on"] .shms-visual-copy > :nth-child(n + 4) { animation-delay: 0.36s; }
+
+[data-motion="on"] .shms-input-shell {
+  transition:
+    box-shadow var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
+}
+
+[data-motion="on"] .shms-input-shell:focus-within {
+  box-shadow: 0 0 0 4px var(--focus-ring, rgba(47, 179, 168, 0.25));
+}
+
+/* ---- Buttons ----------------------------------------------------------------- */
+
+[data-motion="on"] .shms-btn,
+[data-motion="on"] .shms-submit {
+  transition:
+    transform var(--motion-fast) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease),
+    background-color var(--motion-fast) ease,
+    color var(--motion-fast) ease,
+    border-color var(--motion-fast) ease;
+}
+
+[data-motion="on"] .shms-btn:active:not(:disabled),
+[data-motion="on"] .shms-submit:active:not(:disabled) {
+  transform: translateY(1px) scale(0.98);
+}
+
+[data-motion="on"] .shms-btn .bi-arrow-right,
+[data-motion="on"] .shms-submit .bi-arrow-right {
+  display: inline-block;
+  transition: transform var(--motion-base) var(--motion-ease);
+}
+
+[data-motion="on"] .shms-btn:hover .bi-arrow-right,
+[data-motion="on"] .shms-submit:hover .bi-arrow-right {
+  transform: translateX(4px);
+}
+
+/* ---- Dashboards (guest / reception / housekeeping / service) ---------------- */
+
+[data-motion="on"] .shms-side-link {
+  transition:
+    background-color var(--motion-base) var(--motion-ease),
+    color var(--motion-fast) ease,
+    transform var(--motion-fast) var(--motion-ease);
+}
+
+[data-motion="on"] .shms-side-link:hover:not(.is-active) {
+  transform: translateX(3px);
+}
+
+[data-motion="on"] .shms-side-link.is-active {
+  animation: shms-m-pill-in var(--motion-base) var(--motion-ease) both;
+}
+
+@keyframes shms-m-pill-in {
+  from {
+    opacity: 0.6;
+    transform: scaleX(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+[data-motion="on"] .shms-stat {
+  transition:
+    transform var(--motion-base) var(--motion-ease),
+    box-shadow var(--motion-base) var(--motion-ease);
+}
+
+[data-motion="on"] .shms-stat:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lifted);
+}
+
+[data-motion="on"] .shms-stat:hover .shms-stat-icon {
+  transform: rotate(-6deg) scale(1.06);
+}
+
+[data-motion="on"] .shms-stat-icon {
+  transition: transform var(--motion-base) var(--motion-ease);
+}
+
+/* Notification bell rings once when new notifications arrive. */
+[data-motion="on"] .shms-bell-ring {
+  display: inline-block;
+  transform-origin: 50% 8%;
+  animation: shms-m-bell 0.9s var(--motion-ease) both;
+}
+
+@keyframes shms-m-bell {
+  0%,
+  100% {
+    transform: none;
+  }
+  15% {
+    transform: rotate(16deg);
+  }
+  30% {
+    transform: rotate(-14deg);
+  }
+  45% {
+    transform: rotate(10deg);
+  }
+  60% {
+    transform: rotate(-6deg);
+  }
+  75% {
+    transform: rotate(3deg);
+  }
+}
+
+[data-motion="on"] .shms-notify-panel,
+[data-motion="on"] .shms-account-menu {
+  animation: shms-m-scale-in var(--motion-base) var(--motion-ease) both;
+  transform-origin: top right;
+}
+
+/* Theme toggle: the icon turns as the theme switches. */
+[data-motion="on"] .shms-theme-icon.is-turning {
+  display: inline-block;
+  animation: shms-m-turn 0.5s var(--motion-ease) both;
+}
+
+@keyframes shms-m-turn {
+  from {
+    opacity: 0;
+    transform: rotate(-90deg) scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---- Booking flow ------------------------------------------------------------ */
+
+[data-motion="on"] .shms-step-panel {
+  animation: shms-m-step-in 0.42s var(--motion-ease) both;
+}
+
+@keyframes shms-m-step-in {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* The confirmation tick draws itself. */
+.shms-check-svg {
+  width: 56%;
+  height: 56%;
+}
+
+.shms-check-svg path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+[data-motion="on"] .shms-check-svg path {
+  stroke-dasharray: 32;
+  stroke-dashoffset: 32;
+  animation: shms-m-draw 0.6s var(--motion-ease) 0.35s forwards;
+}
+
+@keyframes shms-m-draw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+[data-motion="on"] .shms-confirm > :not(.shms-confirm-icon) {
+  animation: shms-m-fade-up 0.6s var(--motion-ease) both;
+}
+
+[data-motion="on"] .shms-confirm > :nth-child(2) { animation-delay: 0.45s; }
+[data-motion="on"] .shms-confirm > :nth-child(3) { animation-delay: 0.55s; }
+[data-motion="on"] .shms-confirm > :nth-child(n + 4) { animation-delay: 0.65s; }
+
+/* ---- Toasts and modals get a touch more life on animated shells ---------------- */
+
+[data-motion="on"] .shms-empty-icon,
+[data-motion="on"] .shms-state-icon {
+  animation: shms-m-scale-in 0.5s var(--motion-ease) both;
+}

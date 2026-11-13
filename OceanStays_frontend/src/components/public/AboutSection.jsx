@@ -55,7 +55,7 @@ function AboutSection() {
               <i
                 className="bi bi-award"
                 aria-hidden="true"
-                style={{ fontSize: 26, color: "var(--gold-500)" }}
+                style={{ fontSize: 26, color: "var(--accent)" }}
               />
               <div>
                 <strong>Rohan De Silva</strong>

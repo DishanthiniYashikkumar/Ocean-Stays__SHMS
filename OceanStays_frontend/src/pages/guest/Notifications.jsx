@@ -4,6 +4,9 @@ import EmptyState from "../../components/common/EmptyState";
 import { useAuth } from "../../hooks/useAuth";
 import { NOTIFICATION_META, markAllAsRead, markAsRead } from "../../services/notificationService";
 import { formatRelative } from "../../utils/format";
+import Tabs from "../../components/common/Tabs";
+import ErrorState from "../../components/common/ErrorState";
+import PanelSkeleton from "../../components/common/PanelSkeleton";
 import "../../styles/dashboard.css";
 
 /**
@@ -21,7 +24,12 @@ const TABS = [
 
 function Notifications() {
   const { user } = useAuth();
-  const { notifications, setNotifications } = useOutletContext();
+  const {
+    notifications,
+    setNotifications,
+    notificationsStatus = "ready",
+    reloadNotifications,
+  } = useOutletContext();
   const [tab, setTab] = useState("all");
 
   const unreadCount = notifications.filter((item) => !item.read).length;
@@ -54,23 +62,17 @@ function Notifications() {
           marginBottom: "var(--space-5)",
         }}
       >
-        <ul className="shms-tabs" style={{ marginBottom: 0 }}>
-          {TABS.map(({ id, label }) => (
-            <li key={id}>
-              <button
-                type="button"
-                className="shms-tab"
-                aria-pressed={tab === id}
-                onClick={() => setTab(id)}
-              >
-                {label}
-                <span className="shms-tab-count">
-                  {id === "unread" ? unreadCount : notifications.length}
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <Tabs
+          label="Notification filter"
+          style={{ marginBottom: 0 }}
+          tabs={TABS.map(({ id, label }) => ({
+            id,
+            label,
+            count: id === "unread" ? unreadCount : notifications.length,
+          }))}
+          value={tab}
+          onChange={setTab}
+        />
 
         {unreadCount > 0 && (
           <button
@@ -85,7 +87,15 @@ function Notifications() {
       </div>
 
       <section className="shms-panel">
-        {visible.length === 0 ? (
+        {notificationsStatus === "loading" && notifications.length === 0 ? (
+          <PanelSkeleton rows={4} />
+        ) : notificationsStatus === "error" && notifications.length === 0 ? (
+          <ErrorState
+            title="We couldn't load your notifications"
+            message="Check your connection and try again."
+            onRetry={reloadNotifications}
+          />
+        ) : visible.length === 0 ? (
           <EmptyState
             title={tab === "unread" ? "You're all caught up" : "No notifications yet"}
             message={
@@ -102,7 +112,7 @@ function Notifications() {
 
               return (
                 <li key={item.id}>
-                  <div className="shms-row" style={item.read ? undefined : { background: "rgba(23, 69, 122, 0.04)" }}>
+                  <div className={`shms-row${item.read ? "" : " is-unread"}`}>
                     <span className={`shms-row-icon shms-badge-${meta.tone}`} aria-hidden="true">
                       <i className={`bi ${meta.icon}`} />
                     </span>

@@ -12,6 +12,7 @@ import {
   reportMaintenanceIssue,
   updateTaskStatus,
 } from "../../services/housekeepingService";
+import Tabs from "../../components/common/Tabs";
 import "../../styles/dashboard.css";
 import "../../styles/housekeeping.css";
 
@@ -102,30 +103,15 @@ function CleaningTasks() {
   return (
     <>
       {/* ------------------------------------------------------ Scope */}
-      <ul className="shms-tabs">
-        <li>
-          <button
-            type="button"
-            className="shms-tab"
-            aria-pressed={scope === "mine"}
-            onClick={() => setScope("mine")}
-          >
-            <i className="bi bi-person" aria-hidden="true" />
-            My rooms
-          </button>
-        </li>
-        <li>
-          <button
-            type="button"
-            className="shms-tab"
-            aria-pressed={scope === "all"}
-            onClick={() => setScope("all")}
-          >
-            <i className="bi bi-people" aria-hidden="true" />
-            Whole property
-          </button>
-        </li>
-      </ul>
+      <Tabs
+        label="Task scope"
+        tabs={[
+          { id: "mine", label: "My rooms", icon: "bi-person" },
+          { id: "all", label: "Whole property", icon: "bi-people" },
+        ]}
+        value={scope}
+        onChange={setScope}
+      />
 
       {/* ----------------------------------------------------- Filter */}
       <ul className="shms-hk-filters">

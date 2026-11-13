@@ -19,8 +19,9 @@ import {
   getServiceRequests,
 } from "../../services/serviceRequestService";
 import { formatRelative } from "../../utils/format";
+import Alert from "../../components/common/Alert";
+import Tabs from "../../components/common/Tabs";
 import "../../styles/dashboard.css";
-
 /**
  * Everything the guest has asked us for, and the form to ask for more.
  *
@@ -180,21 +181,13 @@ function ServiceRequests() {
           marginBottom: "var(--space-5)",
         }}
       >
-        <ul className="shms-tabs" style={{ marginBottom: 0 }}>
-          {TABS.map(({ id, label }) => (
-            <li key={id}>
-              <button
-                type="button"
-                className="shms-tab"
-                aria-pressed={tab === id}
-                onClick={() => setTab(id)}
-              >
-                {label}
-                <span className="shms-tab-count">{counts[id]}</span>
-              </button>
-            </li>
-          ))}
-        </ul>
+        <Tabs
+          label="Request filter"
+          style={{ marginBottom: 0 }}
+          tabs={TABS.map(({ id, label }) => ({ id, label, count: counts[id] }))}
+          value={tab}
+          onChange={setTab}
+        />
 
         <button
           type="button"
@@ -324,10 +317,7 @@ function ServiceRequests() {
         >
           <form className="shms-form" id="new-request-form" onSubmit={handleCreate} noValidate>
             {formError && (
-              <div className="shms-alert" role="alert">
-                <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-                <span>{formError}</span>
-              </div>
+              <Alert>{formError}</Alert>
             )}
 
             <div className="shms-field">

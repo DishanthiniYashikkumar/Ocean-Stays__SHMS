@@ -13,8 +13,9 @@ import {
   getServiceRequests,
 } from "../../services/serviceRequestService";
 import { formatRelative } from "../../utils/format";
+import StatCard from "../../components/common/StatCard";
+import PanelSkeleton from "../../components/common/PanelSkeleton";
 import "../../styles/dashboard.css";
-
 /**
  * Service staff overview: what this person is on, what nobody has picked up,
  * and how the work splits across the request types.
@@ -31,18 +32,6 @@ const TYPE_ROUTES = {
   [REQUEST_TYPE.HOUSEKEEPING]: "/service/requests",
 };
 
-function PanelSkeleton({ rows = 3 }) {
-  return (
-    <div className="shms-panel-body" aria-hidden="true">
-      {Array.from({ length: rows }, (_, index) => (
-        <div key={index} style={{ marginBottom: "var(--space-4)" }}>
-          <div className="shms-skeleton shms-skeleton-title" />
-          <div className="shms-skeleton shms-skeleton-text" />
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function RequestRow({ request, showOwner }) {
   const meta = REQUEST_TYPE_META[request.type] ?? { label: request.type, icon: "bi-bell" };
@@ -129,45 +118,32 @@ function ServiceDashboard() {
 
       {/* --------------------------------------------------------- Tiles */}
       <div className="shms-stats">
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-gold" aria-hidden="true">
-            <i className="bi bi-person-workspace" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{mine.length}</span>
-            <span className="shms-stat-label">Assigned to you</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-person-workspace"
+          tone="gold"
+          value={mine.length}
+          label="Assigned to you"
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-warning" aria-hidden="true">
-            <i className="bi bi-inbox" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{unassigned.length}</span>
-            <span className="shms-stat-label">Waiting to be taken</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-inbox"
+          tone="warning"
+          value={unassigned.length}
+          label="Waiting to be taken"
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon" aria-hidden="true">
-            <i className="bi bi-hourglass-split" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{summary.data?.IN_PROGRESS ?? 0}</span>
-            <span className="shms-stat-label">In progress</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-hourglass-split"
+          value={summary.data?.IN_PROGRESS ?? 0}
+          label="In progress"
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-success" aria-hidden="true">
-            <i className="bi bi-check2-circle" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{summary.data?.COMPLETED ?? 0}</span>
-            <span className="shms-stat-label">Completed</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-check2-circle"
+          tone="success"
+          value={summary.data?.COMPLETED ?? 0}
+          label="Completed"
+        />
       </div>
 
       {/* -------------------------------------------------------- Urgent */}

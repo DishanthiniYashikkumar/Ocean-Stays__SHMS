@@ -89,12 +89,12 @@
 .shms-input:focus {
   outline: none;
   background: var(--surface);
-  border-color: var(--navy-500);
-  box-shadow: 0 0 0 4px rgba(23, 69, 122, 0.11);
+  border-color: var(--border-focus);
+  box-shadow: var(--focus-halo);
 }
 
 .shms-input-shell:focus-within .shms-input-icon {
-  color: var(--navy-600);
+  color: var(--link);
 }
 
 .shms-input:disabled {
@@ -156,12 +156,12 @@ textarea.shms-input {
 }
 
 .shms-password-toggle:hover:not(:disabled) {
-  color: var(--navy-700);
-  background: rgba(23, 69, 122, 0.08);
+  color: var(--brand-ink);
+  background: var(--navy-100);
 }
 
 .shms-password-toggle:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -254,13 +254,13 @@ textarea.shms-input {
   width: 17px;
   height: 17px;
   margin: 0;
-  accent-color: var(--navy-700);
+  accent-color: var(--accent);
   cursor: pointer;
   flex: none;
 }
 
 .shms-checkbox input:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -281,7 +281,7 @@ textarea.shms-input {
    ========================================================================== */
 
 .shms-link {
-  color: var(--navy-600);
+  color: var(--link);
   font-size: 0.86rem;
   font-weight: 600;
   text-decoration: none;
@@ -290,13 +290,13 @@ textarea.shms-input {
 }
 
 .shms-link:hover {
-  color: var(--gold-ink);
+  color: var(--accent-ink);
   text-decoration: underline;
   text-underline-offset: 3px;
 }
 
 .shms-link:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -322,15 +322,15 @@ textarea.shms-input {
   height: 54px;
   margin-top: 5px;
   border: 0;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--navy-700) 0%, var(--navy-900) 100%);
-  color: #fff;
+  border-radius: var(--radius-md);
+  background: var(--primary-fill);
+  color: var(--on-primary);
   font-family: inherit;
   font-size: 0.97rem;
   font-weight: 600;
   letter-spacing: 0.015em;
   cursor: pointer;
-  box-shadow: 0 10px 24px -14px rgba(10, 33, 64, 0.95);
+  box-shadow: var(--primary-shadow);
   transition:
     transform 0.18s var(--ease),
     box-shadow 0.22s var(--ease),
@@ -342,15 +342,15 @@ textarea.shms-input {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(105deg, transparent 35%, rgba(234, 208, 138, 0.28) 50%, transparent 65%);
+  background: linear-gradient(105deg, transparent 35%, rgba(95, 201, 191, 0.28) 50%, transparent 65%);
   transform: translateX(-110%);
   transition: transform 0.55s var(--ease);
 }
 
 .shms-submit:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 18px 32px -14px rgba(10, 33, 64, 0.8);
-  color: #fff;
+  box-shadow: var(--primary-shadow-hover);
+  color: var(--on-primary);
 }
 
 .shms-submit:hover:not(:disabled)::after {
@@ -371,7 +371,7 @@ textarea.shms-input {
 }
 
 .shms-submit:focus-visible {
-  outline: 3px solid var(--gold-400);
+  outline: 3px solid var(--focus-ring);
   outline-offset: 3px;
 }
 

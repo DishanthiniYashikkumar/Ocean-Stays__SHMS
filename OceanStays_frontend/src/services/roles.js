@@ -39,12 +39,36 @@ export const ROLE_LABELS = {
 };
 
 /** The database's role names that differ from the app's role constants. */
-const ROLES_FROM_DB = { HOUSEKEEPER: ROLES.HOUSEKEEPING };
+const ROLES_FROM_DB = {
+  HOUSEKEEPER: ROLES.HOUSEKEEPING,
+  ADMINISTRATOR: ROLES.ADMIN,
+  "SERVICE STAFF": ROLES.SERVICE_STAFF,
+};
 
 /** Converts a database role name, e.g. "Housekeeper", to a role constant. */
 export function normaliseRole(roleName) {
   const upper = String(roleName ?? "").toUpperCase();
   return ROLES_FROM_DB[upper] ?? upper;
+}
+
+/** The area of the app each role may open (besides public pages and booking). */
+const ROLE_AREAS = {
+  [ROLES.GUEST]: "/guest",
+  [ROLES.RECEPTIONIST]: "/reception",
+  [ROLES.HOUSEKEEPING]: "/housekeeping",
+  [ROLES.SERVICE_STAFF]: "/service",
+  [ROLES.ADMIN]: "/admin",
+};
+
+/**
+ * True when a signed-in user with `role` may be sent to `path` after login --
+ * used to honour the page a route guard bounced them from.
+ */
+export function canRoleOpen(role, path) {
+  if (typeof path !== "string" || !path.startsWith("/") || path.startsWith("//")) return false;
+  if (path.startsWith("/booking/")) return true;
+  const area = ROLE_AREAS[String(role ?? "").toUpperCase()];
+  return Boolean(area) && (path === area || path.startsWith(`${area}/`));
 }
 
 /** Maps a role coming off the API to its dashboard path. */

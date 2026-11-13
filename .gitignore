@@ -9,3 +9,7 @@ __pycache__/
 *.pyc
 dist/
 build/
+
+# Database dumps (contain real data)
+*.backup
+backups/

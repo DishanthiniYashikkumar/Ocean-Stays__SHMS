@@ -14,8 +14,8 @@ import { NOTIFICATION_META, NOTIFICATION_TYPE } from "./constants";
 export { NOTIFICATION_META, NOTIFICATION_TYPE };
 
 /** Always empty until the API has a notifications route, so the bell stays quiet. */
-export async function getNotifications() {
-  return [];
+export async function getNotifications({ userId, unread, limit } = {}) {
+  return request("/notifications", { params: { userId, unread: unread ? 1 : undefined, limit } });
 }
 
 export async function getUnreadCount(userId) {

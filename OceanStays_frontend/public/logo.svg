@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="320" height="72" viewBox="0 0 320 72">
+  <title>Ocean Stays — Luxury Coastal Hospitality</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0.35" y2="1">
+      <stop offset="0" stop-color="#1b5089"/>
+      <stop offset="1" stop-color="#061529"/>
+    </linearGradient>
+    <linearGradient id="sun" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f8e2ad"/>
+      <stop offset="1" stop-color="#e0a94f"/>
+    </linearGradient>
+    <clipPath id="clip"><rect x="4" y="4" width="64" height="64" rx="15"/></clipPath>
+  </defs>
+  <g transform="translate(4 4)">
+    <rect width="64" height="64" rx="15" fill="url(#bg)"/>
+  </g>
+  <g clip-path="url(#clip)">
+    <g transform="translate(4 4)">
+      <circle cx="32" cy="38" r="13" fill="url(#sun)"/>
+      <path d="M-32 40 q8 -5 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 V64 H-32 Z" fill="#2fb3a8"/>
+      <path d="M-32 49 q8 4 16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 t16 0 V64 H-32 Z" fill="#7dd8cf"/>
+    </g>
+  </g>
+  <text x="84" y="38" font-family="Inter, 'Segoe UI', Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="4.2" fill="#0d1b2a">OCEAN STAYS</text>
+  <text x="85" y="58" font-family="'Playfair Display', Georgia, serif" font-size="13" font-style="italic" fill="#0c7c73">Luxury Coastal Hospitality</text>
+</svg>

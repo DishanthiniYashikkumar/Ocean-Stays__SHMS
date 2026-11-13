@@ -1,10 +1,10 @@
 import { useCallback, useState } from "react";
-import { Link } from "react-router-dom";
 import Lightbox from "../../components/common/Lightbox";
 import EmptyState from "../../components/common/EmptyState";
 import ErrorState from "../../components/common/ErrorState";
 import { useAsync } from "../../hooks/useAsync";
 import { getGallery, getGalleryCategories } from "../../services/contentService";
+import PageHeader from "../../components/common/PageHeader";
 import "../../styles/gallery.css";
 
 /** Full gallery with category filtering and a keyboard-accessible lightbox. */
@@ -20,21 +20,9 @@ function Gallery() {
 
   return (
     <>
-      <header className="shms-page-head">
-        <div className="shms-container">
-          <ul className="shms-breadcrumb">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Gallery</li>
-          </ul>
-
-          <h1>Gallery</h1>
-          <span className="shms-rule-gold" />
-          <p>The property, the rooms and the stretch of coastline they sit on.</p>
-        </div>
-      </header>
+      <PageHeader title="Gallery">
+        The property, the rooms and the stretch of coastline they sit on.
+      </PageHeader>
 
       <section className="shms-section">
         <div className="shms-container">

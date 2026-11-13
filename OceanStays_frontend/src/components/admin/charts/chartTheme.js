@@ -1,46 +1,92 @@
+import { useMemo } from "react";
+import { useTheme } from "../../../hooks/useTheme";
+
 /**
  * Chart palette and shared Recharts props.
  *
- * The colours are the Ocean Stays brand values from tokens.css, restated here
- * as literals because Recharts writes them into SVG attributes where a CSS
- * custom property would not resolve. Keep them in step with tokens.css — this
- * is the one place in the app that repeats a brand colour, and it does so under
- * protest.
+ * Recharts writes colours into SVG attributes, so the values are read from the
+ * CSS custom properties in tokens.css (`--chart-*`) at render time and the
+ * charts re-render when the theme changes. Use the `useChartTheme()` hook in
+ * chart components; the static exports below are the light-theme fallbacks.
  */
 
-export const CHART_COLORS = {
-  navy: "#17457a",
-  navyDeep: "#0a2140",
-  gold: "#c9a227",
-  goldLight: "#d9b84a",
+const LIGHT_FALLBACK = {
+  primary: "#17457a",
+  accent: "#12968b",
   success: "#1e7a5a",
   warning: "#b47709",
+  deep: "#0a2140",
+  line: "#e2e7ef",
+  axis: "#5f6a7e",
+  cursor: "rgba(23, 69, 122, 0.06)",
+};
+
+function readTokens() {
+  if (typeof window === "undefined" || typeof document === "undefined") return LIGHT_FALLBACK;
+  const styles = window.getComputedStyle(document.documentElement);
+  const read = (name, fallback) => styles.getPropertyValue(name).trim() || fallback;
+  return {
+    primary: read("--chart-1", LIGHT_FALLBACK.primary),
+    accent: read("--chart-2", LIGHT_FALLBACK.accent),
+    success: read("--chart-3", LIGHT_FALLBACK.success),
+    warning: read("--chart-4", LIGHT_FALLBACK.warning),
+    deep: read("--chart-5", LIGHT_FALLBACK.deep),
+    line: read("--chart-grid", LIGHT_FALLBACK.line),
+    axis: read("--chart-axis", LIGHT_FALLBACK.axis),
+    cursor: read("--chart-cursor", LIGHT_FALLBACK.cursor),
+  };
+}
+
+function buildTheme(colors) {
+  return {
+    colors,
+    /** Sequence used when a chart plots one colour per category. */
+    categoryColors: [colors.primary, colors.accent, colors.success, colors.warning, colors.deep],
+    /** Axis defaults, so every chart's axes look the same (AA-contrast ticks). */
+    axisProps: {
+      stroke: colors.axis,
+      tick: { fill: colors.axis, fontSize: 12 },
+      tickLine: false,
+      axisLine: { stroke: colors.line },
+    },
+    gridProps: {
+      strokeDasharray: "3 3",
+      stroke: colors.line,
+      vertical: false,
+    },
+  };
+}
+
+/**
+ * Theme-aware chart colours. Re-computes whenever light/dark changes.
+ *
+ *   const { colors, axisProps, gridProps, categoryColors } = useChartTheme();
+ */
+export function useChartTheme() {
+  const { resolvedTheme } = useTheme();
+  // resolvedTheme is the dependency that makes this re-read the CSS variables.
+  return useMemo(() => buildTheme(readTokens()), [resolvedTheme]); // eslint-disable-line react-hooks/exhaustive-deps
+}
+
+/* ---- Static light-theme exports (kept for any non-hook callers) -------- */
+
+const STATIC = buildTheme(LIGHT_FALLBACK);
+
+export const CHART_COLORS = {
+  navy: LIGHT_FALLBACK.primary,
+  navyDeep: LIGHT_FALLBACK.deep,
+  gold: LIGHT_FALLBACK.accent,
+  goldLight: LIGHT_FALLBACK.accent,
+  success: LIGHT_FALLBACK.success,
+  warning: LIGHT_FALLBACK.warning,
   danger: "#c0392b",
-  line: "#e3e8f0",
-  muted: "#8b95a8",
+  line: LIGHT_FALLBACK.line,
+  muted: LIGHT_FALLBACK.axis,
 };
 
-/** Sequence used when a chart plots one colour per category. */
-export const CATEGORY_COLORS = [
-  CHART_COLORS.navy,
-  CHART_COLORS.gold,
-  CHART_COLORS.success,
-  CHART_COLORS.warning,
-  CHART_COLORS.navyDeep,
-];
-
-/** Axis defaults, so every chart's axes look the same. */
-export const AXIS_PROPS = {
-  stroke: CHART_COLORS.muted,
-  tickLine: false,
-  axisLine: { stroke: CHART_COLORS.line },
-};
-
-export const GRID_PROPS = {
-  strokeDasharray: "3 3",
-  stroke: CHART_COLORS.line,
-  vertical: false,
-};
+export const CATEGORY_COLORS = STATIC.categoryColors;
+export const AXIS_PROPS = STATIC.axisProps;
+export const GRID_PROPS = STATIC.gridProps;
 
 /** Compact axis labels — "6.4M" reads better on a phone than "6,380,000". */
 export function compactNumber(value) {

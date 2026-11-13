@@ -15,7 +15,10 @@
   height: var(--nav-height);
   display: flex;
   align-items: center;
-  background: var(--surface);
+  /* Frosted glass once solid: content blurs beneath it as you scroll. */
+  background: var(--surface-glass);
+  backdrop-filter: saturate(1.5) blur(14px);
+  -webkit-backdrop-filter: saturate(1.5) blur(14px);
   border-bottom: 1px solid var(--line);
   transition:
     height var(--dur-base) var(--ease),
@@ -31,6 +34,8 @@
 /* Over a hero image: let the photograph through. */
 .shms-nav-transparent {
   background: transparent;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   border-bottom-color: transparent;
   box-shadow: none;
 }
@@ -74,31 +79,26 @@
 }
 
 .shms-nav-brand:focus-visible {
-  outline: 2px solid var(--gold-400);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 4px;
 }
 
 .shms-nav-mark {
-  display: grid;
-  place-items: center;
+  display: block;
+  flex: none;
   width: 40px;
   height: 40px;
   border-radius: 12px;
-  font-size: 19px;
-  color: var(--gold-300);
-  background: linear-gradient(145deg, var(--navy-700), var(--navy-900));
-  border: 1px solid rgba(234, 208, 138, 0.28);
+  box-shadow: 0 8px 18px -12px rgba(6, 21, 41, 0.7);
   transition: transform var(--dur-base) var(--ease);
 }
 
 .shms-nav-brand:hover .shms-nav-mark {
-  transform: scale(1.05);
+  transform: scale(1.05) rotate(-3deg);
 }
 
 .shms-nav-transparent .shms-nav-mark {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: rgba(234, 208, 138, 0.4);
-  backdrop-filter: blur(8px);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.18), 0 10px 24px -14px rgba(0, 0, 0, 0.6);
 }
 
 .shms-nav-wordmark {
@@ -167,19 +167,19 @@
   bottom: 2px;
   height: 2px;
   border-radius: 2px;
-  background: var(--gold-500);
+  background: var(--accent);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--dur-base) var(--ease);
 }
 
 .shms-nav-link:hover {
-  color: var(--navy-700);
+  color: var(--brand-ink);
   background: var(--navy-100);
 }
 
 .shms-nav-link.is-active {
-  color: var(--navy-800);
+  color: var(--brand-ink);
   font-weight: 600;
 }
 
@@ -188,7 +188,7 @@
 }
 
 .shms-nav-link:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -206,7 +206,7 @@
 }
 
 .shms-nav-transparent .shms-nav-link:focus-visible {
-  outline-color: var(--gold-400);
+  outline-color: var(--focus-ring);
 }
 
 /* ==========================================================================
@@ -223,7 +223,7 @@
 .shms-nav-signin {
   font-size: var(--text-sm);
   font-weight: 600;
-  color: var(--navy-700);
+  color: var(--brand-ink);
   text-decoration: none;
   padding: 8px 12px;
   border-radius: var(--radius-sm);
@@ -232,12 +232,12 @@
 }
 
 .shms-nav-signin:hover {
-  color: var(--navy-800);
+  color: var(--brand-ink);
   background: var(--navy-100);
 }
 
 .shms-nav-signin:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -251,7 +251,7 @@
 }
 
 .shms-nav-transparent .shms-nav-signin:focus-visible {
-  outline-color: var(--gold-400);
+  outline-color: var(--focus-ring);
 }
 
 /* ==========================================================================
@@ -281,12 +281,12 @@
 }
 
 .shms-account-trigger:hover {
-  border-color: var(--navy-500);
+  border-color: var(--border-focus);
   background: var(--field);
 }
 
 .shms-account-trigger:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -298,12 +298,12 @@
 }
 
 .shms-nav-transparent .shms-account-trigger:hover {
-  border-color: var(--gold-300);
+  border-color: var(--teal-300);
   background: rgba(255, 255, 255, 0.18);
 }
 
 .shms-nav-transparent .shms-account-trigger:focus-visible {
-  outline-color: var(--gold-400);
+  outline-color: var(--focus-ring);
 }
 
 .shms-account-avatar {
@@ -316,8 +316,8 @@
   font-size: 11.5px;
   font-weight: 600;
   letter-spacing: 0.03em;
-  color: var(--gold-300);
-  background: linear-gradient(145deg, var(--navy-700), var(--navy-900));
+  color: var(--teal-300);
+  background: var(--mark-fill);
 }
 
 .shms-account-name {
@@ -397,7 +397,7 @@
   font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-account-item {
@@ -427,15 +427,15 @@
 
 .shms-account-item:hover {
   background: var(--field);
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-account-item:hover i {
-  color: var(--navy-600);
+  color: var(--link);
 }
 
 .shms-account-item:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: -2px;
 }
 
@@ -467,7 +467,7 @@
 }
 
 .shms-nav-toggle:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -610,7 +610,7 @@
 }
 
 .shms-nav-drawer-close:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -638,23 +638,23 @@
 
 .shms-nav-drawer-link:hover {
   background: var(--field);
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-nav-drawer-link.is-active {
   background: var(--navy-100);
-  color: var(--navy-800);
+  color: var(--brand-ink);
   font-weight: 600;
 }
 
 .shms-nav-drawer-link:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: -2px;
 }
 
 .shms-nav-drawer-link i {
   font-size: 0.9rem;
-  color: var(--gold-500);
+  color: var(--accent);
   opacity: 0;
   transition: opacity var(--dur-fast) var(--ease);
 }
@@ -677,7 +677,7 @@
    ========================================================================== */
 
 /* Below the desktop breakpoint the links collapse into the drawer. */
-@media (max-width: 1080px) {
+@media (max-width: 1024px) {
   .shms-nav-links {
     display: none;
   }
@@ -692,7 +692,7 @@
   }
 }
 
-@media (max-width: 620px) {
+@media (max-width: 560px) {
   .shms-nav-inner {
     padding-inline: var(--space-5);
   }
@@ -707,9 +707,106 @@
   }
 }
 
-@media (max-width: 420px) {
+@media (max-width: 560px) {
   .shms-nav-actions .shms-btn {
     padding-inline: var(--space-4);
     font-size: var(--text-sm);
+  }
+}
+
+/* ==========================================================================
+   Theme toggle (icon button beside Sign In)
+   ========================================================================== */
+
+.shms-nav-icon-btn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: none;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--body);
+  font-size: 1rem;
+  transition:
+    background-color var(--dur-fast) var(--ease),
+    border-color var(--dur-fast) var(--ease),
+    color var(--dur-fast) var(--ease);
+}
+
+.shms-nav-icon-btn:hover {
+  border-color: var(--accent-edge);
+  background: var(--accent-tint);
+  color: var(--accent-ink);
+}
+
+.shms-nav-icon-btn:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+.shms-nav-transparent .shms-nav-icon-btn {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+}
+
+.shms-nav-transparent .shms-nav-icon-btn:hover {
+  border-color: var(--teal-300);
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* Phones: the toggle moves into the drawer so the bar keeps brand, CTA and
+   menu button on one line. */
+.shms-nav-drawer-theme {
+  margin-left: auto;
+}
+
+@media (max-width: 560px) {
+  .shms-nav-actions > .shms-theme-toggle {
+    display: none;
+  }
+}
+
+@media (max-width: 560px) {
+  .shms-nav-inner {
+    gap: var(--space-2);
+  }
+
+  .shms-nav-actions {
+    gap: var(--space-2);
+  }
+
+  .shms-nav-name {
+    font-size: 0.82rem;
+    letter-spacing: 0.1em;
+  }
+
+  .shms-nav-actions .shms-btn {
+    height: 36px;
+    padding-inline: var(--space-3);
+    font-size: 0.8rem;
+  }
+}
+
+/* Signed in on small screens: the avatar alone, then (on phones) the account
+   menu moves into the drawer, which already has Dashboard and Sign out. */
+@media (max-width: 768px) {
+  .shms-nav-actions .shms-account-name,
+  .shms-nav-actions .shms-account-caret {
+    display: none;
+  }
+
+  .shms-nav-actions .shms-account-trigger {
+    padding: 4px;
+  }
+}
+
+@media (max-width: 560px) {
+  .shms-nav-actions > .shms-account {
+    display: none;
   }
 }

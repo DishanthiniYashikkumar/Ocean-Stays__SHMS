@@ -11,8 +11,8 @@ import {
   getPayments,
 } from "../../services/paymentService";
 import { formatCurrency, formatDate } from "../../utils/format";
+import StatCard from "../../components/common/StatCard";
 import "../../styles/dashboard.css";
-
 /** Every invoice, with the ability to take payment at the desk. */
 
 const STATUS_FILTER = [
@@ -146,15 +146,11 @@ function Payments() {
             </span>
           </article>
 
-          <article className="shms-stat">
-            <span className="shms-stat-icon" aria-hidden="true">
-              <i className="bi bi-receipt" />
-            </span>
-            <span className="shms-stat-copy">
-              <span className="shms-stat-value">{data.length}</span>
-              <span className="shms-stat-label">Invoices issued</span>
-            </span>
-          </article>
+          <StatCard
+            icon="bi-receipt"
+            value={data.length}
+            label="Invoices issued"
+          />
         </div>
       )}
 

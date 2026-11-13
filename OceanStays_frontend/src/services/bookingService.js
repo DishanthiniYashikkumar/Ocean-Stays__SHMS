@@ -7,34 +7,19 @@
  * backend must re-check every rule before committing anything.
  */
 
-import { paginate, request } from "./apiClient";
+import { request } from "./apiClient";
 import { BOOKING_STATUS, PAYMENT_STATUS } from "./constants";
+import { POLICY } from "./hotelInfo";
 
 export { BOOKING_STATUS, PAYMENT_STATUS };
 
 /** Hotel policy the UI reflects. Backend owns the authoritative copy. */
-export const BOOKING_POLICY = {
-  freeCancellationHours: 48,
-  modificationCutoffHours: 24,
-  taxRate: 0.12,
-  serviceChargeRate: 0.1,
-};
+export const BOOKING_POLICY = POLICY;
 
-/** Flask serialises dates as RFC 822 strings; the UI compares ISO dates. */
-function toISODate(value) {
-  return value ? new Date(value).toISOString().slice(0, 10) : null;
-}
 
-/** The database's reservation statuses, in the vocabulary the UI renders. */
-const BOOKING_STATUS_FROM_DB = {
-  Pending: BOOKING_STATUS.PENDING,
-  Confirmed: BOOKING_STATUS.CONFIRMED,
-  Cancelled: BOOKING_STATUS.CANCELLED,
-  Completed: BOOKING_STATUS.CHECKED_OUT,
-};
 
 function hoursUntil(dateISO) {
-  return (new Date(`${dateISO}T14:00:00`).getTime() - Date.now()) / 3_600_000;
+  return (new Date(`${dateISO}T${POLICY.checkInTime || "14:00"}:00`).getTime() - Date.now()) / 3_600_000;
 }
 
 /** Nights between two ISO dates; checkout day is not charged. */
@@ -86,67 +71,11 @@ export function canModify(booking) {
  * @param {object} [query] status, guestId, search, date, page, pageSize
  */
 export async function getBookings(query = {}) {
-  const [reservationData, reservationRoomData, roomsData, roomTypesData] = await Promise.all([
-    request("/reservations"),
-    request("/reservationrooms"),
-    request("/rooms"),
-    request("/roomtypes"),
-  ]);
-
-  const roomsById = new Map(
-    roomsData.rooms.map(([id, roomNumber, roomTypeId]) => [id, { roomNumber, roomTypeId }]),
-  );
-  const roomTypesById = new Map(roomTypesData.room_types.map(([id, name]) => [id, name]));
-  const roomIdByReservation = new Map(
-    reservationRoomData.reservation_rooms.map(([, reservationId, roomId]) => [reservationId, roomId]),
-  );
-
   const { status, guestId, search, date, page, pageSize } = query;
-  const term = search?.trim().toLowerCase();
-
-  const items = reservationData.reservations
-    .map(
-      ([id, reservationGuestId, createdAt, checkIn, checkOut, guests, reservationStatus, specialRequests, total, firstName, lastName, email]) => {
-        const roomId = roomIdByReservation.get(id) ?? null;
-        const room = roomId ? roomsById.get(roomId) : null;
-        const isoCheckIn = toISODate(checkIn);
-        const isoCheckOut = toISODate(checkOut);
-
-        return {
-          id,
-          reference: `RSV-${id}`,
-          guestId: reservationGuestId,
-          guestName: `${firstName ?? ""} ${lastName ?? ""}`.trim(),
-          guestEmail: email,
-          createdAt: toISODate(createdAt),
-          checkIn: isoCheckIn,
-          checkOut: isoCheckOut,
-          nights: nightsBetween(isoCheckIn, isoCheckOut),
-          guests,
-          roomId,
-          roomNumber: room?.roomNumber ?? null,
-          roomTypeName: room ? (roomTypesById.get(room.roomTypeId) ?? "Unknown") : "Not allocated",
-          status: BOOKING_STATUS_FROM_DB[reservationStatus] ?? reservationStatus,
-          specialRequests,
-          total: Number(total),
-          currency: "LKR",
-        };
-      },
-    )
-    .filter((booking) => {
-      if (status && booking.status !== status) return false;
-      if (guestId && booking.guestId !== guestId) return false;
-      if (date && !(booking.checkIn <= date && booking.checkOut >= date)) return false;
-      if (term) {
-        const haystack =
-          `${booking.reference} ${booking.guestName} ${booking.guestEmail} ${booking.roomTypeName}`.toLowerCase();
-        if (!haystack.includes(term)) return false;
-      }
-      return true;
-    })
-    .sort((a, b) => b.createdAt.localeCompare(a.createdAt));
-
-  return paginate(items, { page, pageSize: pageSize ?? 10 });
+  // Filtering, search and paging happen on the server; the envelope matches paginate().
+  return request("/bookings", {
+    params: { status, guestId, search: search?.trim(), date, page, pageSize: pageSize ?? 10 },
+  });
 }
 
 /** All bookings for one guest, split into current / upcoming / past. */

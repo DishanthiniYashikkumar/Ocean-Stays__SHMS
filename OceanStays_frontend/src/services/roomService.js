@@ -3,7 +3,9 @@
  * -----------------------------------------------------------------------------
  * Room types (the bookable product) and physical rooms (the inventory).
  *
- * The exported signatures are what components depend on and must not change.
+ * "Room type" in the UI is a database room_category (e.g. "Deluxe Ocean"),
+ * and `type` is its family from room_type (Standard, Deluxe, Suite, Villa,
+ * Penthouse). The exported signatures are what components depend on.
  */
 
 import { request } from "./apiClient";
@@ -11,63 +13,120 @@ import { AMENITIES, BED_TYPES, ROOM_STATUS, SELLABLE_STATUSES } from "./constant
 
 export { AMENITIES, BED_TYPES, ROOM_STATUS, SELLABLE_STATUSES };
 
-/** The database stores no room photography, so images are keyed by type name. */
+const img = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1400&q=80`;
+
+/** The database stores no room photography, so images are keyed by room family. */
 const ROOM_TYPE_IMAGES = {
-  Single: [
-    "https://images.unsplash.com/photo-1611892440504-42a792e24d32?auto=format&fit=crop&w=1400&q=80",
-    "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=1400&q=80",
-  ],
-  Double: [
-    "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?auto=format&fit=crop&w=1400&q=80",
-    "https://images.unsplash.com/photo-1505693416388-ac5ce068fe85?auto=format&fit=crop&w=1400&q=80",
+  Standard: [
+    img("photo-1611892440504-42a792e24d32"),
+    img("photo-1560448204-e02f11c3d0e2"),
+    img("photo-1522708323590-d24dbb6b0267"),
+    img("photo-1505693416388-ac5ce068fe85"),
   ],
   Deluxe: [
-    "https://images.unsplash.com/photo-1590490360182-c33d57733427?auto=format&fit=crop&w=1400&q=80",
-    "https://images.unsplash.com/photo-1618773928121-c32242e63f39?auto=format&fit=crop&w=1400&q=80",
-    "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?auto=format&fit=crop&w=1400&q=80",
+    img("photo-1590490360182-c33d57733427"),
+    img("photo-1618773928121-c32242e63f39"),
+    img("photo-1631049307264-da0ec9d70304"),
   ],
   Suite: [
-    "https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?auto=format&fit=crop&w=1400&q=80",
-    "https://images.unsplash.com/photo-1566665797739-1674de7a421a?auto=format&fit=crop&w=1400&q=80",
-    "https://images.unsplash.com/photo-1595576508898-0ad5c879a061?auto=format&fit=crop&w=1400&q=80",
+    img("photo-1582719478250-c89cae4dc85b"),
+    img("photo-1566665797739-1674de7a421a"),
+    img("photo-1595576508898-0ad5c879a061"),
+  ],
+  Villa: [
+    img("photo-1604709177225-055f99402ea3"),
+    img("photo-1571003123894-1f0594d2b5d9"),
+    img("photo-1582719508461-905c673771fd"),
+  ],
+  Penthouse: [
+    img("photo-1566665797739-1674de7a421a"),
+    img("photo-1507525428034-b723cf961d3e"),
+    img("photo-1582719478250-c89cae4dc85b"),
   ],
 };
 
-/** The database stores "Available"; the UI compares against ROOM_STATUS values. */
+/** amenity.amenity_id -> AMENITIES key */
+const AMENITY_KEYS = {
+  1: "oceanView",
+  2: "balcony",
+  3: "pool",
+  4: "bathtub",
+  5: "butler",
+  6: "desk",
+  7: "wifi",
+  8: "ac",
+  9: "tv",
+  10: "minibar",
+  11: "coffee",
+  12: "safe",
+};
+
+/** Statuses already arrive as ROOM_STATUS values; this tolerates older spellings. */
 function normaliseRoomStatus(status) {
-  return String(status ?? "").toUpperCase().replace(/\s+/g, "_");
+  const value = String(status ?? "").toUpperCase().replace(/\s+/g, "_");
+  return value === "MAINTAINING" ? ROOM_STATUS.MAINTENANCE : value;
 }
 
-/** Joins the /roomtypes and /rooms responses into what the room pages render. */
-async function fetchRoomTypes() {
-  const [typeData, roomData] = await Promise.all([request("/roomtypes"), request("/rooms")]);
+export function slugify(name) {
+  return String(name ?? "")
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/(^-|-$)/g, "");
+}
 
-  return typeData.room_types.map(([id, type, description, capacity, price]) => {
-    const rooms = roomData.rooms.filter(([, , roomTypeId]) => roomTypeId === id);
+/** Rotates a family's photos so neighbouring cards don't share a cover image. */
+function imagesFor(family, id) {
+  const set = ROOM_TYPE_IMAGES[family] ?? ROOM_TYPE_IMAGES.Deluxe;
+  const start = id % set.length;
+  return [...set.slice(start), ...set.slice(0, start)];
+}
 
-    return {
-      id,
-      slug: type.toLowerCase(),
-      name: type,
-      type,
-      shortDescription: description ?? "",
-      description: description ?? "",
-      pricePerNight: Number(price),
-      currency: "LKR",
-      capacity: { adults: Number(capacity), children: 0 },
-      bedType: "—",
-      sizeSqm: 0,
-      amenities: [],
-      images: ROOM_TYPE_IMAGES[type] ?? ROOM_TYPE_IMAGES.Deluxe,
-      totalRooms: rooms.length,
-      // Current room state only: the API has no date-based availability check yet.
-      availableRooms: rooms.filter(([, , , status]) =>
+async function fetchAvailability({ checkIn, checkOut, guests } = {}) {
+  if (!checkIn || !checkOut) return null;
+  try {
+    const data = await request("/rooms/availability", { params: { checkIn, checkOut, guests } });
+    return new Map(data.items.map((item) => [item.roomTypeId, item.available]));
+  } catch {
+    return null; // fall back to today's room status
+  }
+}
+
+async function fetchRoomTypes(dates) {
+  const [typeData, roomData, availability] = await Promise.all([
+    request("/roomtypes"),
+    request("/rooms"),
+    fetchAvailability(dates),
+  ]);
+
+  return typeData.room_types.map(
+    ([id, name, description, capacity, price, bedType, roomSize, averageRating, reviewCount, amenities, family]) => {
+      const rooms = roomData.rooms.filter(([, , roomTypeId]) => roomTypeId === id);
+      const sellableNow = rooms.filter(([, , , status]) =>
         SELLABLE_STATUSES.includes(normaliseRoomStatus(status)),
-      ).length,
-      rating: 0,
-      reviewCount: 0,
-    };
-  });
+      ).length;
+      const type = family ?? name;
+
+      return {
+        id,
+        slug: slugify(name),
+        name,
+        type,
+        shortDescription: description ?? "",
+        description: description ?? "",
+        pricePerNight: Number(price),
+        currency: "LKR",
+        capacity: { adults: Number(capacity), children: 0 },
+        bedType: bedType ?? "—",
+        sizeSqm: Number(roomSize) || 0,
+        amenities: (amenities ?? []).map((amenity) => AMENITY_KEYS[amenity.id]).filter(Boolean),
+        images: imagesFor(type, id),
+        totalRooms: rooms.length,
+        availableRooms: availability?.get(id) ?? sellableNow,
+        rating: Number(averageRating) || 0,
+        reviewCount: Number(reviewCount) || 0,
+      };
+    },
+  );
 }
 
 /* -------------------------------------------------------------------------- */
@@ -75,23 +134,14 @@ async function fetchRoomTypes() {
 /* -------------------------------------------------------------------------- */
 
 /**
- * Lists bookable room types with optional filtering and sorting.
- *
- * @param {object} [query]
- * @param {string} [query.search]     Matches name, type or description
- * @param {string} [query.type]       Room type category, e.g. "Suite"
- * @param {number} [query.guests]     Minimum adult capacity
- * @param {number} [query.minPrice]
- * @param {number} [query.maxPrice]
- * @param {string[]} [query.amenities] Amenity ids that must all be present
- * @param {string} [query.sort]       price-asc | price-desc | rating | name
- * @returns {Promise<Array>}
+ * Room types for the public Rooms page. With checkIn/checkOut, the
+ * availability counts are for those dates.
  */
 export async function getRoomTypes(query = {}) {
-  const { search, type, guests, minPrice, maxPrice, amenities, sort } = query;
+  const { search, type, guests, minPrice, maxPrice, amenities, sort, checkIn, checkOut } = query;
   const term = search?.trim().toLowerCase();
 
-  const results = (await fetchRoomTypes()).filter((room) => {
+  const results = (await fetchRoomTypes({ checkIn, checkOut, guests })).filter((room) => {
     if (term) {
       const haystack = `${room.name} ${room.type} ${room.shortDescription}`.toLowerCase();
       if (!haystack.includes(term)) return false;
@@ -101,6 +151,7 @@ export async function getRoomTypes(query = {}) {
     if (minPrice != null && room.pricePerNight < Number(minPrice)) return false;
     if (maxPrice != null && room.pricePerNight > Number(maxPrice)) return false;
     if (amenities?.length && !amenities.every((id) => room.amenities.includes(id))) return false;
+
     return true;
   });
 
@@ -115,7 +166,7 @@ export async function getRoomTypes(query = {}) {
   return results;
 }
 
-/** How many room types sit in each category, for the filter panel's counts. */
+/** Number of room types in each family, for the filter sidebar. */
 export async function getRoomTypeCounts() {
   const roomTypes = await fetchRoomTypes();
 
@@ -125,27 +176,27 @@ export async function getRoomTypeCounts() {
   }, {});
 }
 
-/** Room types for the home page. The database has no "featured" flag. */
+/** One room type per family, best rated first, for the home page. */
 export async function getFeaturedRoomTypes() {
-  return fetchRoomTypes();
+  const all = await fetchRoomTypes();
+  const best = new Map();
+  all.forEach((room) => {
+    const current = best.get(room.type);
+    if (!current || room.rating > current.rating) best.set(room.type, room);
+  });
+  const featured = [...best.values()];
+  return featured.length >= 3 ? featured : all;
 }
 
-/**
- * Fetches one room type by its URL slug.
- * @throws {Error} when no room matches
- */
-export async function getRoomTypeBySlug(slug) {
-  const room = (await fetchRoomTypes()).find((item) => item.slug === slug);
+export async function getRoomTypeBySlug(slug, dates) {
+  const wanted = slugify(decodeURIComponent(String(slug ?? "")));
+  const room = (await fetchRoomTypes(dates)).find((item) => item.slug === wanted);
   if (!room) throw new Error("We couldn't find that room. It may no longer be available.");
   return room;
 }
 
-/**
- * Checks availability across all room types.
- * @returns {Promise<Array<{roomTypeId, name, available, pricePerNight}>>}
- */
-export async function checkAvailability({ guests } = {}) {
-  const roomTypes = await fetchRoomTypes();
+export async function checkAvailability({ checkIn, checkOut, guests } = {}) {
+  const roomTypes = await fetchRoomTypes({ checkIn, checkOut, guests });
 
   return roomTypes
     .filter((room) => !guests || room.capacity.adults >= Number(guests))
@@ -162,29 +213,29 @@ export async function checkAvailability({ guests } = {}) {
 /* Physical inventory (staff-facing)                                          */
 /* -------------------------------------------------------------------------- */
 
-/** Physical rooms, each joined to its room type for display. */
 export async function getRooms({ status } = {}) {
   const [data, typeData] = await Promise.all([request("/rooms"), request("/roomtypes")]);
+  const types = new Map(typeData.room_types.map((type) => [type[0], type]));
 
   return data.rooms
-    .map(([id, number, roomTypeId, roomStatus]) => {
-      const roomType = typeData.room_types.find((type) => type[0] === roomTypeId);
+    .map(([id, number, roomTypeId, roomStatus, floor, notes]) => {
+      const roomType = types.get(roomTypeId);
 
       return {
         id,
-        number,
+        number: String(number),
         roomTypeId,
         status: normaliseRoomStatus(roomStatus),
-        floor: 0,
+        floor: Number.isFinite(Number(floor)) ? Number(floor) : 0,
         roomTypeName: roomType ? roomType[1] : "Room",
+        roomFamily: roomType ? roomType[10] : null,
         pricePerNight: roomType ? Number(roomType[4]) : 0,
-        housekeepingNote: "",
+        housekeepingNote: notes ?? "",
       };
     })
     .filter((room) => !status || room.status === status);
 }
 
-/** Counts by status, for the reception and admin dashboard tiles. */
 export async function getRoomStatusSummary() {
   const data = await request("/rooms");
   const summary = Object.fromEntries(Object.values(ROOM_STATUS).map((status) => [status, 0]));
@@ -197,11 +248,6 @@ export async function getRoomStatusSummary() {
   return { total: data.rooms.length, ...summary };
 }
 
-/**
- * Updates a physical room's status (housekeeping and reception workflows).
- * @param {string} roomId
- * @param {string} status  One of ROOM_STATUS
- */
 export async function updateRoomStatus(roomId, status) {
   return request(`/rooms/${roomId}`, { method: "PATCH", body: { status } });
 }

@@ -4,8 +4,9 @@ import Modal from "../../components/common/Modal";
 import StatusBadge from "../../components/common/StatusBadge";
 import { useAsync } from "../../hooks/useAsync";
 import { useToast } from "../../hooks/useToast";
-import { ROOM_STATUS, getRoomStatusSummary, getRooms, updateRoomStatus } from "../../services/roomService";
+import { ROOM_STATUS, getRooms, updateRoomStatus } from "../../services/roomService";
 import { getStatusMeta } from "../../utils/status";
+import Tabs from "../../components/common/Tabs";
 import "../../styles/dashboard.css";
 
 /**
@@ -16,16 +17,17 @@ import "../../styles/dashboard.css";
  * table, so this is a grid with a colour rail per status rather than rows.
  */
 
-/** Ordered along the turnaround chain, so the board reads left to right. */
+/**
+ * The statuses reception works with, matching the admin Rooms page and the
+ * reception dashboard. They are also exactly what the API lets a receptionist
+ * set (READY was only an alias of Inspected; Occupied, Cleaning and Clean are
+ * set by check-in and housekeeping, not here).
+ */
 const STATUS_ORDER = [
   ROOM_STATUS.AVAILABLE,
-  ROOM_STATUS.READY,
   ROOM_STATUS.INSPECTED,
   ROOM_STATUS.RESERVED,
-  ROOM_STATUS.OCCUPIED,
   ROOM_STATUS.DIRTY,
-  ROOM_STATUS.CLEANING,
-  ROOM_STATUS.CLEAN,
   ROOM_STATUS.MAINTENANCE,
 ];
 
@@ -39,8 +41,16 @@ function RoomAllocation() {
   const loadRooms = useCallback(() => getRooms(), []);
   const rooms = useAsync(loadRooms);
 
-  const loadSummary = useCallback(() => getRoomStatusSummary(), []);
-  const summary = useAsync(loadSummary);
+  // Counted from the same rows the cards render, so tabs and cards can't
+  // disagree; each room has one status, so it's counted once.
+  const counts = useMemo(() => {
+    const items = rooms.data ?? [];
+    const byStatus = {};
+    items.forEach((room) => {
+      byStatus[room.status] = (byStatus[room.status] ?? 0) + 1;
+    });
+    return { total: items.length, ...byStatus };
+  }, [rooms.data]);
 
   const visible = useMemo(() => {
     const items = rooms.data ?? [];
@@ -83,7 +93,6 @@ function RoomAllocation() {
       );
       setEditing(null);
       rooms.reload();
-      summary.reload();
     } catch (saveError) {
       toast.error(saveError.message || "We couldn't update that room.");
     } finally {
@@ -98,32 +107,19 @@ function RoomAllocation() {
   return (
     <>
       {/* ---------------------------------------------------- Status filter */}
-      <ul className="shms-tabs">
-        <li>
-          <button
-            type="button"
-            className="shms-tab"
-            aria-pressed={filter === ""}
-            onClick={() => setFilter("")}
-          >
-            All rooms
-            <span className="shms-tab-count">{summary.data?.total ?? 0}</span>
-          </button>
-        </li>
-        {STATUS_ORDER.map((status) => (
-          <li key={status}>
-            <button
-              type="button"
-              className="shms-tab"
-              aria-pressed={filter === status}
-              onClick={() => setFilter(status)}
-            >
-              {getStatusMeta(status, "room").label}
-              <span className="shms-tab-count">{summary.data?.[status] ?? 0}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      <Tabs
+        label="Room status filter"
+        tabs={[
+          { id: "", label: "All rooms", count: counts.total },
+          ...STATUS_ORDER.map((status) => ({
+            id: status,
+            label: getStatusMeta(status, "room").label,
+            count: counts[status] ?? 0,
+          })),
+        ]}
+        value={filter}
+        onChange={setFilter}
+      />
 
       {rooms.isLoading ? (
         <div className="shms-room-grid">

@@ -1,4 +1,5 @@
-import { useEffect, useId, useRef } from "react";
+import { useEffect, useId, useLayoutEffect, useRef } from "react";
+import { createPortal } from "react-dom";
 import "../../styles/overlay.css";
 
 /**
@@ -36,12 +37,23 @@ function Modal({
   const dialogRef = useRef(null);
   const previouslyFocused = useRef(null);
 
+  // Callers pass inline `onClose` arrows, so it is a new function on every
+  // render. Reading it (and `dismissible`) through refs keeps the effect below
+  // mount-only; otherwise each keystroke in a form re-ran it, restoring focus
+  // to the trigger and re-focusing the first control — typing lost focus.
+  const onCloseRef = useRef(onClose);
+  const dismissibleRef = useRef(dismissible);
+  useLayoutEffect(() => {
+    onCloseRef.current = onClose;
+    dismissibleRef.current = dismissible;
+  });
+
   useEffect(() => {
     previouslyFocused.current = document.activeElement;
 
     function handleKeyDown(event) {
-      if (event.key === "Escape" && dismissible) {
-        onClose();
+      if (event.key === "Escape" && dismissibleRef.current) {
+        onCloseRef.current();
         return;
       }
 
@@ -81,9 +93,11 @@ function Modal({
       document.removeEventListener("keydown", handleKeyDown);
       if (restoreTo instanceof HTMLElement) restoreTo.focus();
     };
-  }, [onClose, dismissible]);
+  }, []);
 
-  return (
+  // Portalled to <body> so no ancestor with a transform/filter (e.g. the
+  // route's entrance animation) can trap the fixed scrim inside the page.
+  return createPortal(
     <div
       className="shms-modal-scrim"
       onMouseDown={(event) => {
@@ -131,7 +145,8 @@ function Modal({
 
         {footer && <div className="shms-modal-foot">{footer}</div>}
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }
 

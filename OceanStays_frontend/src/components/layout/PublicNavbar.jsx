@@ -3,7 +3,9 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 import { getDashboardRoute, ROLE_LABELS } from "../../services/authService";
 import { initials } from "../../utils/format";
+import ThemeToggle from "../common/ThemeToggle";
 import "../../styles/navbar.css";
+import { LogoMark } from "../common/Logo";
 
 /**
  * Public site navigation.
@@ -130,9 +132,7 @@ function PublicNavbar({ transparent = false }) {
       <header className={navClassName}>
         <nav className="shms-nav-inner" aria-label="Primary">
           <Link className="shms-nav-brand" to="/">
-            <span className="shms-nav-mark" aria-hidden="true">
-              <i className="bi bi-water" />
-            </span>
+            <LogoMark className="shms-nav-mark" size={40} />
             <span className="shms-nav-wordmark">
               <span className="shms-nav-name">OCEAN STAYS</span>
               <span className="shms-nav-tagline">Luxury Coastal Hospitality</span>
@@ -154,6 +154,8 @@ function PublicNavbar({ transparent = false }) {
           </ul>
 
           <div className="shms-nav-actions">
+            <ThemeToggle className="shms-nav-icon-btn" />
+
             {isAuthenticated ? (
               <div className="shms-account" ref={accountRef}>
                 <button
@@ -248,6 +250,7 @@ function PublicNavbar({ transparent = false }) {
           >
             <div className="shms-nav-drawer-head">
               <p className="shms-nav-drawer-title">OCEAN STAYS</p>
+              <ThemeToggle className="shms-nav-icon-btn shms-nav-drawer-theme" />
               <button
                 ref={closeRef}
                 type="button"

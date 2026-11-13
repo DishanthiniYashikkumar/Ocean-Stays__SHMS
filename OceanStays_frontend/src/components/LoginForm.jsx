@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../hooks/useAuth";
 import { validateCredentials } from "../services/authService";
 
+import Alert from "../components/common/Alert";
 /**
  * Controlled login form. Owns field state, validation and the submit lifecycle.
  * It does NOT decide where the user goes next -- it hands the authenticated
@@ -86,10 +87,7 @@ function LoginForm({ onAuthenticated }) {
   return (
     <form className="shms-form" onSubmit={handleSubmit} noValidate>
       {authError && (
-        <div className="shms-alert" role="alert">
-          <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-          <span>{authError}</span>
-        </div>
+        <Alert>{authError}</Alert>
       )}
 
       {/* ---------------------------------------------------------- Email */}

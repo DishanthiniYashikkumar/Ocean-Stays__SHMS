@@ -24,7 +24,9 @@ import "../../styles/table.css";
  *     render?: (row) => React.ReactNode,
  *     sortValue?: (row) => string|number,   Defaults to row[key]
  *     align?: "left"|"right"|"center",
- *     sortable?: boolean
+ *     sortable?: boolean,
+ *     width?: string,                    e.g. "14%"; sets a <col> width
+ *     className?: string                 Extra class on the column's th/td
  *   }>,
  *   rows: Array<object>,
  *   rowKey: (row) => string,
@@ -38,7 +40,8 @@ import "../../styles/table.css";
  *   filters?: Array<{ id, label, value, options: Array<{value,label}>, onChange }>,
  *   toolbarEnd?: React.ReactNode,   e.g. a "New reservation" button
  *   pageSize?: number,
- *   caption?: string                Accessible description of the table
+ *   caption?: string,               Accessible description of the table
+ *   className?: string              Extra class on the outer wrapper
  * }} props
  */
 
@@ -66,7 +69,16 @@ function DataTable({
   toolbarEnd,
   pageSize = DEFAULT_PAGE_SIZE,
   caption,
+  className,
 }) {
+  const wrapClass = className
+    ? `shms-table-wrap ${className}`
+    : "shms-table-wrap";
+  const hasWidths = columns.some((column) => column.width);
+  const cellClass = (column) =>
+    [column.align && `is-${column.align}`, column.className]
+      .filter(Boolean)
+      .join(" ") || undefined;
   const uid = useId();
   const [search, setSearch] = useState("");
   const [sort, setSort] = useState({ key: null, direction: "asc" });
@@ -78,7 +90,17 @@ function DataTable({
     if (!term || searchKeys.length === 0) return rows;
 
     return rows.filter((row) =>
-      searchKeys.some((key) => String(row[key] ?? "").toLowerCase().includes(term)),
+      searchKeys.some((key) => {
+        const value = String(row[key] ?? "")
+          .toLowerCase()
+          .trim();
+
+        if (key === "reference") {
+          return value === term || value.startsWith(term + " ");
+        }
+
+        return value.includes(term);
+      }),
     );
   }, [rows, search, searchKeys]);
 
@@ -174,7 +196,7 @@ function DataTable({
   /* ---- States ----------------------------------------------------------- */
   if (error) {
     return (
-      <div className="shms-table-wrap">
+      <div className={wrapClass}>
         {toolbar}
         <ErrorState message={error.message} onRetry={onRetry} />
       </div>
@@ -183,7 +205,7 @@ function DataTable({
 
   if (isLoading) {
     return (
-      <div className="shms-table-wrap">
+      <div className={wrapClass}>
         {toolbar}
         <div className="shms-table-skeleton" aria-hidden="true">
           {Array.from({ length: 5 }, (_, index) => (
@@ -196,10 +218,13 @@ function DataTable({
 
   if (visible.length === 0) {
     return (
-      <div className="shms-table-wrap">
+      <div className={wrapClass}>
         {toolbar}
         <EmptyState
-          title={emptyState?.title ?? (search ? "Nothing matches that search" : "Nothing here yet")}
+          title={
+            emptyState?.title ??
+            (search ? "Nothing matches that search" : "Nothing here yet")
+          }
           message={
             emptyState?.message ??
             (search ? "Try a different term, or clear the search." : undefined)
@@ -224,75 +249,91 @@ function DataTable({
 
   /* ---- Table ------------------------------------------------------------ */
   return (
-    <div className="shms-table-wrap">
+    <div className={wrapClass}>
       {toolbar}
 
-      <table className="shms-table">
-        {caption && <caption className="visually-hidden">{caption}</caption>}
+      {/* Inert by default; a page's wrapper class can make it scroll sideways. */}
+      <div className="shms-table-scroll">
+        <table className="shms-table">
+          {caption && <caption className="visually-hidden">{caption}</caption>}
 
-        <thead>
-          <tr>
-            {columns.map((column) => {
-              const isSorted = sort.key === column.key;
-              const ariaSort = !column.sortable
-                ? undefined
-                : isSorted
-                  ? sort.direction === "asc"
-                    ? "ascending"
-                    : "descending"
-                  : "none";
-
-              return (
-                <th
-                  key={column.key}
-                  scope="col"
-                  className={column.align ? `is-${column.align}` : undefined}
-                  aria-sort={ariaSort}
-                >
-                  {column.sortable ? (
-                    <button
-                      type="button"
-                      className="shms-th-sort"
-                      onClick={() => toggleSort(column.key)}
-                    >
-                      {column.header}
-                      <i
-                        className={`bi ${
-                          isSorted
-                            ? sort.direction === "asc"
-                              ? "bi-arrow-up"
-                              : "bi-arrow-down"
-                            : "bi-arrow-down-up"
-                        }`}
-                        aria-hidden="true"
-                      />
-                    </button>
-                  ) : (
-                    column.header
-                  )}
-                </th>
-              );
-            })}
-          </tr>
-        </thead>
-
-        <tbody>
-          {visible.map((row) => (
-            <tr key={rowKey(row)}>
+          {hasWidths && (
+            <colgroup>
               {columns.map((column) => (
-                <td
+                <col
                   key={column.key}
-                  // Becomes the row label once the table stacks on mobile.
-                  data-label={column.header}
-                  className={column.align ? `is-${column.align}` : undefined}
-                >
-                  {column.render ? column.render(row) : (row[column.key] ?? "—")}
-                </td>
+                  style={column.width ? { width: column.width } : undefined}
+                />
               ))}
+            </colgroup>
+          )}
+
+          <thead>
+            <tr>
+              {columns.map((column) => {
+                const isSorted = sort.key === column.key;
+                const ariaSort = !column.sortable
+                  ? undefined
+                  : isSorted
+                    ? sort.direction === "asc"
+                      ? "ascending"
+                      : "descending"
+                    : "none";
+
+                return (
+                  <th
+                    key={column.key}
+                    scope="col"
+                    className={cellClass(column)}
+                    aria-sort={ariaSort}
+                  >
+                    {column.sortable ? (
+                      <button
+                        type="button"
+                        className="shms-th-sort"
+                        onClick={() => toggleSort(column.key)}
+                      >
+                        {column.header}
+                        <i
+                          className={`bi ${
+                            isSorted
+                              ? sort.direction === "asc"
+                                ? "bi-arrow-up"
+                                : "bi-arrow-down"
+                              : "bi-arrow-down-up"
+                          }`}
+                          aria-hidden="true"
+                        />
+                      </button>
+                    ) : (
+                      column.header
+                    )}
+                  </th>
+                );
+              })}
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+
+          <tbody>
+            {visible.map((row) => (
+              <tr key={rowKey(row)}>
+                {columns.map((column) => (
+                  <td
+                    key={column.key}
+                    // Becomes the row label once the table stacks on mobile.
+                    data-label={column.header}
+                    className={cellClass(column)}
+                  >
+                    {column.render
+                      ? column.render(row)
+                      : (row[column.key] ?? "—")}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {totalPages > 1 && (
         <nav className="shms-pagination" aria-label="Pagination">

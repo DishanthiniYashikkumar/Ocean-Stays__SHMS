@@ -1,6 +1,6 @@
 import { Area, AreaChart, CartesianGrid, Tooltip, XAxis, YAxis } from "recharts";
 import ChartTooltip from "./ChartTooltip";
-import { AXIS_PROPS, CHART_COLORS, GRID_PROPS } from "./chartTheme";
+import { useChartTheme } from "./chartTheme";
 
 /**
  * Occupancy rate over the last six months.
@@ -12,28 +12,30 @@ import { AXIS_PROPS, CHART_COLORS, GRID_PROPS } from "./chartTheme";
  * @param {{ data: Array<{month: string, rate: number}> }} props
  */
 function OccupancyChart({ data = [] }) {
+  const { colors, axisProps, gridProps } = useChartTheme();
+
   return (
     <AreaChart data={data} margin={{ top: 8, right: 8, left: -18, bottom: 0 }}>
       <defs>
         <linearGradient id="shms-occupancy-fill" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor={CHART_COLORS.navy} stopOpacity={0.28} />
-          <stop offset="100%" stopColor={CHART_COLORS.navy} stopOpacity={0.02} />
+          <stop offset="0%" stopColor={colors.accent} stopOpacity={0.28} />
+          <stop offset="100%" stopColor={colors.accent} stopOpacity={0.02} />
         </linearGradient>
       </defs>
 
-      <CartesianGrid {...GRID_PROPS} />
-      <XAxis dataKey="month" {...AXIS_PROPS} />
-      <YAxis {...AXIS_PROPS} domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
+      <CartesianGrid {...gridProps} />
+      <XAxis dataKey="month" {...axisProps} />
+      <YAxis {...axisProps} domain={[0, 100]} tickFormatter={(value) => `${value}%`} />
       <Tooltip
         content={<ChartTooltip formatter={(value) => `${value}%`} />}
-        cursor={{ stroke: CHART_COLORS.line }}
+        cursor={{ stroke: colors.line }}
       />
 
       <Area
         type="monotone"
         dataKey="rate"
         name="Occupancy"
-        stroke={CHART_COLORS.navy}
+        stroke={colors.accent}
         strokeWidth={2}
         fill="url(#shms-occupancy-fill)"
       />

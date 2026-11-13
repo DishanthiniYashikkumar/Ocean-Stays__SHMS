@@ -3,8 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#0a2140" />
+    <meta name="theme-color" content="#0a2140" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#08111e" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-title" content="Ocean Stays" />
     <meta
       name="description"
       content="Ocean Stays — where the ocean meets exceptional hospitality. Luxury coastal rooms, suites and villas on Sri Lanka's southern coast."
@@ -18,6 +23,17 @@
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,500&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Apply the saved theme before first paint (no light flash in dark mode).
+         Mirrors context/ThemeProvider.jsx; storage may be blocked, so guarded. -->
+    <script>
+      (function () {
+        try {
+          var t = localStorage.getItem("shms.theme");
+          if (t === "light" || t === "dark") document.documentElement.setAttribute("data-theme", t);
+        } catch (e) {}
+      })();
+    </script>
 
     <title>Ocean Stays · Where the Ocean Meets Exceptional Hospitality</title>
   </head>

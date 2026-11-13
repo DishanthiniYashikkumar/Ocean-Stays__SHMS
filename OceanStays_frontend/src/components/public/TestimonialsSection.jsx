@@ -4,6 +4,8 @@ import EmptyState from "../common/EmptyState";
 import ErrorState from "../common/ErrorState";
 import { useAsync } from "../../hooks/useAsync";
 import { getTestimonials } from "../../services/contentService";
+import StarRating from "../../components/common/StarRating";
+import { initials } from "../../utils/format";
 import "../../styles/cards.css";
 
 /**
@@ -11,28 +13,14 @@ import "../../styles/cards.css";
  * pause between the two image-heavy sections either side of it.
  */
 
-const MAX_STARS = 5;
 
-function Stars({ rating }) {
-  return (
-    <span className="shms-testimonial-stars" aria-label={`Rated ${rating} out of 5`}>
-      {Array.from({ length: MAX_STARS }, (_, index) => (
-        <i
-          key={index}
-          className={index < rating ? "bi bi-star-fill" : "bi bi-star"}
-          aria-hidden="true"
-        />
-      ))}
-    </span>
-  );
-}
 
 function TestimonialsSection() {
   const load = useCallback(() => getTestimonials(), []);
   const { data: testimonials, isLoading, error, isEmpty, reload } = useAsync(load);
 
   return (
-    <section className="shms-section shms-section-dark" aria-labelledby="testimonials-title">
+    <section className="shms-section shms-section-dark shms-wave-top" aria-labelledby="testimonials-title">
       <div className="shms-container">
         <div className="shms-section-head shms-section-head-center">
           <p className="shms-eyebrow">Guest Stories</p>
@@ -72,20 +60,26 @@ function TestimonialsSection() {
             <div className="shms-grid shms-grid-4">
               {testimonials.map(({ id, name, location, rating, quote, stayedIn, avatar }) => (
                 <figure key={id} className="shms-testimonial-card" style={{ margin: 0 }}>
-                  <Stars rating={rating} />
+                  <StarRating rating={rating} round={false} className="shms-testimonial-stars" />
 
                   <blockquote className="shms-testimonial-quote">
                     &ldquo;{quote}&rdquo;
                   </blockquote>
 
                   <figcaption className="shms-testimonial-author">
-                    <img
-                      className="shms-testimonial-avatar"
-                      src={avatar}
-                      alt=""
-                      loading="lazy"
-                      decoding="async"
-                    />
+                    {avatar ? (
+                      <img
+                        className="shms-testimonial-avatar"
+                        src={avatar}
+                        alt=""
+                        loading="lazy"
+                        decoding="async"
+                      />
+                    ) : (
+                      <span className="shms-testimonial-avatar shms-testimonial-initials" aria-hidden="true">
+                        {initials(name)}
+                      </span>
+                    )}
                     <span>
                       <span className="shms-testimonial-name">{name}</span>
                       <span className="shms-testimonial-meta">

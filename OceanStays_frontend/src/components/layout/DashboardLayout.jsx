@@ -1,9 +1,13 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Link, Outlet, useLocation, useNavigate } from "react-router-dom";
 import DashboardSidebar from "./DashboardSidebar";
 import { getNotificationsPath, getProfilePath, resolveHeading } from "./dashboardNav";
 import NotificationDropdown from "../common/NotificationDropdown";
+import ThemeToggle from "../common/ThemeToggle";
 import { useAuth } from "../../hooks/useAuth";
+import useScrollReveal from "../../hooks/useScrollReveal";
+import { MotionContext } from "../../context/motionContext";
+import { ROLES } from "../../services/roles";
 import { getNotifications } from "../../services/notificationService";
 import { initials } from "../../utils/format";
 import "../../styles/dashboard.css";
@@ -21,8 +25,17 @@ function DashboardLayout() {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // The admin panel stays calm: no entrance or scroll animation there.
+  const motionOn = role !== ROLES.ADMIN;
+  const contentRef = useRef(null);
+  useScrollReveal(contentRef, { enabled: motionOn, key: location.pathname });
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [notifications, setNotifications] = useState([]);
+  // "loading" | "ready" | "error" -- lets the notifications page show a state
+  // instead of an empty list while the shared fetch is in flight or failed.
+  const [notificationsStatus, setNotificationsStatus] = useState("loading");
+  const [notificationsAttempt, setNotificationsAttempt] = useState(0);
 
   // Heading and the bell's destination both come from dashboardNav.js, so the
   // shell needs no per-role knowledge of its own.
@@ -37,16 +50,24 @@ function DashboardLayout() {
 
     getNotifications({ userId: user.id })
       .then((items) => {
-        if (!cancelled) setNotifications(items);
+        if (cancelled) return;
+        setNotifications(items);
+        setNotificationsStatus("ready");
       })
       .catch(() => {
         // A failed fetch just leaves the bell empty; it is not worth a toast.
+        if (!cancelled) setNotificationsStatus("error");
       });
 
     return () => {
       cancelled = true;
     };
-  }, [user?.id]);
+  }, [user?.id, notificationsAttempt]);
+
+  const reloadNotifications = useCallback(() => {
+    setNotificationsStatus("loading");
+    setNotificationsAttempt((attempt) => attempt + 1);
+  }, []);
 
   /* ---- Drawer: escape and scroll lock ----------------------------------- */
   useEffect(() => {
@@ -68,13 +89,29 @@ function DashboardLayout() {
 
   const closeSidebar = useCallback(() => setIsSidebarOpen(false), []);
 
+  /* ---- Topbar height -> CSS var, so sticky table headers sit beneath it -- */
+  const shellRef = useRef(null);
+  const topbarRef = useRef(null);
+  useEffect(() => {
+    const topbar = topbarRef.current;
+    const shell = shellRef.current;
+    if (!topbar || !shell || typeof ResizeObserver === "undefined") return undefined;
+    const observer = new ResizeObserver(([entry]) => {
+      const height = Math.round(entry.target.getBoundingClientRect().height);
+      shell.style.setProperty("--topbar-height", `${height}px`);
+    });
+    observer.observe(topbar);
+    return () => observer.disconnect();
+  }, []);
+
   function handleSignOut() {
     signOut();
     navigate("/", { replace: true });
   }
 
   return (
-    <div className="shms-dash">
+    <MotionContext.Provider value={motionOn}>
+    <div className="shms-dash" ref={shellRef} data-motion={motionOn ? "on" : "off"}>
       <a className="shms-skip-link" href="#dashboard-content">
         Skip to main content
       </a>
@@ -97,7 +134,7 @@ function DashboardLayout() {
       )}
 
       <div className="shms-dash-main">
-        <header className="shms-topbar">
+        <header className="shms-topbar" ref={topbarRef}>
           <button
             type="button"
             className="shms-icon-btn shms-sidebar-toggle"
@@ -118,6 +155,8 @@ function DashboardLayout() {
             <Link className="shms-icon-btn" to="/" aria-label="Back to the Ocean Stays website">
               <i className="bi bi-house" aria-hidden="true" />
             </Link>
+
+            <ThemeToggle />
 
             <NotificationDropdown
               notifications={notifications}
@@ -150,11 +189,16 @@ function DashboardLayout() {
           </div>
         </header>
 
-        <main className="shms-dash-content" id="dashboard-content">
-          <Outlet context={{ notifications, setNotifications }} />
+        <main className="shms-dash-content" id="dashboard-content" ref={contentRef}>
+          <div className="shms-route" key={location.pathname}>
+            <Outlet
+              context={{ notifications, setNotifications, notificationsStatus, reloadNotifications }}
+            />
+          </div>
         </main>
       </div>
     </div>
+    </MotionContext.Provider>
   );
 }
 

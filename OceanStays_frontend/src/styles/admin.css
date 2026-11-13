@@ -67,7 +67,7 @@
   font-variant-numeric: tabular-nums;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 768px) {
   .shms-chart-grid {
     grid-template-columns: minmax(0, 1fr);
   }
@@ -116,13 +116,13 @@
 }
 
 .shms-role-btn:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
 .shms-role-btn[aria-pressed="true"] {
-  border-color: var(--navy-600);
-  border-left-color: var(--gold-500);
+  border-color: var(--accent);
+  border-left-color: var(--accent);
   background: var(--navy-100);
 }
 
@@ -177,7 +177,7 @@
   flex: none;
   border-radius: var(--radius-sm);
   font-size: 0.95rem;
-  color: var(--navy-600);
+  color: var(--link);
   background: var(--navy-100);
 }
 
@@ -212,7 +212,7 @@
 }
 
 .shms-perm-item:hover {
-  border-color: var(--navy-500);
+  border-color: var(--border-focus);
   background: var(--field);
 }
 
@@ -221,12 +221,12 @@
   height: 17px;
   margin: 0;
   flex: none;
-  accent-color: var(--navy-700);
+  accent-color: var(--accent);
   cursor: pointer;
 }
 
 .shms-perm-item input:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -289,7 +289,7 @@
   margin-left: auto;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .shms-perm-layout {
     grid-template-columns: minmax(0, 1fr);
   }

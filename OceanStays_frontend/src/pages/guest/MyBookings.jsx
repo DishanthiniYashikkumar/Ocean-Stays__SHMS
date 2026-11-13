@@ -7,6 +7,7 @@ import { useAsync } from "../../hooks/useAsync";
 import { useAuth } from "../../hooks/useAuth";
 import { getGuestBookings } from "../../services/bookingService";
 import { formatCurrency, formatDateRange } from "../../utils/format";
+import Tabs from "../../components/common/Tabs";
 import "../../styles/dashboard.css";
 
 /** Current, upcoming and past stays, grouped into tabs. */
@@ -60,21 +61,12 @@ function MyBookings() {
 
   return (
     <>
-      <ul className="shms-tabs">
-        {TABS.map(({ id, label }) => (
-          <li key={id}>
-            <button
-              type="button"
-              className="shms-tab"
-              aria-pressed={tab === id}
-              onClick={() => setTab(id)}
-            >
-              {label}
-              <span className="shms-tab-count">{counts[id]}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      <Tabs
+        label="Booking filter"
+        tabs={TABS.map(({ id, label }) => ({ id, label, count: counts[id] }))}
+        value={tab}
+        onChange={setTab}
+      />
 
       <section className="shms-panel">
         {isLoading ? (

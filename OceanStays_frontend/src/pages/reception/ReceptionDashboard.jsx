@@ -5,11 +5,11 @@ import ErrorState from "../../components/common/ErrorState";
 import StatusBadge from "../../components/common/StatusBadge";
 import { useAsync } from "../../hooks/useAsync";
 import { getFrontDeskSummary } from "../../services/bookingService";
-import { getRoomStatusSummary } from "../../services/roomService";
+import { ROOM_STATUS, getRoomStatusSummary } from "../../services/roomService";
 import { getRequestSummary } from "../../services/serviceRequestService";
 import { formatCurrency, formatDate, formatRelative } from "../../utils/format";
+import PanelSkeleton from "../../components/common/PanelSkeleton";
 import "../../styles/dashboard.css";
-
 /**
  * Front desk overview: who is arriving, who is leaving, what the rooms are
  * doing and what still needs paying.
@@ -27,18 +27,6 @@ const QUICK_ACTIONS = [
   { to: "/reception/requests", icon: "bi-bell", label: "Requests", hint: "Assign to staff" },
 ];
 
-function PanelSkeleton({ rows = 3 }) {
-  return (
-    <div className="shms-panel-body" aria-hidden="true">
-      {Array.from({ length: rows }, (_, index) => (
-        <div key={index} style={{ marginBottom: "var(--space-4)" }}>
-          <div className="shms-skeleton shms-skeleton-title" />
-          <div className="shms-skeleton shms-skeleton-text" />
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function ReceptionDashboard() {
   const loadDesk = useCallback(() => getFrontDeskSummary(), []);
@@ -59,15 +47,27 @@ function ReceptionDashboard() {
   const tiles = [
     { icon: "bi-box-arrow-in-right", tone: "", value: arrivals.length, label: "Arrivals today" },
     { icon: "bi-box-arrow-right", tone: "", value: departures.length, label: "Departures today" },
+    // Same ROOM_STATUS keys as the admin Rooms page. Each status is counted on
+    // exactly one tile: Inspected rooms are no longer folded into "available".
+    // (The API maps DB "Maintaining" to MAINTENANCE.)
     {
       icon: "bi-door-open",
       tone: "shms-stat-icon-success",
-      value:
-        (rooms.data?.AVAILABLE ?? 0) + (rooms.data?.READY ?? 0) + (rooms.data?.INSPECTED ?? 0),
+      value: rooms.data?.[ROOM_STATUS.AVAILABLE] ?? 0,
       label: "Rooms available",
     },
-    { icon: "bi-person-check", tone: "shms-stat-icon-gold", value: rooms.data?.OCCUPIED ?? 0, label: "Rooms occupied" },
-    { icon: "bi-stars", tone: "shms-stat-icon-warning", value: rooms.data?.CLEANING ?? 0, label: "Being cleaned" },
+    {
+      icon: "bi-clipboard-check",
+      tone: "shms-stat-icon-gold",
+      value: rooms.data?.[ROOM_STATUS.INSPECTED] ?? 0,
+      label: "Inspected",
+    },
+    {
+      icon: "bi-tools",
+      tone: "shms-stat-icon-warning",
+      value: rooms.data?.[ROOM_STATUS.MAINTENANCE] ?? 0,
+      label: "Maintaining",
+    },
     {
       icon: "bi-bell",
       tone: "shms-stat-icon-warning",
@@ -78,7 +78,7 @@ function ReceptionDashboard() {
 
   return (
     <>
-      <div className="shms-stats">
+      <div className="shms-stats shms-stats-six">
         {tiles.map(({ icon, tone, value, label }) => (
           <article className="shms-stat" key={label}>
             <span className={`shms-stat-icon ${tone}`.trim()} aria-hidden="true">

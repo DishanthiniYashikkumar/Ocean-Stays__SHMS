@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import { Link, useSearchParams } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import AvailabilitySearch from "../../components/public/AvailabilitySearch";
 import RoomFilters from "../../components/public/RoomFilters";
 import RoomCard from "../../components/common/RoomCard";
@@ -9,6 +9,7 @@ import ErrorState from "../../components/common/ErrorState";
 import { useAsync } from "../../hooks/useAsync";
 import { AMENITIES, getRoomTypeCounts, getRoomTypes } from "../../services/roomService";
 import { formatCurrency } from "../../utils/format";
+import PageHeader from "../../components/common/PageHeader";
 import "../../styles/rooms.css";
 
 /**
@@ -151,24 +152,10 @@ function Rooms() {
 
   return (
     <>
-      <header className="shms-page-head">
-        <div className="shms-container">
-          <ul className="shms-breadcrumb">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Rooms</li>
-          </ul>
-
-          <h1>Rooms, Suites &amp; Villas</h1>
-          <span className="shms-rule-gold" />
-          <p>
-            Every room at Ocean Stays faces water. Choose your view, your space and the level of
-            privacy that suits how you travel.
-          </p>
-        </div>
-      </header>
+      <PageHeader title="Rooms, Suites & Villas" current="Rooms">
+        Every room at Ocean Stays faces water. Choose your view, your space and the level of
+        privacy that suits how you travel.
+      </PageHeader>
 
       <AvailabilitySearch
         inline

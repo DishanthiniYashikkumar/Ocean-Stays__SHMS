@@ -1,6 +1,6 @@
 import { Cell, Legend, Pie, PieChart, Tooltip } from "recharts";
 import ChartTooltip from "./ChartTooltip";
-import { CATEGORY_COLORS } from "./chartTheme";
+import { useChartTheme } from "./chartTheme";
 
 /**
  * Where bookings come from.
@@ -12,11 +12,13 @@ import { CATEGORY_COLORS } from "./chartTheme";
  * @param {{ data: Array<{channel: string, count: number}> }} props
  */
 function ChannelChart({ data = [] }) {
+  const { categoryColors } = useChartTheme();
+
   return (
     <PieChart>
       <Pie
         data={data}
-        dataKey="count"
+        dataKey="bookings"
         nameKey="channel"
         innerRadius="52%"
         outerRadius="78%"
@@ -24,7 +26,7 @@ function ChannelChart({ data = [] }) {
         stroke="none"
       >
         {data.map((entry, index) => (
-          <Cell key={entry.channel} fill={CATEGORY_COLORS[index % CATEGORY_COLORS.length]} />
+          <Cell key={entry.channel} fill={categoryColors[index % categoryColors.length]} />
         ))}
       </Pie>
 

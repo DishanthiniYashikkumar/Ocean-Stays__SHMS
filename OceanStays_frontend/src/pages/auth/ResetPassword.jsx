@@ -4,6 +4,7 @@ import AuthLayout from "../../components/layout/AuthLayout";
 import { resetPassword } from "../../services/authService";
 import { matches, minLength, passwordStrength, required, validate } from "../../utils/validation";
 
+import Alert from "../../components/common/Alert";
 /**
  * Completes a password reset. The token arrives as `?token=` on the link the
  * backend emails; without one there is nothing to reset, so the page says so
@@ -151,10 +152,7 @@ function ResetPassword() {
     >
       <form className="shms-form" onSubmit={handleSubmit} noValidate>
         {submitError && (
-          <div className="shms-alert" role="alert">
-            <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-            <span>{submitError}</span>
-          </div>
+          <Alert>{submitError}</Alert>
         )}
 
         {fields.map(({ name, label, icon, placeholder }) => {

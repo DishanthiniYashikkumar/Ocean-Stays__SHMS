@@ -4,28 +4,14 @@ import EmptyState from "../../components/common/EmptyState";
 import ErrorState from "../../components/common/ErrorState";
 import { useAsync } from "../../hooks/useAsync";
 import { getTestimonials } from "../../services/contentService";
+import StarRating from "../../components/common/StarRating";
+import PageHeader from "../../components/common/PageHeader";
+import { initials } from "../../utils/format";
 import "../../styles/cards.css";
 
 /** Guest stories, with an aggregate rating summary above them. */
 
-const MAX_STARS = 5;
 
-function Stars({ rating, className = "" }) {
-  return (
-    <span
-      className={`shms-testimonial-stars ${className}`.trim()}
-      aria-label={`Rated ${rating} out of ${MAX_STARS}`}
-    >
-      {Array.from({ length: MAX_STARS }, (_, index) => (
-        <i
-          key={index}
-          className={index < Math.round(rating) ? "bi bi-star-fill" : "bi bi-star"}
-          aria-hidden="true"
-        />
-      ))}
-    </span>
-  );
-}
 
 function Testimonials() {
   const load = useCallback(() => getTestimonials(), []);
@@ -39,24 +25,10 @@ function Testimonials() {
 
   return (
     <>
-      <header className="shms-page-head">
-        <div className="shms-container">
-          <ul className="shms-breadcrumb">
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li aria-hidden="true">/</li>
-            <li aria-current="page">Guest Stories</li>
-          </ul>
-
-          <h1>Guest Stories</h1>
-          <span className="shms-rule-gold" />
-          <p>
-            Unedited reviews from guests who stayed with us. We publish every one we receive,
-            whatever it says.
-          </p>
-        </div>
-      </header>
+      <PageHeader title="Guest Stories">
+        Unedited reviews from guests who stayed with us. We publish every one we receive,
+        whatever it says.
+      </PageHeader>
 
       <section className="shms-section">
         <div className="shms-container">
@@ -88,7 +60,7 @@ function Testimonials() {
               <div className="shms-rating-summary">
                 <div className="shms-rating-score">
                   <strong>{average.toFixed(1)}</strong>
-                  <Stars rating={average} />
+                  <StarRating rating={average} className="shms-testimonial-stars" />
                   <span>Average guest rating</span>
                 </div>
 
@@ -124,20 +96,26 @@ function Testimonials() {
                     className="shms-testimonial-card shms-testimonial-light"
                     style={{ margin: 0 }}
                   >
-                    <Stars rating={rating} />
+                    <StarRating rating={rating} className="shms-testimonial-stars" />
 
                     <blockquote className="shms-testimonial-quote">
                       &ldquo;{quote}&rdquo;
                     </blockquote>
 
                     <figcaption className="shms-testimonial-author">
-                      <img
-                        className="shms-testimonial-avatar"
-                        src={avatar}
-                        alt=""
-                        loading="lazy"
-                        decoding="async"
-                      />
+                      {avatar ? (
+                        <img
+                          className="shms-testimonial-avatar"
+                          src={avatar}
+                          alt=""
+                          loading="lazy"
+                          decoding="async"
+                        />
+                      ) : (
+                        <span className="shms-testimonial-avatar shms-testimonial-initials" aria-hidden="true">
+                          {initials(name)}
+                        </span>
+                      )}
                       <span>
                         <span className="shms-testimonial-name">{name}</span>
                         <span className="shms-testimonial-meta">

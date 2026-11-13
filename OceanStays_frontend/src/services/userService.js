@@ -27,33 +27,30 @@ export const STAFF_ROLES = [
  */
 export async function getUsers(query = {}) {
   const { role, status, search, page, pageSize } = query;
-  const data = await request("/guests");
+  const data = await request("/users", { params: { role } });
   const term = search?.trim().toLowerCase();
 
-  // /guests is the only user listing the API has, so every row here is a guest.
-  // Row order: guest_id, user_id, date_of_birth, gender, nationality, address,
-  // identification_type, identification_number, first_name, last_name, email.
-  const items = data.guests
-    .map((row) => {
-      const [firstName, lastName, email] = row.slice(8);
+  const items = data.map((user) => ({
+    id: user.user_id,
+    firstName: user.first_name ?? "",
+    lastName: user.last_name ?? "",
+    name: `${user.first_name ?? ""} ${user.last_name ?? ""}`.trim(),
+    email: user.email ?? "",
+    phone: user.phone_number ?? "",
+    role: normaliseRole(user.role),
+    department: user.department ?? "",
+    status: (user.status ?? "Inactive").toUpperCase(),
+    position: user.position ?? "",
+    lastSignIn: user.last_sign_in ?? null,
+    lastLoginAt: user.last_sign_in ?? null,
+    createdAt: user.created_at ?? null,
+  })).filter((user) => {
+    if (role && user.role !== role) return false;
+    if (status && user.status !== status) return false;
 
-      return {
-        id: row[1],
-        guestId: row[0],
-        firstName,
-        lastName,
-        name: `${firstName ?? ""} ${lastName ?? ""}`.trim(),
-        email,
-        phone: "",
-        role: ROLES.GUEST,
-        status: "ACTIVE",
-      };
-    })
-    .filter((user) => {
-      if (role && user.role !== role) return false;
-      if (status && user.status !== status) return false;
-      return !term || `${user.name} ${user.email}`.toLowerCase().includes(term);
-    });
+    return !term ||
+      `${user.name} ${user.email} ${user.phone}`.toLowerCase().includes(term);
+  });
 
   return paginate(items, { page, pageSize: pageSize ?? 10 });
 }

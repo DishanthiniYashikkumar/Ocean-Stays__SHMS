@@ -2,6 +2,7 @@ import { Link, NavLink } from "react-router-dom";
 import { getNavForRole } from "./dashboardNav";
 import { ROLE_LABELS } from "../../services/authService";
 import "../../styles/dashboard.css";
+import { LogoMark } from "../common/Logo";
 
 /**
  * Role-driven dashboard navigation.
@@ -28,9 +29,7 @@ function DashboardSidebar({ role, isOpen, onClose, onSignOut }) {
       aria-label="Dashboard navigation"
     >
       <Link className="shms-side-brand" to="/" onClick={onClose}>
-        <span className="shms-side-mark" aria-hidden="true">
-          <i className="bi bi-water" />
-        </span>
+        <LogoMark className="shms-side-mark" size={38} />
         <span className="shms-side-wordmark">
           <span className="shms-side-name">OCEAN STAYS</span>
           <span className="shms-side-role">{ROLE_LABELS[role] ?? "Portal"}</span>

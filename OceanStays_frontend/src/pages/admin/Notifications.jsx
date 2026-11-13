@@ -11,8 +11,8 @@ import {
 } from "../../services/notificationService";
 import { getUsers } from "../../services/userService";
 import { formatDateTime, formatRelative } from "../../utils/format";
+import StatCard from "../../components/common/StatCard";
 import "../../styles/dashboard.css";
-
 /**
  * Notification oversight.
  *
@@ -172,15 +172,11 @@ function Notifications() {
   return (
     <>
       <div className="shms-stats">
-        <article className="shms-stat">
-          <span className="shms-stat-icon" aria-hidden="true">
-            <i className="bi bi-inbox" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{data?.length ?? 0}</span>
-            <span className="shms-stat-label">Notifications sent</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-inbox"
+          value={data?.length ?? 0}
+          label="Notifications sent"
+        />
 
         <article className="shms-stat">
           <span

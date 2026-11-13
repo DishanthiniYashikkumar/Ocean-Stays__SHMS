@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from "react";
 import EmptyState from "../../components/common/EmptyState";
 import ErrorState from "../../components/common/ErrorState";
+import Modal from "../../components/common/Modal";
 import ReportIssueModal from "../../components/housekeeping/ReportIssueModal";
 import StatusBadge from "../../components/common/StatusBadge";
 import { useAsync } from "../../hooks/useAsync";
@@ -201,60 +202,43 @@ function MaintenanceIssues() {
 
       {/* --------------------------------------------------- Pick a room */}
       {pickingRoom && (
-        <section className="shms-modal-scrim" onMouseDown={(e) => e.target === e.currentTarget && setPickingRoom(false)}>
-          <div className="shms-modal" role="dialog" aria-modal="true" aria-label="Choose a room">
-            <div className="shms-modal-head">
-              <div>
-                <h2 className="shms-modal-title">Which room?</h2>
-                <p className="shms-modal-subtitle">
-                  Rooms already out of service aren&apos;t listed.
-                </p>
-              </div>
-              <button
-                type="button"
-                className="shms-modal-close"
-                onClick={() => setPickingRoom(false)}
-                aria-label="Close dialog"
-              >
-                <i className="bi bi-x-lg" aria-hidden="true" />
-              </button>
+        // Shared Modal: portalled, focus-trapped, Escape closes.
+        <Modal
+          title="Which room?"
+          subtitle="Rooms already out of service aren't listed."
+          onClose={() => setPickingRoom(false)}
+          footer={
+            <button
+              type="button"
+              className="shms-btn shms-btn-outline"
+              onClick={() => setPickingRoom(false)}
+            >
+              Cancel
+            </button>
+          }
+        >
+          {reportable.length === 0 ? (
+            <p>Every room is already out of service.</p>
+          ) : (
+            <div className="shms-room-grid">
+              {reportable.map((room) => (
+                <button
+                  key={room.id}
+                  type="button"
+                  className={`shms-room-tile is-${room.status}`}
+                  onClick={() => {
+                    setPickingRoom(false);
+                    setReporting({ roomId: room.id, roomNumber: room.number });
+                  }}
+                >
+                  <span className="shms-room-number">{room.number}</span>
+                  <span className="shms-room-type">{room.roomTypeName}</span>
+                  <StatusBadge status={room.status} domain="room" />
+                </button>
+              ))}
             </div>
-
-            <div className="shms-modal-body">
-              {reportable.length === 0 ? (
-                <p>Every room is already out of service.</p>
-              ) : (
-                <div className="shms-room-grid">
-                  {reportable.map((room) => (
-                    <button
-                      key={room.id}
-                      type="button"
-                      className={`shms-room-tile is-${room.status}`}
-                      onClick={() => {
-                        setPickingRoom(false);
-                        setReporting({ roomId: room.id, roomNumber: room.number });
-                      }}
-                    >
-                      <span className="shms-room-number">{room.number}</span>
-                      <span className="shms-room-type">{room.roomTypeName}</span>
-                      <StatusBadge status={room.status} domain="room" />
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-
-            <div className="shms-modal-foot">
-              <button
-                type="button"
-                className="shms-btn shms-btn-outline"
-                onClick={() => setPickingRoom(false)}
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </section>
+          )}
+        </Modal>
       )}
 
       {reporting && (

@@ -9,8 +9,9 @@ import { getGuestBookings } from "../../services/bookingService";
 import { getServiceRequests, REQUEST_STATUS } from "../../services/serviceRequestService";
 import { getPayments } from "../../services/paymentService";
 import { formatCurrency, formatDate, formatDateRange, formatRelative } from "../../utils/format";
+import StatCard from "../../components/common/StatCard";
+import PanelSkeleton from "../../components/common/PanelSkeleton";
 import "../../styles/dashboard.css";
-
 /**
  * Guest dashboard: current stay, what's next, open requests and anything owed.
  *
@@ -29,18 +30,6 @@ const QUICK_ACTIONS = [
   { to: "/guest/feedback", icon: "bi-chat-quote", label: "Feedback", hint: "Tell us how we did" },
 ];
 
-function PanelSkeleton({ rows = 2 }) {
-  return (
-    <div className="shms-panel-body">
-      {Array.from({ length: rows }, (_, index) => (
-        <div key={index} style={{ marginBottom: "var(--space-4)" }} aria-hidden="true">
-          <div className="shms-skeleton shms-skeleton-title" />
-          <div className="shms-skeleton shms-skeleton-text" />
-        </div>
-      ))}
-    </div>
-  );
-}
 
 function GuestDashboard() {
   const { user } = useAuth();
@@ -91,37 +80,27 @@ function GuestDashboard() {
 
       {/* --------------------------------------------------------- Stats */}
       <div className="shms-stats">
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-success" aria-hidden="true">
-            <i className="bi bi-door-open" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value">{current ? "In house" : "Not staying"}</span>
-            <span className="shms-stat-label">
-              {current ? `Room ${current.roomNumber ?? "to be allocated"}` : "No active stay"}
-            </span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-door-open"
+          tone="success"
+          value={current ? "In house" : "Not staying"}
+          label={current ? `Room ${current.roomNumber ?? "to be allocated"}` : "No active stay"}
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon" aria-hidden="true">
-            <i className="bi bi-calendar2-event" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value shms-kpi-value">{bookings.data?.upcoming?.length ?? 0}</span>
-            <span className="shms-stat-label">Upcoming bookings</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-calendar2-event"
+          kpi
+          value={bookings.data?.upcoming?.length ?? 0}
+          label="Upcoming bookings"
+        />
 
-        <article className="shms-stat">
-          <span className="shms-stat-icon shms-stat-icon-warning" aria-hidden="true">
-            <i className="bi bi-bell" />
-          </span>
-          <span className="shms-stat-copy">
-            <span className="shms-stat-value shms-kpi-value">{openRequests.length}</span>
-            <span className="shms-stat-label">Open requests</span>
-          </span>
-        </article>
+        <StatCard
+          icon="bi-bell"
+          tone="warning"
+          kpi
+          value={openRequests.length}
+          label="Open requests"
+        />
 
         <article className="shms-stat">
           <span className="shms-stat-icon shms-stat-icon-gold" aria-hidden="true">
@@ -158,7 +137,7 @@ function GuestDashboard() {
             {bookings.error ? (
               <ErrorState message={bookings.error.message} onRetry={bookings.reload} />
             ) : bookings.isLoading ? (
-              <PanelSkeleton />
+              <PanelSkeleton rows={2} />
             ) : current || nextStay ? (
               (() => {
                 const stay = current ?? nextStay;

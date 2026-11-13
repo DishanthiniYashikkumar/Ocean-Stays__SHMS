@@ -10,6 +10,7 @@ import {
   required,
   validate,
 } from "../../utils/validation";
+import Alert from "../../components/common/Alert";
 import "../../styles/booking.css";
 
 /**
@@ -138,10 +139,7 @@ function PaymentForm({ total, currency, isSubmitting, error, onSubmit, onBack })
       </p>
 
       {error && (
-        <div className="shms-alert" role="alert" style={{ marginBottom: "var(--space-5)" }}>
-          <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-          <span>{error}</span>
-        </div>
+        <Alert style={{ marginBottom: "var(--space-5)" }}>{error}</Alert>
       )}
 
       <fieldset className="shms-methods" style={{ border: 0, padding: 0, margin: 0 }}>

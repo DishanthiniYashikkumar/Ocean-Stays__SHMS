@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { HOTEL } from "../../services/contentService";
 import "../../styles/footer.css";
+import { LogoMark } from "../common/Logo";
 
 /**
  * Public site footer. Contact details and social links come from the hotel
@@ -32,9 +33,7 @@ function Footer() {
           {/* ------------------------------------------------------- Brand */}
           <div className="shms-footer-col-brand">
             <Link className="shms-footer-brand" to="/">
-              <span className="shms-footer-mark" aria-hidden="true">
-                <i className="bi bi-water" />
-              </span>
+              <LogoMark className="shms-footer-mark" size={42} />
               <span className="shms-footer-name">OCEAN STAYS</span>
             </Link>
 

@@ -53,7 +53,7 @@
 }
 
 .shms-strength-seg.is-on-info {
-  background: var(--navy-500);
+  background: var(--info);
 }
 
 .shms-strength-seg.is-on-success {

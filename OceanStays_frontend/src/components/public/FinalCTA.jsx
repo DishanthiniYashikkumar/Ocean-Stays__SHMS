@@ -12,7 +12,7 @@ function FinalCTA() {
       <img src={CTA_IMAGE} alt="" aria-hidden="true" loading="lazy" decoding="async" />
 
       <div className="shms-container">
-        <p className="shms-eyebrow" style={{ color: "var(--gold-300)" }}>
+        <p className="shms-eyebrow" style={{ color: "var(--teal-300)" }}>
           Reserve Your Stay
         </p>
 

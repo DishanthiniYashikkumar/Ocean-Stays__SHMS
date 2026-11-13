@@ -49,7 +49,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(70% 55% at 78% 12%, rgba(201, 162, 39, 0.22) 0%, transparent 62%),
+    radial-gradient(70% 55% at 78% 12%, rgba(18, 150, 139, 0.22) 0%, transparent 62%),
     linear-gradient(155deg, rgba(6, 21, 41, 0.9) 0%, rgba(10, 33, 64, 0.82) 45%, rgba(6, 21, 41, 0.95) 100%);
 }
 
@@ -71,19 +71,16 @@
   display: flex;
   align-items: center;
   gap: 13px;
+  text-decoration: none;
 }
 
 .shms-brand-mark {
-  display: grid;
-  place-items: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 13px;
-  font-size: 20px;
-  color: var(--gold-300);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(234, 208, 138, 0.32);
-  backdrop-filter: blur(8px);
+  display: block;
+  flex: none;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.2), 0 14px 30px -16px rgba(0, 0, 0, 0.7);
 }
 
 .shms-brand-name {
@@ -115,7 +112,7 @@
   height: 3px;
   margin: 26px 0 22px;
   border-radius: 2px;
-  background: linear-gradient(90deg, var(--gold-400), rgba(201, 162, 39, 0));
+  background: linear-gradient(90deg, var(--teal-400), rgba(18, 150, 139, 0));
 }
 
 .shms-tagline {
@@ -123,7 +120,7 @@
   font-size: 1.06rem;
   font-weight: 500;
   letter-spacing: 0.01em;
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 .shms-visual-note {
@@ -162,12 +159,12 @@
 
 .shms-capability:hover {
   background: rgba(255, 255, 255, 0.12);
-  border-color: rgba(234, 208, 138, 0.4);
+  border-color: rgba(95, 201, 191, 0.4);
 }
 
 .shms-capability i {
   font-size: 0.95rem;
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 /* ==========================================================================
@@ -209,8 +206,8 @@
   margin-bottom: 22px;
   border-radius: 16px;
   font-size: 23px;
-  color: var(--gold-300);
-  background: linear-gradient(145deg, var(--navy-700), var(--navy-900));
+  color: var(--teal-300);
+  background: var(--mark-fill);
   box-shadow: 0 8px 18px -8px rgba(10, 33, 64, 0.65);
 }
 
@@ -250,7 +247,7 @@
 }
 
 .shms-secure i {
-  color: var(--gold-ink);
+  color: var(--accent-ink);
 }
 
 /* A discreet way back to the public site from the auth screens. */
@@ -266,11 +263,11 @@
 }
 
 .shms-auth-back:hover {
-  color: var(--navy-600);
+  color: var(--link);
 }
 
 .shms-auth-back:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -280,7 +277,7 @@
    ========================================================================== */
 
 /* Laptop — tighten the visual side's breathing room */
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
   .shms-visual-inner {
     padding: 44px 44px;
     gap: 36px;
@@ -316,7 +313,7 @@
 }
 
 /* Tablet portrait & mobile — stack, banner on top, card overlapping it */
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .shms-login {
     grid-template-columns: 1fr;
     grid-template-rows: auto 1fr;
@@ -362,7 +359,7 @@
 }
 
 /* Small phones */
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .shms-visual {
     min-height: 210px;
   }
@@ -372,9 +369,8 @@
   }
 
   .shms-brand-mark {
-    width: 38px;
-    height: 38px;
-    font-size: 17px;
+    width: 40px;
+    height: 40px;
   }
 
   .shms-brand-name {
@@ -399,7 +395,7 @@
 }
 
 /* Very short viewports — don't force a tall banner */
-@media (max-height: 620px) and (min-width: 901px) {
+@media (max-height: 620px) and (min-width: 1025px) {
   .shms-visual-inner {
     padding: 36px 44px;
   }
@@ -407,4 +403,14 @@
   .shms-auth-panel {
     padding: 32px 28px;
   }
+}
+
+/* The sign-in card shows the brand logo instead of an icon badge. */
+.shms-auth-logo {
+  display: block;
+  width: 52px;
+  height: 52px;
+  margin-bottom: 22px;
+  border-radius: 15px;
+  box-shadow: 0 14px 28px -16px rgba(6, 21, 41, 0.6);
 }

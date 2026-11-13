@@ -123,16 +123,20 @@ export function initials(name) {
     .join("");
 }
 
-/** Today as YYYY-MM-DD, for date input min attributes. */
+/**
+ * Today as YYYY-MM-DD in the user's own time zone, for date input min
+ * attributes. (toISOString() would give the UTC date, which is yesterday in
+ * Sri Lanka until 05:30.)
+ */
 export function todayISO() {
   const now = new Date();
-  now.setHours(0, 0, 0, 0);
-  return now.toISOString().slice(0, 10);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${now.getFullYear()}-${pad(now.getMonth() + 1)}-${pad(now.getDate())}`;
 }
 
-/** Shifts an ISO date string by a number of days. */
+/** Shifts an ISO date string by a number of days (calendar arithmetic, no time zones). */
 export function addDays(dateISO, days) {
-  const date = dateISO ? new Date(dateISO) : new Date();
-  date.setDate(date.getDate() + days);
+  const date = new Date(`${dateISO || todayISO()}T00:00:00Z`);
+  date.setUTCDate(date.getUTCDate() + days);
   return date.toISOString().slice(0, 10);
 }

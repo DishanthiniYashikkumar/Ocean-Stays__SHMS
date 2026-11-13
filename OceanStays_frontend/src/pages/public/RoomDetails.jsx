@@ -107,7 +107,7 @@ function RoomDetails() {
 
   return (
     <>
-      <header className="shms-page-head" style={{ paddingBlock: "var(--space-10)" }}>
+      <header className="shms-page-head shms-page-head-compact">
         <div className="shms-container">
           <ul className="shms-breadcrumb" style={{ marginBottom: 0 }}>
             <li>

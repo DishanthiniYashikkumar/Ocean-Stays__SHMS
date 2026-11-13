@@ -4,6 +4,7 @@ import AuthLayout from "../../components/layout/AuthLayout";
 import { requestPasswordReset } from "../../services/authService";
 import { email as emailRule, required, validate } from "../../utils/validation";
 
+import Alert from "../../components/common/Alert";
 /**
  * Requests a password reset link.
  *
@@ -83,10 +84,7 @@ function ForgotPassword() {
     >
       <form className="shms-form" onSubmit={handleSubmit} noValidate>
         {submitError && (
-          <div className="shms-alert" role="alert">
-            <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-            <span>{submitError}</span>
-          </div>
+          <Alert>{submitError}</Alert>
         )}
 
         <div className="shms-field">

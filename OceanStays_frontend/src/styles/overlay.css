@@ -93,7 +93,7 @@
 }
 
 .shms-toast-close:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -114,11 +114,11 @@
 }
 
 .shms-toast-info {
-  border-left-color: var(--navy-600);
+  border-left-color: var(--info);
 }
 
 .shms-toast-info .shms-toast-icon {
-  color: var(--navy-600);
+  color: var(--link);
 }
 
 @media (max-width: 560px) {
@@ -217,7 +217,7 @@
 }
 
 .shms-modal-close:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -245,6 +245,59 @@
   flex: 1;
 }
 
+/* Short viewports (most laptops): tighten the dialog so a full form and its
+   footer fit without scrolling. Tall screens keep the roomier layout. */
+@media (max-height: 800px) {
+  .shms-modal-scrim {
+    padding: var(--space-3);
+  }
+
+  .shms-modal {
+    max-height: calc(100svh - var(--space-6));
+  }
+
+  .shms-modal-head {
+    padding: var(--space-5) var(--space-6) var(--space-3);
+  }
+
+  /* Icon beside the title instead of above it. */
+  .shms-modal-head > div:has(> .shms-modal-icon) {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: var(--space-4);
+    align-items: center;
+  }
+
+  .shms-modal-head > div:has(> .shms-modal-icon) .shms-modal-icon {
+    grid-row: span 2;
+    width: 44px;
+    height: 44px;
+    margin-bottom: 0;
+    font-size: 19px;
+  }
+
+  .shms-modal-subtitle {
+    margin-top: 2px;
+  }
+
+  .shms-modal .shms-form {
+    gap: 14px;
+  }
+
+  .shms-modal .shms-input {
+    height: 46px;
+  }
+
+  .shms-modal textarea.shms-input {
+    height: auto;
+    min-height: 84px;
+  }
+
+  .shms-modal-foot {
+    padding: var(--space-4) var(--space-6) var(--space-5);
+  }
+}
+
 /* Icon banner for confirmation dialogs. */
 .shms-modal-icon {
   display: grid;
@@ -254,7 +307,7 @@
   margin-bottom: var(--space-4);
   border-radius: var(--radius-md);
   font-size: 22px;
-  color: var(--navy-600);
+  color: var(--link);
   background: var(--navy-100);
 }
 

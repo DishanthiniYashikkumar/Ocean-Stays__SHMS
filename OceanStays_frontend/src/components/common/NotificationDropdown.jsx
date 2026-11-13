@@ -25,6 +25,15 @@ function NotificationDropdown({ notifications, userId, onChange, viewAllHref }) 
 
   const unreadCount = notifications.filter((item) => !item.read).length;
 
+  // Ring the bell once whenever new unread notifications arrive (render-time
+  // comparison with the previous count, the React-recommended pattern).
+  const [previousUnread, setPreviousUnread] = useState(unreadCount);
+  const [rings, setRings] = useState(0);
+  if (unreadCount !== previousUnread) {
+    setPreviousUnread(unreadCount);
+    if (unreadCount > previousUnread) setRings((count) => count + 1);
+  }
+
   useEffect(() => {
     if (!isOpen) return undefined;
 
@@ -71,7 +80,7 @@ function NotificationDropdown({ notifications, userId, onChange, viewAllHref }) 
           unreadCount > 0 ? `Notifications, ${unreadCount} unread` : "Notifications, none unread"
         }
       >
-        <i className="bi bi-bell" aria-hidden="true" />
+        <i key={rings} className={`bi bi-bell${rings ? " shms-bell-ring" : ""}`} aria-hidden="true" />
         {unreadCount > 0 && (
           <span className="shms-icon-badge" aria-hidden="true">
             {unreadCount > 9 ? "9+" : unreadCount}

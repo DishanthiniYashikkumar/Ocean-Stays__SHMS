@@ -25,7 +25,7 @@
 
 .shms-room-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(201, 162, 39, 0.34);
+  border-color: rgba(18, 150, 139, 0.34);
   box-shadow: var(--shadow-lifted);
 }
 
@@ -83,7 +83,7 @@
 .shms-room-price-tag strong {
   font-size: var(--text-base);
   font-weight: 600;
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 .shms-room-price-tag span {
@@ -107,7 +107,7 @@
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--gold-ink);
+  color: var(--accent-ink);
 }
 
 .shms-room-name {
@@ -126,11 +126,11 @@
 }
 
 .shms-room-name a:hover {
-  color: var(--navy-600);
+  color: var(--link);
 }
 
 .shms-room-name a:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
   border-radius: 4px;
 }
@@ -165,7 +165,7 @@
 
 .shms-room-specs i {
   font-size: 0.9rem;
-  color: var(--navy-500);
+  color: var(--icon-ink);
 }
 
 /* ---- Amenity chips ----------------------------------------------------- */
@@ -194,7 +194,7 @@
 
 .shms-amenity-chip i {
   font-size: 0.82rem;
-  color: var(--navy-500);
+  color: var(--icon-ink);
 }
 
 .shms-amenity-more {
@@ -225,7 +225,7 @@
 }
 
 .shms-room-rating i {
-  color: var(--gold-500);
+  color: var(--accent);
 }
 
 .shms-room-rating span {
@@ -306,9 +306,9 @@
   margin-bottom: var(--space-3);
   border-radius: 13px;
   font-size: 19px;
-  color: var(--gold-300);
+  color: var(--teal-300);
   background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(234, 208, 138, 0.3);
+  border: 1px solid rgba(95, 201, 191, 0.3);
   backdrop-filter: blur(8px);
 }
 
@@ -333,7 +333,7 @@
   gap: 6px;
   font-size: var(--text-xs);
   letter-spacing: 0.04em;
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 /* ==========================================================================
@@ -356,7 +356,7 @@
 
 .shms-experience-card:hover {
   transform: translateY(-4px);
-  border-color: rgba(201, 162, 39, 0.34);
+  border-color: rgba(18, 150, 139, 0.34);
   box-shadow: var(--shadow-lifted);
 }
 
@@ -456,15 +456,16 @@
 }
 
 .shms-testimonial-card:hover {
-  border-color: rgba(234, 208, 138, 0.32);
+  border-color: rgba(95, 201, 191, 0.32);
   background: rgba(255, 255, 255, 0.07);
 }
 
-.shms-testimonial-stars {
+.shms-testimonial-stars,
+.shms-stars {
   display: flex;
   gap: 3px;
   font-size: 0.9rem;
-  color: var(--gold-400);
+  color: var(--star);
 }
 
 .shms-testimonial-quote {
@@ -488,7 +489,7 @@
   height: 44px;
   border-radius: 50%;
   object-fit: cover;
-  border: 1px solid rgba(234, 208, 138, 0.32);
+  border: 1px solid rgba(95, 201, 191, 0.32);
   flex: none;
 }
 
@@ -515,7 +516,7 @@
 }
 
 .shms-testimonial-light:hover {
-  border-color: rgba(201, 162, 39, 0.34);
+  border-color: rgba(18, 150, 139, 0.34);
   background: var(--surface);
   box-shadow: var(--shadow-card);
 }
@@ -568,7 +569,7 @@
 }
 
 .shms-rating-score .shms-testimonial-stars {
-  color: var(--gold-500);
+  color: var(--star);
 }
 
 .shms-rating-score span {
@@ -596,7 +597,7 @@
   display: block;
   font-size: 1.5rem;
   font-weight: 600;
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-rating-fact span {
@@ -649,7 +650,7 @@
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .shms-grid-2,
   .shms-grid-3,
   .shms-grid-4 {
@@ -659,4 +660,15 @@
   .shms-grid {
     gap: var(--space-5);
   }
+}
+
+/* Initials stand in when a guest has no photo. */
+.shms-testimonial-initials {
+  display: grid;
+  place-items: center;
+  font-size: var(--text-sm);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--on-accent);
+  background: var(--accent-fill);
 }

@@ -63,12 +63,12 @@
 
 .shms-lightbox-close:hover {
   background: rgba(255, 255, 255, 0.14);
-  border-color: var(--gold-400);
+  border-color: var(--teal-400);
   color: #fff;
 }
 
 .shms-lightbox-close:focus-visible {
-  outline: 2px solid var(--gold-400);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -112,7 +112,7 @@
   font-size: var(--text-xs);
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 /* ---- Prev / next ------------------------------------------------------- */
@@ -140,11 +140,11 @@
 
 .shms-lightbox-nav:hover {
   background: rgba(255, 255, 255, 0.18);
-  border-color: var(--gold-400);
+  border-color: var(--teal-400);
 }
 
 .shms-lightbox-nav:focus-visible {
-  outline: 2px solid var(--gold-400);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 3px;
 }
 
@@ -195,11 +195,11 @@
 
 .shms-lightbox-thumb.is-active {
   opacity: 1;
-  border-color: var(--gold-400);
+  border-color: var(--teal-400);
 }
 
 .shms-lightbox-thumb:focus-visible {
-  outline: 2px solid var(--gold-400);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -207,7 +207,7 @@
    Responsive
    ========================================================================== */
 
-@media (max-width: 700px) {
+@media (max-width: 768px) {
   .shms-lightbox-stage {
     padding-inline: var(--space-3);
   }

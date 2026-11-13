@@ -82,8 +82,8 @@
 
 .shms-step.is-current .shms-step-marker {
   border-color: transparent;
-  background: linear-gradient(135deg, var(--navy-700), var(--navy-900));
-  color: #fff;
+  background: var(--primary-fill);
+  color: var(--on-primary);
   box-shadow: 0 6px 16px -8px rgba(10, 33, 64, 0.8);
 }
 
@@ -185,7 +185,7 @@
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--gold-300);
+  color: var(--teal-300);
 }
 
 .shms-summary-body {
@@ -221,7 +221,7 @@
 .shms-summary-facts i {
   margin-top: 2px;
   font-size: 0.95rem;
-  color: var(--navy-500);
+  color: var(--icon-ink);
   flex: none;
 }
 
@@ -272,7 +272,7 @@
 
 .shms-summary-total span:last-child {
   font-size: 1.2rem;
-  color: var(--navy-700);
+  color: var(--brand-ink);
 }
 
 .shms-summary-note {
@@ -357,7 +357,7 @@
 }
 
 .shms-method:hover {
-  border-color: var(--navy-500);
+  border-color: var(--border-focus);
   background: var(--field);
 }
 
@@ -365,19 +365,19 @@
   width: 17px;
   height: 17px;
   margin: 0;
-  accent-color: var(--navy-700);
+  accent-color: var(--accent);
   cursor: pointer;
   flex: none;
 }
 
 .shms-method input:focus-visible {
-  outline: 2px solid var(--navy-500);
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
 .shms-method i {
   font-size: 1.3rem;
-  color: var(--navy-600);
+  color: var(--link);
 }
 
 .shms-method-copy strong {
@@ -393,9 +393,9 @@
 }
 
 .shms-method.is-selected {
-  border-color: var(--navy-600);
+  border-color: var(--accent);
   background: var(--navy-100);
-  box-shadow: 0 0 0 3px rgba(23, 69, 122, 0.08);
+  box-shadow: var(--focus-halo);
 }
 
 /* ---- Card fields ------------------------------------------------------- */
@@ -423,7 +423,7 @@
   margin: 0;
   padding: var(--space-3) var(--space-4);
   border-radius: var(--radius-sm);
-  background: rgba(23, 69, 122, 0.06);
+  background: var(--navy-100);
   font-size: var(--text-xs);
   line-height: 1.6;
   color: var(--body);
@@ -431,7 +431,7 @@
 
 .shms-hosted-note i {
   margin-top: 2px;
-  color: var(--navy-600);
+  color: var(--link);
   flex: none;
 }
 
@@ -508,7 +508,7 @@
   font-family: var(--display);
   font-size: 1.8rem;
   letter-spacing: 0.04em;
-  color: var(--navy-800);
+  color: var(--brand-ink);
 }
 
 .shms-confirm-panel {
@@ -551,7 +551,7 @@
   flex: none;
   border-radius: var(--radius-sm);
   font-size: 0.95rem;
-  color: var(--navy-600);
+  color: var(--link);
   background: var(--navy-100);
 }
 
@@ -605,5 +605,30 @@
 
   .shms-card-row {
     grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* Phones: only the current step keeps its label; the rest are markers on the
+   line, so the stepper never squeezes its text into a sliver. */
+@media (max-width: 560px) {
+  .shms-step {
+    flex: none;
+  }
+
+  .shms-step.is-current {
+    flex: 0 1 auto;
+  }
+
+  .shms-step:not(.is-current) .shms-step-label {
+    display: none;
+  }
+
+  .shms-step-label small {
+    white-space: nowrap;
+  }
+
+  .shms-step-marker {
+    width: 32px;
+    height: 32px;
   }
 }

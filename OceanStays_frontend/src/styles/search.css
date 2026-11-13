@@ -49,7 +49,7 @@
 
 .shms-search-label i {
   font-size: 0.85rem;
-  color: var(--gold-500);
+  color: var(--accent);
 }
 
 /* Date and number inputs are shorter than the auth fields — this row is dense. */
@@ -87,7 +87,7 @@
 }
 
 .shms-search-note i {
-  color: var(--gold-ink);
+  color: var(--accent-ink);
 }
 
 .shms-search-error {
@@ -99,7 +99,7 @@
    Responsive
    ========================================================================== */
 
-@media (max-width: 900px) {
+@media (max-width: 1024px) {
   .shms-search {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }

@@ -153,10 +153,10 @@ function Users() {
       render: (row) => <StatusBadge status={row.status} domain="user" />,
     },
     {
-      key: "lastLoginAt",
-      header: "Last sign-in",
-      sortable: true,
-      render: (row) => formatDate(row.lastLoginAt),
+     key: "lastSignIn",
+     header: "Last sign-in",
+     sortable: true,
+     render: (row) => formatDate(row.lastSignIn),
     },
     {
       key: "actions",

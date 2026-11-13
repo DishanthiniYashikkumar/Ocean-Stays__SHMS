@@ -7,8 +7,8 @@ import { useToast } from "../../hooks/useToast";
 import { checkInBooking, getFrontDeskSummary } from "../../services/bookingService";
 import { SELLABLE_STATUSES, getRooms } from "../../services/roomService";
 import { formatCurrency, formatDateRange } from "../../utils/format";
+import Alert from "../../components/common/Alert";
 import "../../styles/dashboard.css";
-
 /**
  * Today's arrivals, and the allocation step that turns one into an in-house
  * guest.
@@ -179,13 +179,8 @@ function CheckIn() {
           }
         >
           {allocating.paymentStatus === "PENDING" && (
-            <div className="shms-alert" role="alert" style={{ marginBottom: "var(--space-5)" }}>
-              <i className="bi bi-exclamation-triangle-fill" aria-hidden="true" />
-              <span>
-                {formatCurrency(allocating.total, allocating.currency)} is still outstanding on
-                this booking. Take payment at the desk or settle it at check-out.
-              </span>
-            </div>
+            <Alert style={{ marginBottom: "var(--space-5)" }}>{formatCurrency(allocating.total, allocating.currency)} is still outstanding on
+                this booking. Take payment at the desk or settle it at check-out.</Alert>
           )}
 
           {rooms.isLoading ? (
