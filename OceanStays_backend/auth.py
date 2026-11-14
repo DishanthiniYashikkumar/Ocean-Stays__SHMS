@@ -32,14 +32,19 @@ def init_auth(app, secret, expires):
     app.config["JWT_TOKEN_LOCATION"] = ["headers"]
     jwt.init_app(app)
 
-    def unauthorized(_reason):
+    # No token at all: the visitor never signed in.
+    def not_signed_in(_reason):
+        return {"message": "Please sign in to continue."}, 401
+
+    # A token was sent but can't be used any more (expired, tampered, revoked).
+    def session_ended(*_args):
         return {"message": "Your session has expired. Please sign in again."}, 401
 
-    jwt.unauthorized_loader(unauthorized)
-    jwt.invalid_token_loader(unauthorized)
-    jwt.expired_token_loader(lambda _header, _payload: unauthorized(None))
-    jwt.revoked_token_loader(lambda _header, _payload: unauthorized(None))
-    jwt.needs_fresh_token_loader(lambda _header, _payload: unauthorized(None))
+    jwt.unauthorized_loader(not_signed_in)
+    jwt.invalid_token_loader(session_ended)
+    jwt.expired_token_loader(session_ended)
+    jwt.revoked_token_loader(session_ended)
+    jwt.needs_fresh_token_loader(session_ended)
 
 
 def issue_token(user):

@@ -28,10 +28,12 @@ export class ApiError extends Error {
   }
 }
 
-function messageForStatus(status, serverMessage) {
+function messageForStatus(status, serverMessage, hadToken) {
   if (serverMessage) return serverMessage;
   if (status === 400) return "Some of the details provided weren't valid. Please review and retry.";
-  if (status === 401) return "Your session has expired. Please sign in again.";
+  if (status === 401) {
+    return hadToken ? "Your session has expired. Please sign in again." : "Please sign in to continue.";
+  }
   if (status === 403) return "You don't have permission to perform that action.";
   if (status === 404) return "We couldn't find what you were looking for.";
   if (status === 409) return "That action conflicts with an existing record.";
@@ -104,7 +106,7 @@ export async function request(path, { method = "GET", body, params, signal } = {
 
   if (!response.ok) {
     throw new ApiError(
-      messageForStatus(response.status, payload.message),
+      messageForStatus(response.status, payload.message, Boolean(token)),
       response.status,
       payload.errors ?? null,
     );

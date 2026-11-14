@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from "react";
 import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import RoomGallery from "../../components/public/RoomGallery";
 import ErrorState from "../../components/common/ErrorState";
+import RoomRating from "../../components/common/RoomRating";
 import StatusBadge from "../../components/common/StatusBadge";
 import { useAsync } from "../../hooks/useAsync";
 import { AMENITIES, getRoomTypeBySlug } from "../../services/roomService";
@@ -137,11 +138,7 @@ function RoomDetails() {
                     status={isSoldOut ? "MAINTENANCE" : "AVAILABLE"}
                     domain="room"
                   />
-                  <span className="shms-room-rating">
-                    <i className="bi bi-star-fill" aria-hidden="true" />
-                    {room.rating.toFixed(1)}
-                    <span>({room.reviewCount} reviews)</span>
-                  </span>
+                  <RoomRating rating={room.rating} reviewCount={room.reviewCount} />
                 </div>
 
                 <h1 className="shms-detail-title">{room.name}</h1>

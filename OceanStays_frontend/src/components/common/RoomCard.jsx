@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { AMENITIES } from "../../services/roomService";
 import { formatCurrency } from "../../utils/format";
+import RoomRating from "./RoomRating";
 import "../../styles/cards.css";
 
 /**
@@ -101,11 +102,7 @@ function RoomCard({ room, searchParams = "" }) {
           )}
         </ul>
 
-        <span className="shms-room-rating">
-          <i className="bi bi-star-fill" aria-hidden="true" />
-          {(rating ?? 0).toFixed(1)}
-          <span>({reviewCount} reviews)</span>
-        </span>
+        <RoomRating rating={rating} reviewCount={reviewCount} />
 
         <div className="shms-room-actions">
           <Link className="shms-btn shms-btn-outline shms-btn-sm" to={detailUrl}>

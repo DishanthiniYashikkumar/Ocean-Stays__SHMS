@@ -9,9 +9,9 @@
  */
 
 import { request } from "./apiClient";
-import { AMENITIES, BED_TYPES, ROOM_STATUS, SELLABLE_STATUSES } from "./constants";
+import { AMENITIES, BED_TYPES, ROOM_STATUS, ROOM_STATUS_NOTES, SELLABLE_STATUSES } from "./constants";
 
-export { AMENITIES, BED_TYPES, ROOM_STATUS, SELLABLE_STATUSES };
+export { AMENITIES, BED_TYPES, ROOM_STATUS, ROOM_STATUS_NOTES, SELLABLE_STATUSES };
 
 const img = (id) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1400&q=80`;
 
@@ -122,8 +122,10 @@ async function fetchRoomTypes(dates) {
         images: imagesFor(type, id),
         totalRooms: rooms.length,
         availableRooms: availability?.get(id) ?? sellableNow,
-        rating: Number(averageRating) || 0,
-        reviewCount: Number(reviewCount) || 0,
+        // null when the API sent no rating data: the card then hides the rating
+        // rather than inventing one.
+        rating: toNumberOrNull(averageRating),
+        reviewCount: toNumberOrNull(reviewCount),
       };
     },
   );
@@ -158,12 +160,24 @@ export async function getRoomTypes(query = {}) {
   const sorters = {
     "price-asc": (a, b) => a.pricePerNight - b.pricePerNight,
     "price-desc": (a, b) => b.pricePerNight - a.pricePerNight,
-    rating: (a, b) => b.rating - a.rating,
+    rating: (a, b) => ratingScore(b) - ratingScore(a),
     name: (a, b) => a.name.localeCompare(b.name),
   };
   if (sorters[sort]) results.sort(sorters[sort]);
 
   return results;
+}
+
+/** A number from the API, or null when it's missing or not a number. */
+function toNumberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : null;
+}
+
+/** For ordering only: unrated and unreviewed rooms sort after rated ones. */
+function ratingScore(room) {
+  return room.reviewCount ? room.rating ?? 0 : 0;
 }
 
 /** Number of room types in each family, for the filter sidebar. */
@@ -182,7 +196,7 @@ export async function getFeaturedRoomTypes() {
   const best = new Map();
   all.forEach((room) => {
     const current = best.get(room.type);
-    if (!current || room.rating > current.rating) best.set(room.type, room);
+    if (!current || ratingScore(room) > ratingScore(current)) best.set(room.type, room);
   });
   const featured = [...best.values()];
   return featured.length >= 3 ? featured : all;
@@ -248,8 +262,14 @@ export async function getRoomStatusSummary() {
   return { total: data.rooms.length, ...summary };
 }
 
-export async function updateRoomStatus(roomId, status) {
-  return request(`/rooms/${roomId}`, { method: "PATCH", body: { status } });
+/**
+ * Change a room's status and/or note. Leave `notes` blank and the API writes
+ * the default note for the new status.
+ */
+export async function updateRoomStatus(roomId, status, notes) {
+  const body = { status };
+  if (notes !== undefined) body.notes = notes;
+  return request(`/rooms/${roomId}`, { method: "PATCH", body });
 }
 
 export async function getRoomFacilities() {
