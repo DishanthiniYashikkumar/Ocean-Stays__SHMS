@@ -1,10 +1,11 @@
 import { useCallback, useMemo, useState } from "react";
 import ErrorState from "../../components/common/ErrorState";
+import FormField from "../../components/common/FormField";
 import Modal from "../../components/common/Modal";
 import StatusBadge from "../../components/common/StatusBadge";
 import { useAsync } from "../../hooks/useAsync";
 import { useToast } from "../../hooks/useToast";
-import { ROOM_STATUS, getRooms, updateRoomStatus } from "../../services/roomService";
+import { ROOM_STATUS, ROOM_STATUS_NOTES, getRooms, updateRoomStatus } from "../../services/roomService";
 import { getStatusMeta } from "../../utils/status";
 import Tabs from "../../components/common/Tabs";
 import "../../styles/dashboard.css";
@@ -36,6 +37,8 @@ function RoomAllocation() {
   const [filter, setFilter] = useState("");
   const [editing, setEditing] = useState(null);
   const [nextStatus, setNextStatus] = useState("");
+  const [note, setNote] = useState("");
+  const [noteEdited, setNoteEdited] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
   const loadRooms = useCallback(() => getRooms(), []);
@@ -77,19 +80,32 @@ function RoomAllocation() {
   function openEditor(room) {
     setEditing(room);
     setNextStatus(room.status);
+    setNote(room.housekeepingNote || "");
+    setNoteEdited(false);
+  }
+
+  /** A new status brings its default note, unless staff have typed their own. */
+  function changeStatus(status) {
+    setNextStatus(status);
+    if (!noteEdited) {
+      setNote(status === editing.status ? editing.housekeepingNote || "" : ROOM_STATUS_NOTES[status] ?? "");
+    }
   }
 
   async function handleSave() {
-    if (nextStatus === editing.status) {
+    const statusChanged = nextStatus !== editing.status;
+    if (!statusChanged && note.trim() === (editing.housekeepingNote || "")) {
       setEditing(null);
       return;
     }
 
     setIsSaving(true);
     try {
-      await updateRoomStatus(editing.id, nextStatus);
+      await updateRoomStatus(editing.id, nextStatus, note.trim());
       toast.success(
-        `Room ${editing.number} is now ${getStatusMeta(nextStatus, "room").label.toLowerCase()}.`,
+        statusChanged
+          ? `Room ${editing.number} is now ${getStatusMeta(nextStatus, "room").label.toLowerCase()}.`
+          : `Note for room ${editing.number} updated.`,
       );
       setEditing(null);
       rooms.reload();
@@ -212,7 +228,7 @@ function RoomAllocation() {
                     Saving&hellip;
                   </>
                 ) : (
-                  "Update status"
+                  "Save changes"
                 )}
               </button>
             </>
@@ -236,7 +252,7 @@ function RoomAllocation() {
                     name="status"
                     value={status}
                     checked={nextStatus === status}
-                    onChange={() => setNextStatus(status)}
+                    onChange={() => changeStatus(status)}
                     disabled={isSaving}
                   />
                   <span className="shms-method-copy">
@@ -259,12 +275,23 @@ function RoomAllocation() {
             </div>
           </fieldset>
 
-          {editing.housekeepingNote && (
-            <p className="shms-booking-note" style={{ marginTop: "var(--space-4)" }}>
-              <i className="bi bi-sticky" aria-hidden="true" style={{ color: "var(--warning)" }} />
-              {editing.housekeepingNote}
-            </p>
-          )}
+          <div style={{ marginTop: "var(--space-4)" }}>
+            <FormField
+              id="room-note"
+              name="notes"
+              label="Note"
+              type="textarea"
+              value={note}
+              onChange={(event) => {
+                setNote(event.target.value);
+                setNoteEdited(true);
+              }}
+              maxLength={500}
+              disabled={isSaving}
+              placeholder={ROOM_STATUS_NOTES[nextStatus]}
+              hint="Filled in for the chosen status — edit it to add details. Left blank, the default note is used."
+            />
+          </div>
         </Modal>
       )}
     </>

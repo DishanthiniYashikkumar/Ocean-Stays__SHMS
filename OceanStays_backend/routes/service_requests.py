@@ -17,7 +17,7 @@ from mappings import (
     STAFF_ROLES,
 )
 from serializers import REQUEST_SELECT, request_out
-from services import audit, notify, notify_role, now_naive, require_staff_id, staff_id_for_user
+from services import audit, notify, notify_role, now_naive, require_staff_id, room_note, staff_id_for_user
 
 bp = Blueprint("service_requests", __name__)
 
@@ -265,13 +265,13 @@ def _sync_details(cur, request_id, status, actor_staff_id=None):
         cur.execute("""UPDATE maintenance_request SET request_status = 'Completed', resolved_date = %s
                        WHERE service_request_id = %s""", (now.date(), request_id))
         # A repaired room goes back through inspection before it's sold again.
-        cur.execute("""UPDATE room SET status = 'Clean'
+        cur.execute("""UPDATE room SET status = 'Clean', notes = %s
                        WHERE status = 'Maintaining' AND room_id = (
                            SELECT sr.room_id FROM service_request sr
                            JOIN service_function sf ON sf.function_id = sr.function_id
                            JOIN service_type st ON st.service_type_id = sf.service_type_id
                            WHERE sr.service_request_id = %s AND st.service_name = 'Maintenance')""",
-                    (request_id,))
+                    ("Repaired, awaiting inspection", request_id))
     if status in ("Assigned", "Cancelled"):
         cur.execute("UPDATE housekeeping_task SET task_status = %s WHERE service_request_id = %s "
                     "AND task_status NOT IN ('Completed', 'Cancelled')", (status, request_id))

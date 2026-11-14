@@ -6,7 +6,13 @@ import Modal from "../../components/common/Modal";
 import StatusBadge from "../../components/common/StatusBadge";
 import { useAsync } from "../../hooks/useAsync";
 import { useToast } from "../../hooks/useToast";
-import { ROOM_STATUS, getRoomStatusSummary, getRooms, updateRoomStatus } from "../../services/roomService";
+import {
+  ROOM_STATUS,
+  ROOM_STATUS_NOTES,
+  getRoomStatusSummary,
+  getRooms,
+  updateRoomStatus,
+} from "../../services/roomService";
 import { getStatusMeta } from "../../utils/status";
 import { formatCurrency } from "../../utils/format";
 import "../../styles/dashboard.css";
@@ -45,6 +51,8 @@ function Rooms() {
   const [status, setStatus] = useState("");
   const [editing, setEditing] = useState(null);
   const [nextStatus, setNextStatus] = useState("");
+  const [note, setNote] = useState("");
+  const [noteEdited, setNoteEdited] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   const [inspecting, setInspecting] = useState(null);
 
@@ -59,17 +67,35 @@ function Rooms() {
     return status ? items.filter((room) => room.status === status) : items;
   }, [data, status]);
 
+  function openEditor(room) {
+    setEditing(room);
+    setNextStatus(room.status);
+    setNote(room.housekeepingNote || "");
+    setNoteEdited(false);
+  }
+
+  /** A new status brings its default note, unless staff have typed their own. */
+  function changeStatus(status) {
+    setNextStatus(status);
+    if (!noteEdited) {
+      setNote(status === editing.status ? editing.housekeepingNote || "" : ROOM_STATUS_NOTES[status] ?? "");
+    }
+  }
+
   async function handleSave() {
-    if (nextStatus === editing.status) {
+    const statusChanged = nextStatus !== editing.status;
+    if (!statusChanged && note.trim() === (editing.housekeepingNote || "")) {
       setEditing(null);
       return;
     }
 
     setIsSaving(true);
     try {
-      await updateRoomStatus(editing.id, nextStatus);
+      await updateRoomStatus(editing.id, nextStatus, note.trim());
       toast.success(
-        `Room ${editing.number} set to ${(STATUS_LABELS[nextStatus] ?? getStatusMeta(nextStatus, "room").label).toLowerCase()}.`,
+        statusChanged
+          ? `Room ${editing.number} set to ${(STATUS_LABELS[nextStatus] ?? getStatusMeta(nextStatus, "room").label).toLowerCase()}.`
+          : `Note for room ${editing.number} updated.`,
       );
       setEditing(null);
       reload();
@@ -134,10 +160,7 @@ function Rooms() {
           <button
             type="button"
             className="shms-btn shms-btn-outline shms-btn-sm"
-            onClick={() => {
-              setEditing(row);
-              setNextStatus(row.status);
-            }}
+            onClick={() => openEditor(row)}
           >
             Change status
           </button>
@@ -222,7 +245,7 @@ function Rooms() {
                     Saving&hellip;
                   </>
                 ) : (
-                  "Update status"
+                  "Save changes"
                 )}
               </button>
             </>
@@ -235,10 +258,26 @@ function Rooms() {
             type="select"
             options={STATUS_OPTIONS}
             value={nextStatus}
-            onChange={(event) => setNextStatus(event.target.value)}
+            onChange={(event) => changeStatus(event.target.value)}
             required
             disabled={isSaving}
             hint="Changing this here overrides the housekeeping chain — use it to correct a mistake, not as part of the normal turnaround."
+          />
+
+          <FormField
+            id="room-note"
+            name="notes"
+            label="Note"
+            type="textarea"
+            value={note}
+            onChange={(event) => {
+              setNote(event.target.value);
+              setNoteEdited(true);
+            }}
+            maxLength={500}
+            disabled={isSaving}
+            placeholder={ROOM_STATUS_NOTES[nextStatus]}
+            hint="Filled in for the chosen status — edit it to add details. Left blank, the default note is used."
           />
         </Modal>
       )}

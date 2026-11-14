@@ -47,6 +47,23 @@ export const ROOM_STATUS = {
   MAINTENANCE: "MAINTENANCE",
 };
 
+/**
+ * Default note for each room status, pre-filled when staff change a status.
+ * Same wording the API writes when a status changes without a note — keep in
+ * step with ROOM_STATUS_NOTES in OceanStays_backend/services.py.
+ */
+export const ROOM_STATUS_NOTES = {
+  AVAILABLE: "Ready for guest booking",
+  RESERVED: "Allocated for an upcoming reservation",
+  OCCUPIED: "Guest checked in",
+  DIRTY: "Requires cleaning before next check-in",
+  CLEANING: "Cleaning in progress",
+  CLEAN: "Cleaned, awaiting inspection",
+  INSPECTED: "Cleaned and inspected by housekeeping",
+  READY: "Cleaned and inspected by housekeeping",
+  MAINTENANCE: "Under maintenance",
+};
+
 /** States in which a room may be sold or allocated to an arriving guest. */
 export const SELLABLE_STATUSES = [
   ROOM_STATUS.AVAILABLE,

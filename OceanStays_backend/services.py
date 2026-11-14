@@ -15,6 +15,30 @@ log = logging.getLogger("oceanstays")
 
 
 # ---------------------------------------------------------------------------
+# Room notes — the note that goes with each room status
+# ---------------------------------------------------------------------------
+
+# Written whenever a room changes status without a note of its own, so the
+# Note column never contradicts the status. Keyed by database spelling; keep
+# in step with ROOM_STATUS_NOTES in the frontend's services/constants.js.
+ROOM_STATUS_NOTES = {
+    "Available": "Ready for guest booking",
+    "Reserved": "Allocated for an upcoming reservation",
+    "Occupied": "Guest checked in",
+    "Dirty": "Requires cleaning before next check-in",
+    "Cleaning": "Cleaning in progress",
+    "Clean": "Cleaned, awaiting inspection",
+    "Inspected": "Cleaned and inspected by housekeeping",
+    "Maintaining": "Under maintenance",
+}
+
+
+def room_note(status):
+    """Default note for a room status (database spelling)."""
+    return ROOM_STATUS_NOTES.get(status, "")
+
+
+# ---------------------------------------------------------------------------
 # Time — the hotel's local time, not the database server's (Neon runs in UTC)
 # ---------------------------------------------------------------------------
 

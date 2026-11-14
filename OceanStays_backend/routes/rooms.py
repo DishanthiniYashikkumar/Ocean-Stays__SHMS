@@ -9,7 +9,7 @@ from auth import current_actor, require_roles
 from errors import ApiError, json_body, optional_text, to_date, to_int
 from mappings import ADMIN, HOUSEKEEPING, RECEPTIONIST, ROOM_STATUS
 from serializers import floor_number
-from services import audit, today
+from services import audit, room_note, today
 
 bp = Blueprint("rooms", __name__)
 
@@ -164,9 +164,9 @@ def update_room(room_id):
     actor = current_actor()
     data = json_body()
     status = ROOM_STATUS.db(data.get("status"), required=False)
-    notes = optional_text(data, "notes") if "notes" in data or "housekeepingNote" in data else None
+    notes = optional_text(data, "notes", 500) if "notes" in data or "housekeepingNote" in data else None
     if "housekeepingNote" in data and notes is None:
-        notes = optional_text(data, "housekeepingNote")
+        notes = optional_text(data, "housekeepingNote", 500)
     if status is None and notes is None:
         raise ApiError(400, "Send a status or notes to change.")
     if status and status not in SETTABLE_BY[actor.role]:
@@ -178,6 +178,10 @@ def update_room(room_id):
             raise ApiError(404, "That room doesn't exist.")
         if status == "Occupied" and room["status"] != "Occupied":
             raise ApiError(409, "Rooms become occupied when a guest is checked in.")
+        # A new status without a note of its own gets that status's default
+        # note, so the old note can't contradict it.
+        if status and status != room["status"] and notes is None:
+            notes = room_note(status)
         cur.execute(
             "UPDATE room SET status = COALESCE(%s, status), notes = COALESCE(%s, notes) WHERE room_id = %s",
             (status, notes, room_id),

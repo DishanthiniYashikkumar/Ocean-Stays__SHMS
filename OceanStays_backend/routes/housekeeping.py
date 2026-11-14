@@ -12,7 +12,7 @@ from errors import ApiError, json_body, optional_text, to_int
 from mappings import ADMIN, HOUSEKEEPING, PRIORITY, RECEPTIONIST, REQUEST_STATUS, SERVICE_STAFF
 from routes.service_requests import create_request
 from serializers import TASK_SELECT, task_out
-from services import audit, notify_role, now_naive, staff_id_for_user, today
+from services import audit, notify_role, now_naive, room_note, staff_id_for_user, today
 
 bp = Blueprint("housekeeping", __name__)
 
@@ -152,7 +152,8 @@ def update_task(task_id):
         room_status = {"In Progress": "Cleaning", "Completed": "Clean"}.get(new_status)
         if room and room_status and room["status"] in ("Dirty", "Cleaning", "Clean", "Inspected", "Available"):
             if not (room_status == "Cleaning" and room["status"] in ("Inspected", "Available")):
-                cur.execute("UPDATE room SET status = %s WHERE room_id = %s", (room_status, room["room_id"]))
+                cur.execute("UPDATE room SET status = %s, notes = %s WHERE room_id = %s",
+                            (room_status, room_note(room_status), room["room_id"]))
         items = load_tasks("ht.housekeeping_task_id = %s", [task_id], cur=cur)
 
     audit(actor.user_id, "Status", "Rooms",
@@ -179,10 +180,12 @@ def inspect_room(room_id):
                                 f"(it's {room['status'].lower()}).")
         task_id = None
         if passed:
-            cur.execute("UPDATE room SET status = 'Inspected', notes = COALESCE(%s, notes) WHERE room_id = %s",
-                        (note, room_id))
+            cur.execute("UPDATE room SET status = 'Inspected', notes = %s WHERE room_id = %s",
+                        (note or room_note("Inspected"), room_id))
         else:
-            cur.execute("UPDATE room SET status = 'Dirty' WHERE room_id = %s", (room_id,))
+            cur.execute("UPDATE room SET status = 'Dirty', notes = %s WHERE room_id = %s",
+                        (f"Failed inspection: {note}" if note else "Failed inspection, needs re-cleaning",
+                         room_id))
             request_id = create_request(
                 cur, service_name="Housekeeping", title="Room Cleaning",
                 details=f"Re-clean after failed inspection{': ' + note if note else ''}",
@@ -225,7 +228,8 @@ def report_maintenance():
             cur, service_name="Maintenance", title=title, details=details, priority=priority,
             reservation_room_id=stay["reservation_room_id"] if stay else None, room_id=room_id)
         if room["status"] != "Occupied":
-            cur.execute("UPDATE room SET status = 'Maintaining' WHERE room_id = %s", (room_id,))
+            cur.execute("UPDATE room SET status = 'Maintaining', notes = %s WHERE room_id = %s",
+                        (f"{room_note('Maintaining')}: {title}", room_id))
         maintenance = db.fetch_one(cur, "SELECT maintenance_request_id FROM maintenance_request "
                                         "WHERE service_request_id = %s", (request_id,))
 

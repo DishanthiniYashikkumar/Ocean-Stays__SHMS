@@ -11,6 +11,7 @@ from mappings import ADMIN, GUEST, RECEPTIONIST, RESERVATION_STATUS
 from serializers import BOOKING_SELECT, booking_out, invoice_out, split_guest_bookings
 from services import (
     audit,
+    room_note,
     booking_totals,
     free_rooms,
     guest_id_for_user,
@@ -453,8 +454,8 @@ def check_in(booking_id):
         elif room["room_id"] != target:
             cur.execute("UPDATE reservation_room SET room_id = %s WHERE reservation_room_id = %s",
                         (target, room["reservation_room_id"]))
-            cur.execute("UPDATE room SET status = 'Available' WHERE room_id = %s AND status = 'Reserved'",
-                        (room["room_id"],))
+            cur.execute("UPDATE room SET status = 'Available', notes = %s WHERE room_id = %s AND status = 'Reserved'",
+                        (room_note("Available"), room["room_id"]))
 
         staff_id = require_staff_id(actor.user_id, cur)
         cur.execute(
@@ -465,7 +466,8 @@ def check_in(booking_id):
                    checked_in_by = EXCLUDED.checked_in_by""",
             (booking_id, now_naive(), staff_id),
         )
-        cur.execute("UPDATE room SET status = 'Occupied' WHERE room_id = %s", (target,))
+        cur.execute("UPDATE room SET status = 'Occupied', notes = %s WHERE room_id = %s",
+                    (room_note("Occupied"), target))
         cur.execute("UPDATE reservation SET reservation_status = 'Checked in' WHERE reservation_id = %s",
                     (booking_id,))
         booking = load_booking(booking_id, cur)
@@ -502,7 +504,8 @@ def check_out(booking_id):
                     (booking_id,))
         task_id = None
         if room:
-            cur.execute("UPDATE room SET status = 'Dirty' WHERE room_id = %s", (room["room_id"],))
+            cur.execute("UPDATE room SET status = 'Dirty', notes = %s WHERE room_id = %s",
+                        (room_note("Dirty"), room["room_id"]))
             # Hand the room to housekeeping: a cleaning request plus its task.
             function = db.fetch_one(
                 cur,
