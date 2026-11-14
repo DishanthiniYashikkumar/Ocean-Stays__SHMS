@@ -22,7 +22,7 @@ function FeaturedRooms() {
             Rooms, Suites &amp; Private Villas
           </h2>
           <p className="shms-subheading">
-            Six categories, every one facing water. Choose the view, the space and the level of
+            Five categories, every one facing water. Choose the view, the space and the level of
             privacy that suits how you travel.
           </p>
         </div>

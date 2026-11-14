@@ -43,7 +43,7 @@ function RoomFilters({ values, counts, isOpen, onChange, onClear }) {
       </div>
 
       {/* ------------------------------------------------------ Room type */}
-      <fieldset className="shms-filter-group" style={{ border: 0, padding: 0, margin: 0 }}>
+      <fieldset className="shms-filter-group">
         <legend className="shms-filter-legend">Room type</legend>
 
         <div className="shms-filter-options">
@@ -73,7 +73,7 @@ function RoomFilters({ values, counts, isOpen, onChange, onClear }) {
       </fieldset>
 
       {/* --------------------------------------------------------- Guests */}
-      <fieldset className="shms-filter-group" style={{ border: 0, padding: 0, margin: 0 }}>
+      <fieldset className="shms-filter-group">
         <legend className="shms-filter-legend">Guests</legend>
 
         <div className="shms-filter-options">
@@ -133,7 +133,7 @@ function RoomFilters({ values, counts, isOpen, onChange, onClear }) {
       </div>
 
       {/* ------------------------------------------------------ Amenities */}
-      <fieldset className="shms-filter-group" style={{ border: 0, padding: 0, margin: 0 }}>
+      <fieldset className="shms-filter-group">
         <legend className="shms-filter-legend">Amenities</legend>
 
         <div className="shms-filter-options">

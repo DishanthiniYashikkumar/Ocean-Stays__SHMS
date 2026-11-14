@@ -16,11 +16,26 @@
 .shms-filters {
   position: sticky;
   top: calc(var(--nav-height) + var(--space-5));
+  /* Never taller than the space under the navbar — scroll inside instead. */
+  max-height: calc(100vh - var(--nav-height) - var(--space-5) * 2);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
   padding: var(--space-5);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   background: var(--surface);
   box-shadow: var(--shadow-sm);
+}
+
+.shms-filters::-webkit-scrollbar {
+  width: 6px;
+}
+
+.shms-filters::-webkit-scrollbar-thumb {
+  background: var(--line);
+  border-radius: 999px;
 }
 
 .shms-filters-head {
@@ -73,11 +88,15 @@
 }
 
 .shms-filter-group {
+  min-width: 0;
+  margin: 0;
   padding-block: var(--space-4);
+  padding-inline: 0;
+  border: 0;
   border-bottom: 1px solid var(--line);
 }
 
-.shms-filter-group:last-of-type {
+.shms-filter-group:last-child {
   border-bottom: 0;
   padding-bottom: 0;
 }
